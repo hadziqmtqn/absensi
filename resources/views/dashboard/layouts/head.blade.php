@@ -12,3 +12,4 @@
 <link rel="stylesheet" href="{{ asset('theme/template/css/vertical-layout-light/style.css') }}">
 <!-- endinject -->
 <link rel="shortcut icon" href="{{ asset('theme/template/images/favicon.png') }}" />
+<link rel="stylesheet" href="{{ asset('theme/template/vendors/mdi/css/materialdesignicons.min.css') }}">
