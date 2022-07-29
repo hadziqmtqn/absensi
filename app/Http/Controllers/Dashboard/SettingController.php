@@ -14,8 +14,9 @@ class SettingController extends Controller
         $title = 'Pengaturan Aplikasi';
         $cekSetting = Setting::count();
         $data = Setting::first();
+        $appName = setting::first();
 
-        return view('dashboard.setting.index', compact('title','cekSetting','data'));
+        return view('dashboard.setting.index', compact('title','cekSetting','data','appName'));
     }
 
     public function store(Request $request)
