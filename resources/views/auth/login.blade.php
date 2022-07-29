@@ -1,22 +1,16 @@
 <!DOCTYPE html>
 <html lang="en">
 
+@php
+    $appName = \App\Models\Setting::first();
+@endphp
+
 <head>
     <!-- Required meta tags -->
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-    <title>Skydash Admin</title>
-    <!-- plugins:css -->
-    <link rel="stylesheet" href="{{ asset('theme/template/vendors/feather/feather.css') }}">
-    <link rel="stylesheet" href="{{ asset('theme/template/vendors/ti-icons/css/themify-icons.css') }}">
-    <link rel="stylesheet" href="{{ asset('theme/template/vendors/css/vendor.bundle.base.css') }}">
-    <!-- endinject -->
-    <!-- Plugin css for this page -->
-    <!-- End plugin css for this page -->
-    <!-- inject:css -->
-    <link rel="stylesheet" href="{{ asset('theme/template/css/vertical-layout-light/style.css') }}">
-    <!-- endinject -->
-    <link rel="shortcut icon" href="{{ asset('theme/template/images/favicon.png') }}" />
+    <title>Login App | @if(!empty($appName->application_name)) {{ $appName->application_name }} @endif</title>
+    @include('dashboard.layouts.head')
 </head>
 
 <body>
@@ -27,7 +21,7 @@
                     <div class="col-lg-4 mx-auto">
                         <div class="auth-form-light text-left py-5 px-4 px-sm-5">
                             <div class="brand-logo">
-                                <img src="{{ asset('theme/template/images/logo.svg') }}" alt="logo">
+                                <img src="@if(!empty($appName->logo)) {{ asset($appName->logo) }} @endif" alt="@if(!empty($appName->application_name)) {{ $appName->application_name }} @endif">
                             </div>
                             <h4>Hello! let's get started</h4>
                             <h6 class="font-weight-light">Sign in to continue.</h6>
@@ -73,18 +67,7 @@
         <!-- page-body-wrapper ends -->
     </div>
     <!-- container-scroller -->
-    <!-- plugins:js -->
-    <script src="{{ asset('theme/template/vendors/js/vendor.bundle.base.js') }}"></script>
-    <!-- endinject -->
-    <!-- Plugin js for this page -->
-    <!-- End plugin js for this page -->
-    <!-- inject:js -->
-    <script src="{{ asset('theme/template/js/off-canvas.js') }}"></script>
-    <script src="{{ asset('theme/template/js/hoverable-collapse.js') }}"></script>
-    <script src="{{ asset('theme/template/js/template.js') }}"></script>
-    <script src="{{ asset('theme/template/js/settings.js') }}"></script>
-    <script src="{{ asset('theme/template/js/todolist.js') }}"></script>
-    <!-- endinject -->
+    @include('dashboard.layouts.scripts')
 </body>
 
 </html>
