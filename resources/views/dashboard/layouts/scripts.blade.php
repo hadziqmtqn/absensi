@@ -19,3 +19,7 @@
 <script src="{{ asset('theme/template/js/dashboard.js') }}"></script>
 <script src="{{ asset('theme/template/js/Chart.roundedBarCharts.js') }}"></script>
 <!-- End custom js for this page-->
+<script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/jquery-validate/1.19.0/jquery.validate.min.js"></script>
+<script src="{{ asset('theme/template/js/file-upload.js') }}"></script>
+<script src="{{ asset('theme/template/js/typeahead.js') }}"></script>
+<script src="{{ asset('theme/template/js/select2.js') }}"></script>

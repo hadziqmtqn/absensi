@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: localhost:3306
--- Generation Time: Jul 29, 2022 at 03:47 PM
+-- Generation Time: Jul 29, 2022 at 04:31 PM
 -- Server version: 5.7.33
 -- PHP Version: 7.4.19
 
@@ -106,6 +106,13 @@ CREATE TABLE `settings` (
   `updated_at` timestamp NULL DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
+--
+-- Dumping data for table `settings`
+--
+
+INSERT INTO `settings` (`id`, `application_name`, `email`, `no_hp`, `logo`, `created_at`, `updated_at`) VALUES
+(1, 'Sipetak', 'sipetak@g.com', '02859829582', 'assets/1834047072-logo.svg', '2022-07-29 16:17:01', '2022-07-29 16:30:26');
+
 -- --------------------------------------------------------
 
 --
@@ -200,7 +207,7 @@ ALTER TABLE `personal_access_tokens`
 -- AUTO_INCREMENT for table `settings`
 --
 ALTER TABLE `settings`
-  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT;
+  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
 
 --
 -- AUTO_INCREMENT for table `users`
