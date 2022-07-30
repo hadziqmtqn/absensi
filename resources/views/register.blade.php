@@ -11,9 +11,9 @@
                     <h4>New here?</h4>
                     <h6 class="font-weight-light">Signing up is easy. It only takes a few steps</h6>
                     @include('dashboard.layouts.session')
-                    <form class="pt-3" method="POST" action="{{ route('registration.store') }}" id="registration">
+                    <form class="pt-3" method="POST" action="{{ route('registration.store') }}" id="register">
                         @csrf
-                        <div id="registration">
+                        <div id="register">
                             <div class="form-group">
                                 <input type="text" class="form-control form-control-lg" value="{{ old('name') }}" name="name" placeholder="Nama Lengkap">
                             </div>
@@ -52,7 +52,6 @@
     </div>
     <!-- content-wrapper ends -->
 </div>
-<!-- page-body-wrapper ends -->
 @endsection
 
 @section('scripts')
