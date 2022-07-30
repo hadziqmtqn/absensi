@@ -33,7 +33,7 @@ Route::middleware(['auth'])->group(function () {
     Route::post('setting/store', [SettingController::class, 'store'])->name('setting.store');
     Route::put('setting/update/{id}', [SettingController::class, 'update'])->name('setting.update');
     // profile
-    Route::get('profile-setting', [ProfileController::class, 'index'])->name('profile-setting.index');
+    Route::get('profile', [ProfileController::class, 'index'])->name('profile.index');
 });
 
 Auth::routes();

@@ -66,7 +66,7 @@
                 <img src="@if(empty(\Auth::user()->photo)) {{ asset('theme/template/images/user.png') }} @else {{ asset(\Auth::user()->photo) }} @endif" alt="profile"/>
             </a>
             <div class="dropdown-menu dropdown-menu-right navbar-dropdown" aria-labelledby="profileDropdown">
-                <a href="{{ route('profile-setting.index') }}" class="dropdown-item"> <i class="ti-settings text-primary"></i>Profile Setting</a>
+                <a href="{{ route('profile.index') }}" class="dropdown-item"> <i class="ti-settings text-primary"></i>Profile Setting</a>
                 <a class="dropdown-item" href="{{ route('logout') }}" onclick="event.preventDefault(); document.getElementById('logout-form').submit();"><i class="ti-power-off text-primary"></i>Logout</a>
                 
                 <form id="logout-form" action="{{ route('logout') }}" method="POST" class="d-none">
