@@ -1,6 +1,11 @@
 <script>
+<<<<<<< HEAD
     if ($("#register").length > 0) {
         $("#register").validate({
+=======
+    if ($("#registration").length > 0) {
+        $("#registration").validate({
+>>>>>>> e23ff7b57be36abfdc49b7bf2b1162301b12243b
             rules: {
                 name: {
                     required: true,
@@ -11,7 +16,11 @@
                 nik: {
                     minlength: 16,
                     maxlength: 16,
+<<<<<<< HEAD
                 },
+=======
+                }
+>>>>>>> e23ff7b57be36abfdc49b7bf2b1162301b12243b
                 phone: {
                     required: true,
                     minlength: 11,
@@ -42,7 +51,10 @@
                     maxlength: "NIK Harus 16 digit",
                 },
                 phone: {
+<<<<<<< HEAD
                     required: "No. Telp/HP Wajib diisi",
+=======
+>>>>>>> e23ff7b57be36abfdc49b7bf2b1162301b12243b
                     number: "No. Telp/HP Harus Berupa Angka",
                     minlength: "No. Telp/HP Harus Lebih dari 11 Digit",
                     maxlength: "No. Telp/HP Harus Kurang dari 13 Digit",
