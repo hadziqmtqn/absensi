@@ -7,16 +7,19 @@ use Illuminate\Http\Request;
 
 use App\Models\User;
 use App\Models\Setting;
+use App\Models\Role;
 
 class ProfileController extends Controller
 {
     public function index()
     {
+        $idUser = \Auth::user()->id;
         $title = 'Profile Setting';
         $appName = Setting::first();
-        $profile = User::first();
+        $profile = User::where('id',$idUser)->first();
+        $listRole = Role::get();
 
-        return view('dashboard.profile.index', compact('title','appName','profile'));
+        return view('dashboard.profile.index', compact('title','appName','profile','listRole'));
     }
 
     public function update(Request $request, $id)
