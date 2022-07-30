@@ -31,7 +31,7 @@ class ProfileController extends Controller
             'photo' => 'file|mimes:jpg,jpeg,png,svg|max:1024',
             'email' => 'email|required',
             'password',
-            'confirm_password',
+            'confirm_password' => 'same:password'
 		]);
 
         $data['role_id'] = $request->role_id;
@@ -41,6 +41,7 @@ class ProfileController extends Controller
 		$data['phone'] = $request->phone;
 		$data['company_name'] = $request->company_name;
 		$data['email'] = $request->email;
+        $data['password'] = bcrypt($request->password);
 		// $data['created_at'] = date('Y-m-d H:i:s');
 		$data['updated_at'] = date('Y-m-d H:i:s');
 

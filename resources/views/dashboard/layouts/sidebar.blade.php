@@ -13,7 +13,7 @@
     </li>
     <li class="nav-item">
         <a class="nav-link" href="{{ route('profile.index') }}">
-            <i class="icon-head menu-icon"></i>
+            <i class="mdi mdi-account menu-icon"></i>
             <span class="menu-title">Profile Saya</span>
         </a>
     </li>

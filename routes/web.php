@@ -18,6 +18,10 @@ use App\Http\Controllers\Dashboard\ProfileController;
 |
 */
 
+Route::get('pwd',function(){
+	dd(bcrypt('123'));
+});
+
 Route::get('/', function () {
     return view('welcome');
 });
@@ -34,6 +38,7 @@ Route::middleware(['auth'])->group(function () {
     Route::put('setting/update/{id}', [SettingController::class, 'update'])->name('setting.update');
     // profile
     Route::get('profile', [ProfileController::class, 'index'])->name('profile.index');
+    Route::put('profile/update/{id}', [ProfileController::class, 'update'])->name('profile.update');
 });
 
 Auth::routes();

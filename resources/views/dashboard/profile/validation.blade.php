@@ -1,6 +1,6 @@
 <script>
-    if ($("#register").length > 0) {
-        $("#register").validate({
+    if ($("#profile").length > 0) {
+        $("#profile").validate({
             rules: {
                 name: {
                     required: true,
@@ -22,11 +22,9 @@
                     required: true,
                 },
                 password: {
-                    required: true,
                     minlength: 8,
                 },
                 confirm_password: {
-                    required: true,
                     minlength: 8,
                 }
             },
@@ -65,3 +63,4 @@
         })
     }
 </script>
+    

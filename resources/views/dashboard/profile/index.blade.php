@@ -4,14 +4,14 @@
 @endsection
 @section('content')
 <div class="row">
-    <div class="col-md-4">
+    <div class="col-md-3 mb-4">
         <div class="card tale-bg">
-            <div class="card-people">
-                <img src="{{ asset('theme/template/images/user.png') }}" width="100px" alt="people">
-                <div class="weather-info">
+            <div class="card-people mt-auto">
+                <img src="@if(empty($profile->photo)) {{ asset('theme/template/images/user.png') }} @else {{ asset($profile->photo) }} @endif" style="object-fit: cover" alt="people">
+                <div class="weather-info" style="background-color: white; padding: 10px 10px 0px 0px; border-radius: 10px;">
                     <div class="d-flex">
                         <div class="ml-2">
-                            <h4 class="location font-weight-normal">{{ $profile->name }}</h4>
+                            <h4 class="location font-weight-bold">{{ $profile->name }}</h4>
                             <h6 class="font-weight-normal">{{ $profile->company_name }}</h6>
                         </div>
                     </div>
@@ -19,44 +19,66 @@
             </div>
         </div>
     </div>
-    <div class="col-md-8 grid-margin stretch-card">
+    <div class="col-md-9 grid-margin stretch-card">
         <div class="card">
             <div class="card-body">
                 <h4 class="card-title">{{ $title }}</h4>
-                <form class="forms-sample">
-                    <div class="form-group">
-                        <label for="exampleInputUsername1">Username</label>
-                        <input type="text" class="form-control" id="exampleInputUsername1" placeholder="Username">
+                @include('dashboard.layouts.session')
+                <form class="forms-sample" method="POST" action="{{ route('profile.update',$profile->id) }}" enctype="multipart/form-data" id="profile">
+                    @csrf
+                    {{ method_field('PUT') }}
+                    <div id="profile">
+                        <div class="form-group">
+                            <label for="">Nama Lengkap</label>
+                            <input type="text" class="form-control" name="name" value="{{ $profile->name }}" placeholder="Nama Lengkap">
+                        </div>
+                        <div class="form-group">
+                            <label for="">Nama Panggilan</label>
+                            <input type="text" class="form-control" name="short_name" value="{{ $profile->short_name }}" placeholder="Nama Panggilan">
+                        </div>
+                        <div class="form-group">
+                            <label for="">NIK</label>
+                            <input type="number" class="form-control" name="nik" value="{{ $profile->nik }}" placeholder="Nomor Induk Kependudukan">
+                        </div>
+                        <div class="form-group">
+                            <label for="">No. Telp/HP</label>
+                            <input type="number" class="form-control" name="phone" value="{{ $profile->phone }}" placeholder="No. Telp/HP">
+                        </div>
+                        <div class="form-group">
+                            <label for="">Nama Asal PT</label>
+                            <input type="text" class="form-control" name="company_name" value="{{ $profile->company_name }}" placeholder="Nama Asal PT">
+                        </div>
+                        <div class="form-group">
+                            <label for="">Email address</label>
+                            <input type="email" class="form-control" name="email" value="{{ $profile->email }}" placeholder="Email">
+                        </div>
+                        <div class="form-group">
+                            <label>Photo</label>
+                            <input type="file" name="photo" accept=".jpg,.jpeg,.png,.svg" class="file-upload-default">
+                            <div class="input-group col-xs-12">
+                                <input type="text" class="form-control file-upload-info" disabled="" placeholder="Upload Photo">
+                                <span class="input-group-append">
+                                    <button class="file-upload-browse btn btn-primary" type="button">Upload</button>
+                                </span>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label for="">Password <span style="font-style: italic; color: red">(Kosongi jika tidak diubah)</span></label>
+                            <input type="password" class="form-control" name="password" placeholder="Password">
+                        </div>
+                        <div class="form-group">
+                            <label for="">Ulangi Password <span style="font-style: italic; color: red">(Kosongi jika tidak diubah)</span></label>
+                            <input type="password" class="form-control" name="confirm_password" placeholder="Password">
+                        </div>
+                        <button type="submit" class="btn btn-primary mr-2">Submit</button>
                     </div>
-                    <div class="form-group">
-                        <label for="exampleInputEmail1">Email address</label>
-                        <input type="email" class="form-control" id="exampleInputEmail1" placeholder="Email">
-                    </div>
-                    <div class="form-group">
-                        <label for="exampleInputPassword1">Password</label>
-                        <input type="password" class="form-control" id="exampleInputPassword1" placeholder="Password">
-                    </div>
-                    <div class="form-group">
-                        <label for="exampleInputPassword1">Password</label>
-                        <input type="password" class="form-control" id="exampleInputPassword1" placeholder="Password">
-                    </div>
-                    <div class="form-group">
-                        <label for="exampleInputPassword1">Password</label>
-                        <input type="password" class="form-control" id="exampleInputPassword1" placeholder="Password">
-                    </div>
-                    <div class="form-group">
-                        <label for="exampleInputPassword1">Password</label>
-                        <input type="password" class="form-control" id="exampleInputPassword1" placeholder="Password">
-                    </div>
-                    <div class="form-group">
-                        <label for="exampleInputConfirmPassword1">Confirm Password</label>
-                        <input type="password" class="form-control" id="exampleInputConfirmPassword1" placeholder="Password">
-                    </div>
-                    <button type="submit" class="btn btn-primary mr-2">Submit</button>
-                    <button class="btn btn-light">Cancel</button>
                 </form>
             </div>
         </div>
     </div>
 </div>
+@endsection
+
+@section('scripts')
+    @include('dashboard.profile.validation')
 @endsection
