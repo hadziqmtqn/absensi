@@ -25,11 +25,12 @@
                             </div>
                             <h4>Hello! let's get started</h4>
                             <h6 class="font-weight-light">Sign in to continue.</h6>
+                            @include('dashboard.layouts.session')
                             <form class="pt-3" method="POST" action="{{ route('login') }}">
                                 @csrf
                                 <div class="form-group">
-                                    <input type="email" class="form-control form-control-lg @error('email') is-invalid @enderror" id="exampleInputEmail1" name="email" placeholder="Email" value="{{ old('email') }}">
-                                    @error('email')
+                                    <input type="text" class="form-control form-control-lg @error('phone') is-invalid @enderror" id="exampleInputEmail1" name="phone" placeholder="No. Telp/Email" value="{{ old('phone') }}">
+                                    @error('phone')
                                         <span class="invalid-feedback" role="alert">
                                             <strong>{{ $message }}</strong>
                                         </span>

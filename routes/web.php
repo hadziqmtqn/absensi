@@ -23,6 +23,7 @@ Route::get('/', function () {
 
 Route::middleware(['guest'])->group(function () {
     Route::get('registration', [RegisterController::class, 'index'])->name('registration');
+    Route::post('registration', [RegisterController::class, 'store'])->name('registration.store');
 });
 
 Route::middleware(['auth'])->group(function () {
