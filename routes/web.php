@@ -5,6 +5,7 @@ use App\Http\Controllers\HomeController;
 use App\Http\Controllers\Dashboard\DashboardController;
 use App\Http\Controllers\Dashboard\SettingController;
 use App\Http\Controllers\RegisterController;
+use App\Http\Controllers\Dashboard\ProfileController;
 
 /*
 |--------------------------------------------------------------------------
@@ -31,6 +32,8 @@ Route::middleware(['auth'])->group(function () {
     Route::get('setting', [SettingController::class, 'index'])->name('setting.index');
     Route::post('setting/store', [SettingController::class, 'store'])->name('setting.store');
     Route::put('setting/update/{id}', [SettingController::class, 'update'])->name('setting.update');
+    // profile
+    Route::get('profile-setting', [ProfileController::class, 'index'])->name('profile-setting.index');
 });
 
 Auth::routes();

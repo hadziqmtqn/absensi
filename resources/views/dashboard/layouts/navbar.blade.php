@@ -9,12 +9,12 @@
     <ul class="navbar-nav mr-lg-2">
         <li class="nav-item nav-search d-none d-lg-block">
             <div class="input-group">
-            <div class="input-group-prepend hover-cursor" id="navbar-search-icon">
-                <span class="input-group-text" id="search">
-                <i class="icon-search"></i>
-                </span>
-            </div>
-            <input type="text" class="form-control" id="navbar-search-input" placeholder="Search now" aria-label="search" aria-describedby="search">
+                <div class="input-group-prepend hover-cursor" id="navbar-search-icon">
+                    <span class="input-group-text" id="search">
+                    <i class="icon-search"></i>
+                    </span>
+                </div>
+                <input type="text" class="form-control" id="navbar-search-input" placeholder="Search now" aria-label="search" aria-describedby="search">
             </div>
         </li>
     </ul>
@@ -63,10 +63,10 @@
         </li>
         <li class="nav-item nav-profile dropdown">
             <a class="nav-link dropdown-toggle" href="#" data-toggle="dropdown" id="profileDropdown">
-                <img src="{{ asset('theme/template/images/faces/face28.jpg') }}" alt="profile"/>
+                <img src="@if(empty(\Auth::user()->photo)) {{ asset('theme/template/images/user.png') }} @else {{ asset(\Auth::user()->photo) }} @endif" alt="profile"/>
             </a>
             <div class="dropdown-menu dropdown-menu-right navbar-dropdown" aria-labelledby="profileDropdown">
-                <a class="dropdown-item">  <i class="ti-settings text-primary"></i>Settings</a>
+                <a href="{{ route('profile-setting.index') }}" class="dropdown-item"> <i class="ti-settings text-primary"></i>Profile Setting</a>
                 <a class="dropdown-item" href="{{ route('logout') }}" onclick="event.preventDefault(); document.getElementById('logout-form').submit();"><i class="ti-power-off text-primary"></i>Logout</a>
                 
                 <form id="logout-form" action="{{ route('logout') }}" method="POST" class="d-none">

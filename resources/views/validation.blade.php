@@ -4,6 +4,7 @@
             rules: {
                 name: {
                     required: true,
+                    minlength: 5,
                 },
                 short_name: {
                     required: true,
@@ -33,6 +34,7 @@
             messages: {
                 name: {
                     required: "Nama Lengkap Wajib diisi",
+                    minlength: "Nama Lengkap Minimal 5 huruf",
                 },
                 short_name:{
                     required: "Nama Panggilan Wajib diisi",

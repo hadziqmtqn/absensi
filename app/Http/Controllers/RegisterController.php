@@ -29,6 +29,7 @@ class RegisterController extends Controller
             'confirm_password' => 'required|same:password'
         ]);
 
+        $data['role_id'] = 2;
         $data['name'] = $request->name;
         $data['username'] = rand();
         $data['short_name'] = $request->short_name;
