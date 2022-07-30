@@ -4,6 +4,7 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\HomeController;
 use App\Http\Controllers\Dashboard\DashboardController;
 use App\Http\Controllers\Dashboard\SettingController;
+use App\Http\Controllers\RegisterController;
 
 /*
 |--------------------------------------------------------------------------
@@ -20,6 +21,10 @@ Route::get('/', function () {
     return view('welcome');
 });
 
+Route::middleware(['guest'])->group(function () {
+    Route::get('registration', [RegisterController::class, 'index'])->name('registration');
+});
+
 Route::middleware(['auth'])->group(function () {
     Route::get('dashboard', [DashboardController::class, 'index'])->name('dashboard.index');
     Route::get('setting', [SettingController::class, 'index'])->name('setting.index');
@@ -32,4 +37,7 @@ Auth::routes();
 // Route::get('/home', [HomeController::class, 'index'])->name('home');
 Route::get('home', function() {
     return redirect('dashboard');
+});
+Route::get('register', function() {
+    return redirect('registration');
 });
