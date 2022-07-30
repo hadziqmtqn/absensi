@@ -39,6 +39,12 @@ Route::middleware(['auth'])->group(function () {
     // profile
     Route::get('profile', [ProfileController::class, 'index'])->name('profile.index');
     Route::put('profile/update/{id}', [ProfileController::class, 'update'])->name('profile.update');
+
+    Route::middleware([Admin::class])->group(function(){
+        Route::get('setting', [SettingController::class, 'index'])->name('setting.index');
+        Route::post('setting/store', [SettingController::class, 'store'])->name('setting.store');
+        Route::put('setting/update/{id}', [SettingController::class, 'update'])->name('setting.update');
+    });
 });
 
 Auth::routes();
