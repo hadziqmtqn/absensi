@@ -16,6 +16,8 @@
 <link rel="stylesheet" href="{{ asset('theme/template/vendors/select2/select2.min.css') }}">
 <link rel="stylesheet" href="{{ asset('theme/template/vendors/select2-bootstrap-theme/select2-bootstrap.min.css') }}">
 
+<link rel="stylesheet" href="https://cdn.datatables.net/scroller/2.0.7/css/scroller.bootstrap4.min.css">
+
 <style type="text/css">
     .error{
         color: #FF0000;

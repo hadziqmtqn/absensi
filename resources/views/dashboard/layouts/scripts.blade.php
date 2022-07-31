@@ -23,3 +23,5 @@
 <script src="{{ asset('theme/template/js/file-upload.js') }}"></script>
 <script src="{{ asset('theme/template/js/typeahead.js') }}"></script>
 <script src="{{ asset('theme/template/js/select2.js') }}"></script>
+
+<script src="https://cdn.datatables.net/scroller/2.0.7/js/dataTables.scroller.min.js"></script>

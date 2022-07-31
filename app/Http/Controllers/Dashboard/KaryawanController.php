@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Dashboard;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
+use Illuminate\Support\Carbon;
 
 use App\Models\User;
 use App\Models\Setting;
@@ -47,6 +48,14 @@ class KaryawanController extends Controller
                     }
                 })
 
+                ->addColumn('created_at', function ($row) {
+                    return $row->created_at ? with(new Carbon($row->created_at))->isoFormat('DD MMMM YYYY') : '';
+                })
+
+                ->addColumn('updated_at', function ($row) {
+                    return $row->updated_at ? with(new Carbon($row->updated_at))->isoFormat('DD MMMM YYYY') : '';
+                })
+
                 ->addColumn('action', function($row){
 					$btn = '<a href="profile/detail/'.$row->username.'" class="btn btn-primary">Detail</a>';
                     $btn = $btn.' <a href="profile/edit/'.$row->username.'" class="btn btn-warning">Edit</a>';
@@ -54,7 +63,23 @@ class KaryawanController extends Controller
                     return $btn;
                 })
 
-                ->rawColumns(['action'])
+                ->addColumn('status_verifikasi', function($row){
+                    if($row->is_verifikasi){
+                        return '<span class="badge badge-success">Sudah Diverifikasi</span>';
+                    }else{
+                        return '<span class="badge badge-warning">Belum Diverifikasi</span>';
+                    }
+                })
+
+                ->addColumn('photo', function($row){
+                    if($row->photo){
+                        return '<img src="'.asset($row->photo).'" style="width: 30px; border-radius: 50%;" alt="image">';
+                    }else{
+                        return '<img src="'.asset('theme/template/images/user.png').'" style="width: 30px; border-radius: 50%;" alt="image">';
+                    }
+                })
+
+                ->rawColumns(['action','status_verifikasi','photo'])
                 ->addIndexColumn()
                 ->make(true);
         }

@@ -11,25 +11,24 @@
                     @include('dashboard.layouts.session')
                     <div class="row">
                         <div class="col-12">
-                            <div class="table-responsive">
-                                    <table id="laravel_datatable" class="display expandable-table nowrap" style="width:100%">
-                                    <thead>
-                                        <tr>
-                                            <th>#</th>
-                                            <th>Aksi</th>
-                                            <th>Nama Lengkap</th>
-                                            <th>Nama Panggilan</th>
-                                            <th>NIK</th>
-                                            <th>No. HP</th>
-                                            <th>Email</th>
-                                            <th>Dari PT</th>
-                                            <th>Status</th>
-                                            <th>Dibuat pada</th>
-                                            <th>Diupdate pada</th>
-                                        </tr>
-                                    </thead>
-                                </table>
-                            </div>
+                            <table id="laravel_datatable" class="display expandable-table nowrap" style="width:100%">
+                                <thead>
+                                    <tr>
+                                        <th>#</th>
+                                        <th>Aksi</th>
+                                        <th>Photo</th>
+                                        <th>Nama Lengkap</th>
+                                        <th>Nama Panggilan</th>
+                                        <th>NIK</th>
+                                        <th>No. HP</th>
+                                        <th>Email</th>
+                                        <th>Dari PT</th>
+                                        <th>Status</th>
+                                        <th>Dibuat pada</th>
+                                        <th>Diupdate pada</th>
+                                    </tr>
+                                </thead>
+                            </table>
                         </div>
                     </div>
                 </div>
@@ -45,6 +44,9 @@
         var table = $('#laravel_datatable').DataTable({
             processing: true,
             serverSide: true,
+            bLengthChange: false,
+            scrollX: true,
+            scrollCollapse: true,
             dom: 'lBfrtip',
             buttons: [
                 'excel', 'csv', 'pdf', 'copy'
@@ -65,13 +67,14 @@
             columns: [
                 {data: 'DT_RowIndex', name: 'DT_RowIndex', orderable: false, searchable: false},
                 {data: 'action', name: 'action', orderable: false, searchable: false},
+                {data: 'photo', name: 'photo', orderable: false, searchable: false},
                 {data: 'namakaryawan', name: 'namakaryawan'},
                 {data: 'short_name', name: 'short_name'},
                 {data: 'nik', name: 'nik'},
                 {data: 'phone', name: 'phone'},
                 {data: 'email', name: 'email'},
                 {data: 'company_name', name: 'company_name'},
-                {data: 'is_verifikasi', name: 'is_verifikasi'},
+                {data: 'status_verifikasi', name: 'status_verifikasi'},
                 {data: 'created_at', name: 'created_at'},
                 {data: 'updated_at', name: 'updated_at'},
             ]
