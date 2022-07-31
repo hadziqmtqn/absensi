@@ -6,6 +6,7 @@ use App\Http\Controllers\Dashboard\DashboardController;
 use App\Http\Controllers\Dashboard\SettingController;
 use App\Http\Controllers\RegisterController;
 use App\Http\Controllers\Dashboard\ProfileController;
+use App\Http\Middleware\VerifikasiAkun;
 
 /*
 |--------------------------------------------------------------------------
@@ -31,7 +32,7 @@ Route::middleware(['guest'])->group(function () {
     Route::post('registration', [RegisterController::class, 'store'])->name('registration.store');
 });
 
-Route::middleware(['auth'])->group(function () {
+Route::middleware(['auth',VerifikasiAkun::class])->group(function () {
     Route::get('dashboard', [DashboardController::class, 'index'])->name('dashboard.index');
     Route::get('setting', [SettingController::class, 'index'])->name('setting.index');
     Route::post('setting/store', [SettingController::class, 'store'])->name('setting.store');
@@ -52,6 +53,10 @@ Route::middleware(['auth'])->group(function () {
         return view('dashboard.layouts.forbidden');
     })->name('forbidden');
 });
+
+Route::get('account_not_verified', function() {
+    return view('verifikasi');
+})->name('account_not_verified');
 
 Auth::routes();
 

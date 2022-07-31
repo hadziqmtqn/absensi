@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: localhost:3306
--- Generation Time: Jul 31, 2022 at 10:59 AM
+-- Generation Time: Jul 31, 2022 at 11:25 AM
 -- Server version: 10.3.34-MariaDB-0ubuntu0.20.04.1
 -- PHP Version: 7.4.3
 
@@ -61,7 +61,8 @@ INSERT INTO `migrations` (`id`, `migration`, `batch`) VALUES
 (4, '2019_12_14_000001_create_personal_access_tokens_table', 1),
 (5, '2022_07_29_220606_create_settings_table', 1),
 (6, '2022_07_30_064242_create_roles_table', 1),
-(7, '2022_07_30_064913_alter_role_users_table', 1);
+(7, '2022_07_30_064913_alter_role_users_table', 1),
+(8, '2022_07_31_110954_alter_is_verifikasi_table', 2);
 
 -- --------------------------------------------------------
 
@@ -157,6 +158,7 @@ CREATE TABLE `users` (
   `email_verified_at` timestamp NULL DEFAULT NULL,
   `password` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
   `remember_token` varchar(100) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `is_verifikasi` tinyint(1) DEFAULT 0,
   `created_at` timestamp NULL DEFAULT NULL,
   `updated_at` timestamp NULL DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
@@ -165,9 +167,9 @@ CREATE TABLE `users` (
 -- Dumping data for table `users`
 --
 
-INSERT INTO `users` (`id`, `role_id`, `name`, `username`, `short_name`, `nik`, `phone`, `company_name`, `photo`, `email`, `email_verified_at`, `password`, `remember_token`, `created_at`, `updated_at`) VALUES
-(1, 1, 'Admin App', '1489803641', 'admin', '7897894846543555', '082337724632', 'Bekenweb', 'assets/349221332-c5f6a4b7-d06e-4512-b239-0b7d4d31714e_11.jpg', 'aa@g.com', NULL, '$2y$10$TQOZZKi7FRYRw8X747a/KureOO93hXFCo/PVx5xW/u..lQ0A9mFlu', NULL, '2022-07-30 05:58:07', '2022-07-31 03:58:18'),
-(2, 2, 'Avgan', '1519537426', 'afgan', '4577897878878978', '08979878978', 'PT. Teknologi', NULL, 'afgan@g.com', NULL, '$2y$10$jES.6i4WBznNtmBYhw8nXurEo1chhnlk2vOB0GCgOiD3Lu62spnx6', NULL, '2022-07-30 08:45:49', '2022-07-30 08:45:49');
+INSERT INTO `users` (`id`, `role_id`, `name`, `username`, `short_name`, `nik`, `phone`, `company_name`, `photo`, `email`, `email_verified_at`, `password`, `remember_token`, `is_verifikasi`, `created_at`, `updated_at`) VALUES
+(1, 1, 'Admin App', '1489803641', 'admin', '7897894846543555', '082337724632', 'Bekenweb', 'assets/349221332-c5f6a4b7-d06e-4512-b239-0b7d4d31714e_11.jpg', 'aa@g.com', NULL, '$2y$10$TQOZZKi7FRYRw8X747a/KureOO93hXFCo/PVx5xW/u..lQ0A9mFlu', NULL, 1, '2022-07-30 05:58:07', '2022-07-31 03:58:18'),
+(2, 2, 'Avgan', '1519537426', 'afgan', '4577897878878978', '08979878978', 'PT. Teknologi', NULL, 'afgan@g.com', NULL, '$2y$10$jES.6i4WBznNtmBYhw8nXurEo1chhnlk2vOB0GCgOiD3Lu62spnx6', NULL, 1, '2022-07-30 08:45:49', '2022-07-30 08:45:49');
 
 --
 -- Indexes for dumped tables
@@ -234,7 +236,7 @@ ALTER TABLE `failed_jobs`
 -- AUTO_INCREMENT for table `migrations`
 --
 ALTER TABLE `migrations`
-  MODIFY `id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=8;
+  MODIFY `id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=9;
 
 --
 -- AUTO_INCREMENT for table `personal_access_tokens`
