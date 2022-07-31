@@ -37,7 +37,9 @@ class ProfileController extends Controller
             'confirm_password' => 'same:password'
 		]);
 
-        $data['role_id'] = $request->role_id;
+        if(\Auth::user()->role_id == 1){
+            $data['role_id'] = $request->role_id;
+        }
         $data['name'] = $request->name;
         $data['short_name'] = $request->short_name;
         $data['nik'] = $request->nik;

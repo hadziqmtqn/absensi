@@ -20,6 +20,6 @@ class Admin
         if (auth()->user()->role_id == 1) {
             return $next($request);
         }
-            return response()->json('Your account is inactive');
+            return redirect()->route('forbidden');
     }
 }

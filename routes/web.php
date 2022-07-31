@@ -18,9 +18,9 @@ use App\Http\Controllers\Dashboard\ProfileController;
 |
 */
 
-Route::get('pwd',function(){
-	dd(bcrypt('123'));
-});
+// Route::get('pwd',function(){
+// 	dd(bcrypt('123'));
+// });
 
 Route::get('/', function () {
     return view('welcome');
@@ -45,6 +45,10 @@ Route::middleware(['auth'])->group(function () {
         Route::post('setting/store', [SettingController::class, 'store'])->name('setting.store');
         Route::put('setting/update/{id}', [SettingController::class, 'update'])->name('setting.update');
     });
+
+    Route::get('forbidden', function() {
+        return view('dashboard.layouts.forbidden');
+    })->name('forbidden');
 });
 
 Auth::routes();

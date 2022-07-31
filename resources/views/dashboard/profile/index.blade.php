@@ -28,6 +28,7 @@
                     @csrf
                     {{ method_field('PUT') }}
                     <div id="profile">
+                        @if (\Auth::user()->role_id == 1)
                         <div class="form-group">
                             <label for="">Role</label>
                             <select name="role_id" class="form-control">
@@ -37,6 +38,7 @@
                                 @endforeach
                             </select>
                         </div>
+                        @endif
                         <div class="form-group">
                             <label for="">Nama Lengkap</label>
                             <input type="text" class="form-control" name="name" value="{{ $profile->name }}" placeholder="Nama Lengkap">
