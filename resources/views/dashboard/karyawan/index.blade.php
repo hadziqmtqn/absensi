@@ -4,6 +4,21 @@
 @endsection
 @section('content')
     <div class="row">
+        <div class="col-12 grid-margin stretch-card">
+            <div class="card">
+                <div class="card-body">
+                    <h4 class="card-title">Data Filter</h4>
+                    <div class="form-group">
+                        <label for="exampleSelectGender">Pilih Status Verifikasi</label>
+                        <select class="form-control filter" id="filter-verifikasi">
+                            <option value="">Pilih Semua</option>
+                            <option value="1">Sudah Diverifikasi</option>
+                            <option value="0">Belum Diverifikasi</option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+        </div>
         <div class="col-md-12 grid-margin stretch-card">
             <div class="card">
                 <div class="card-body">
