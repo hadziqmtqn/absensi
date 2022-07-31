@@ -60,6 +60,7 @@ Route::middleware(['auth',VerifikasiAkun::class])->group(function () {
         Route::put('setting/update/{id}', [SettingController::class, 'update'])->name('setting.update');
 
         Route::get('karyawan', [KaryawanController::class, 'index'])->name('karyawan.index');
+        Route::post('getjsonkaryawan', [KaryawanController::class, 'getJsonKaryawan'])->name('getjsonkaryawan');
     });
 
     Route::get('forbidden', function() {
