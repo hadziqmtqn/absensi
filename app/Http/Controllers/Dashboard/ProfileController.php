@@ -33,8 +33,6 @@ class ProfileController extends Controller
             'company_name',
             'photo' => 'file|mimes:jpg,jpeg,png,svg|max:1024',
             'email' => 'email|required',
-            'password',
-            'confirm_password' => 'same:password'
 		]);
 
         if(\Auth::user()->role_id == 1){
@@ -46,7 +44,6 @@ class ProfileController extends Controller
 		$data['phone'] = $request->phone;
 		$data['company_name'] = $request->company_name;
 		$data['email'] = $request->email;
-        $data['password'] = bcrypt($request->password);
 		// $data['created_at'] = date('Y-m-d H:i:s');
 		$data['updated_at'] = date('Y-m-d H:i:s');
 
@@ -60,4 +57,36 @@ class ProfileController extends Controller
 		User::where('id',$id)->update($data);
 		return redirect()->back()->with('success','Profile berhasil diupdate');
 	}
+
+    public function update_password()
+    {
+        $idUser = \Auth::user()->id;
+        $title = 'Update Password';
+        $appName = Setting::first();
+        $profile = User::where('id',$idUser)->first();
+        $listRole = Role::get();
+
+        return view('dashboard.profile.update_password', compact('title','appName','profile','listRole'));
+    }
+
+    public function password(Request $request,$id)
+    {
+
+        try {
+            $password = $request->password;
+            $confirm_password = $request->confirm_password;
+
+            if($password != $confirm_password){
+                \Session::flash('error','Password harus sama');
+            }else{
+                User::where('id',$id)->update([
+                    'password'=>bcrypt($password)
+                ]);
+                \Session::flash('success','Password berhasil diubah');
+            }
+        } catch (\Exception $e) {
+            \Session::flash('error',$e->getMessage());
+        }
+        return redirect()->back();
+    }
 }

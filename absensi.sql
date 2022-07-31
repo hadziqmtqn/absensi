@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: localhost:3306
--- Generation Time: Jul 30, 2022 at 06:12 PM
+-- Generation Time: Jul 31, 2022 at 10:59 AM
 -- Server version: 10.3.34-MariaDB-0ubuntu0.20.04.1
 -- PHP Version: 7.4.3
 
@@ -166,7 +166,7 @@ CREATE TABLE `users` (
 --
 
 INSERT INTO `users` (`id`, `role_id`, `name`, `username`, `short_name`, `nik`, `phone`, `company_name`, `photo`, `email`, `email_verified_at`, `password`, `remember_token`, `created_at`, `updated_at`) VALUES
-(1, NULL, 'Admin App', '1489803641', 'admin', '7897894846543555', '082337724632', 'Bekenweb', 'assets/349221332-c5f6a4b7-d06e-4512-b239-0b7d4d31714e_11.jpg', 'aa@g.com', NULL, '$2y$10$3x6WHQhrlmR0/ljcGzu6cuAFUE8rsJf0FTzxOZO4U21KBtZvga/7W', NULL, '2022-07-30 05:58:07', '2022-07-30 11:11:26'),
+(1, 1, 'Admin App', '1489803641', 'admin', '7897894846543555', '082337724632', 'Bekenweb', 'assets/349221332-c5f6a4b7-d06e-4512-b239-0b7d4d31714e_11.jpg', 'aa@g.com', NULL, '$2y$10$TQOZZKi7FRYRw8X747a/KureOO93hXFCo/PVx5xW/u..lQ0A9mFlu', NULL, '2022-07-30 05:58:07', '2022-07-31 03:58:18'),
 (2, 2, 'Avgan', '1519537426', 'afgan', '4577897878878978', '08979878978', 'PT. Teknologi', NULL, 'afgan@g.com', NULL, '$2y$10$jES.6i4WBznNtmBYhw8nXurEo1chhnlk2vOB0GCgOiD3Lu62spnx6', NULL, '2022-07-30 08:45:49', '2022-07-30 08:45:49');
 
 --

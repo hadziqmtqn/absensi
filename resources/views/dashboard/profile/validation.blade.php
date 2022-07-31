@@ -22,9 +22,11 @@
                     required: true,
                 },
                 password: {
+                    required: true,
                     minlength: 8,
                 },
                 confirm_password: {
+                    required: true,
                     minlength: 8,
                 }
             },

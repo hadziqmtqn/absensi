@@ -39,6 +39,8 @@ Route::middleware(['auth'])->group(function () {
     // profile
     Route::get('profile', [ProfileController::class, 'index'])->name('profile.index');
     Route::put('profile/update/{id}', [ProfileController::class, 'update'])->name('profile.update');
+    Route::get('profile/update_password', [ProfileController::class, 'update_password'])->name('profile.update_password');
+    Route::put('profile/password/{id}', [ProfileController::class, 'password'])->name('profile.password');
 
     Route::middleware([Admin::class])->group(function(){
         Route::get('setting', [SettingController::class, 'index'])->name('setting.index');

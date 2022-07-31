@@ -73,14 +73,6 @@
                                 </span>
                             </div>
                         </div>
-                        <div class="form-group">
-                            <label for="">Password <span style="font-style: italic; color: red">(Kosongi jika tidak diubah)</span></label>
-                            <input type="password" class="form-control" name="password" placeholder="Password">
-                        </div>
-                        <div class="form-group">
-                            <label for="">Ulangi Password <span style="font-style: italic; color: red">(Kosongi jika tidak diubah)</span></label>
-                            <input type="password" class="form-control" name="confirm_password" placeholder="Password">
-                        </div>
                         <button type="submit" class="btn btn-primary mr-2">Submit</button>
                     </div>
                 </form>
