@@ -7,7 +7,7 @@
     </li>
 
     @if (\auth::user()->role_id == 1)
-    <li class="nav-item">
+    <li class="nav-item {{ $title == 'Detail Karyawan' ? 'active' : '' }}">
         <a class="nav-link" href="{{ route('karyawan.index') }}">
             <i class="mdi mdi-account-multiple menu-icon"></i>
             <span class="menu-title">Data Karyawan</span>

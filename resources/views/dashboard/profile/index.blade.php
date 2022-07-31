@@ -12,7 +12,7 @@
                     <div class="d-flex">
                         <div class="ml-2">
                             <h4 class="location font-weight-bold">{{ $profile->name }}</h4>
-                            <h6 class="font-weight-normal">{{ $profile->company_name }}</h6>
+                            <h6 class="font-weight-normal">{{ !is_null($profile->karyawan_r) ? $profile->karyawan_r->company_name : null }}</h6>
                         </div>
                     </div>
                 </div>

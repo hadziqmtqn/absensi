@@ -45,9 +45,6 @@ Route::middleware(['guest'])->group(function () {
 
 Route::middleware(['auth',VerifikasiAkun::class])->group(function () {
     Route::get('dashboard', [DashboardController::class, 'index'])->name('dashboard.index');
-    Route::get('setting', [SettingController::class, 'index'])->name('setting.index');
-    Route::post('setting/store', [SettingController::class, 'store'])->name('setting.store');
-    Route::put('setting/update/{id}', [SettingController::class, 'update'])->name('setting.update');
     // profile
     Route::get('profile', [ProfileController::class, 'index'])->name('profile.index');
     Route::put('profile/update/{id}', [ProfileController::class, 'update'])->name('profile.update');
@@ -61,6 +58,8 @@ Route::middleware(['auth',VerifikasiAkun::class])->group(function () {
 
         Route::get('karyawan', [KaryawanController::class, 'index'])->name('karyawan.index');
         Route::post('getjsonkaryawan', [KaryawanController::class, 'getJsonKaryawan'])->name('getjsonkaryawan');
+        Route::get('karyawan/{username}', [KaryawanController::class, 'detail'])->name('karyawan');
+        Route::put('karyawan/update/{id}', [KaryawanController::class, 'update'])->name('karyawan.update');
     });
 
     Route::get('forbidden', function() {

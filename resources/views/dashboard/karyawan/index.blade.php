@@ -67,7 +67,7 @@
                 'excel', 'csv', 'pdf', 'copy'
             ],
             lengthMenu: [ [10, 25, 50, -1], [10, 25, 50, "All"] ],
-            order: [[2,'asc']],
+            order: [[3,'asc']],
             ajax: {
                 url: "{{ route('getjsonkaryawan') }}",
                 type: "POST",

@@ -9,6 +9,7 @@ use Illuminate\Support\Carbon;
 use App\Models\User;
 use App\Models\Setting;
 use App\Models\Karyawan;
+use App\Models\Role;
 
 use DataTables;
 
@@ -57,9 +58,8 @@ class KaryawanController extends Controller
                 })
 
                 ->addColumn('action', function($row){
-					$btn = '<a href="profile/detail/'.$row->username.'" class="btn btn-primary">Detail</a>';
-                    $btn = $btn.' <a href="profile/edit/'.$row->username.'" class="btn btn-warning">Edit</a>';
-                    $btn = $btn.' <button type="button" href="profile/hapus/'.$row->id.'" class="btn btn-danger btn-hapus">Delete</button>';
+					$btn = '<a href="karyawan/'.$row->username.'" class="btn btn-primary">Detail</a>';
+                    $btn = $btn.' <button type="button" href="karyawan/hapus/'.$row->id.'" class="btn btn-danger btn-hapus">Delete</button>';
                     return $btn;
                 })
 
@@ -86,4 +86,56 @@ class KaryawanController extends Controller
 
         return response()->json(true);
     }
+
+    public function detail($username)
+    {
+        $title = 'Detail Karyawan';
+        $appName = Setting::first();
+        $profile = User::where('username',$username)->first();
+        $listRole = Role::get();
+
+        return view('dashboard.karyawan.edit', compact('title','appName','profile','listRole'));
+    }
+
+    public function update(Request $request, $id)
+	{
+		$request->validate([
+            'role_id',
+			'name' => 'required',
+            'short_name',
+            'nik',
+            'phone',
+            'company_name',
+            'photo' => 'file|mimes:jpg,jpeg,png,svg|max:1024',
+            'email' => 'email|required',
+		]);
+
+        if(\Auth::user()->role_id == 1){
+            $data['role_id'] = $request->role_id;
+        }
+        $data['name'] = $request->name;
+		$data['email'] = $request->email;
+		// $data['created_at'] = date('Y-m-d H:i:s');
+		$data['updated_at'] = date('Y-m-d H:i:s');
+
+        $karyawan['short_name'] = $request->short_name;
+        $karyawan['nik'] = $request->nik;
+        $karyawan['phone'] = $request->phone;
+        $karyawan['company_name'] = $request->company_name;
+        // $karyawan['created_at'] = date('Y-m-d H:i:s');
+        $karyawan['updated_at'] = date('Y-m-d H:i:s');
+
+        $file = $request->file('photo');
+        if($file){
+            $nama_file = rand().'-'. $file->getClientOriginalName();
+            $file->move('assets',$nama_file);
+            $data['photo'] = 'assets/' .$nama_file;
+        }
+
+		\DB::transaction(function () use ($data, $karyawan, $id) {
+            User::where('id', $id)->update($data);
+            Karyawan::where('user_id', $id)->update($karyawan);
+        });
+		return redirect()->back()->with('success','Profile berhasil diupdate');
+	}
 }
