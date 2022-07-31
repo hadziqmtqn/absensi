@@ -8,6 +8,7 @@ use Illuminate\Http\Request;
 use App\Models\User;
 use App\Models\Setting;
 use App\Models\Role;
+use App\Models\Karyawan;
 
 class ProfileController extends Controller
 {
@@ -16,7 +17,7 @@ class ProfileController extends Controller
         $idUser = \Auth::user()->id;
         $title = 'Profile Setting';
         $appName = Setting::first();
-        $profile = User::where('id',$idUser)->first();
+        $profile = User::with('karyawan_r')->where('id',$idUser)->first();
         $listRole = Role::get();
 
         return view('dashboard.profile.index', compact('title','appName','profile','listRole'));
@@ -39,13 +40,16 @@ class ProfileController extends Controller
             $data['role_id'] = $request->role_id;
         }
         $data['name'] = $request->name;
-        $data['short_name'] = $request->short_name;
-        $data['nik'] = $request->nik;
-		$data['phone'] = $request->phone;
-		$data['company_name'] = $request->company_name;
 		$data['email'] = $request->email;
 		// $data['created_at'] = date('Y-m-d H:i:s');
 		$data['updated_at'] = date('Y-m-d H:i:s');
+
+        $karyawan['short_name'] = $request->short_name;
+        $karyawan['nik'] = $request->nik;
+        $karyawan['phone'] = $request->phone;
+        $karyawan['company_name'] = $request->company_name;
+        // $karyawan['created_at'] = date('Y-m-d H:i:s');
+        $karyawan['updated_at'] = date('Y-m-d H:i:s');
 
         $file = $request->file('photo');
         if($file){
@@ -54,7 +58,10 @@ class ProfileController extends Controller
             $data['photo'] = 'assets/' .$nama_file;
         }
 
-		User::where('id',$id)->update($data);
+		\DB::transaction(function () use ($data, $karyawan, $id) {
+            User::where('id', $id)->update($data);
+            Karyawan::where('user_id', $id)->update($karyawan);
+        });
 		return redirect()->back()->with('success','Profile berhasil diupdate');
 	}
 

@@ -6,6 +6,9 @@ use App\Http\Controllers\Controller;
 use App\Providers\RouteServiceProvider;
 use Illuminate\Foundation\Auth\AuthenticatesUsers;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
+use Session;
+use Hash;
 
 class LoginController extends Controller
 {
@@ -54,6 +57,13 @@ class LoginController extends Controller
         ];
 
         if (auth()->attempt($login)) {
+            if (auth()->user()->is_verifikasi == 1) {
+                return redirect('dashboard');
+            }else{
+                Auth::logout();
+
+                return redirect()->route('login')->with('error','Mohon Maaf, akun Anda belum diverifikasi');
+            }
             return redirect()->intended('home');
         }
         return redirect()->back()->with(['error' => 'No. HP/Email/Kata Sandi salah!']);

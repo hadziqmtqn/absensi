@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 
 use App\Models\User;
+use App\Models\Karyawan;
 use App\Models\Setting;
 
 class RegisterController extends Controller
@@ -22,7 +23,7 @@ class RegisterController extends Controller
             'name' => 'required|min:5',
             'short_name' => 'required',
             'nik',
-            'phone' => 'required|unique:users',
+            'phone' => 'required|unique:karyawans',
             'company_name',
             'email' => 'email|unique:users',
             'password' => 'required|min:6',
@@ -32,16 +33,24 @@ class RegisterController extends Controller
         $data['role_id'] = 2;
         $data['name'] = $request->name;
         $data['username'] = rand();
-        $data['short_name'] = $request->short_name;
-        $data['nik'] = $request->nik;
-        $data['phone'] = $request->phone;
-        $data['company_name'] = $request->company_name;
         $data['email'] = $request->email;
         $data['password'] = bcrypt($request->password);
         $data['created_at'] = date('Y-m-d H:i:s');
         $data['updated_at'] = date('Y-m-d H:i:s');
+        
+        $karyawan['short_name'] = $request->short_name;
+        $karyawan['nik'] = $request->nik;
+        $karyawan['phone'] = $request->phone;
+        $karyawan['company_name'] = $request->company_name;
+        $karyawan['created_at'] = date('Y-m-d H:i:s');
+        $karyawan['updated_at'] = date('Y-m-d H:i:s');
 
-        User::insert($data);
+        \DB::transaction(function () use ($data, $karyawan) {
+            $id_user = User::insertGetId($data);
+
+            $karyawan['user_id'] = $id_user;
+            Karyawan::insert($karyawan);
+        });
 
         return redirect('login')->with(['success' => 'Sukses! Silahkan Login menggunakan Nomor HP/Email dan Kata Sandi']);
     }

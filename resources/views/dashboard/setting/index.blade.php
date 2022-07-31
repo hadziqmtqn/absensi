@@ -34,7 +34,7 @@
                                 <div class="form-group row">
                                     <label class="col-sm-3 col-form-label">Logo</label>
                                     <div class="col-sm-9">
-                                        <input type="file" name="logo" accept=".jpg,.jpeg,.png" class="file-upload-default">
+                                        <input type="file" name="logo" accept=".jpg,.jpeg,.png,.svg" class="file-upload-default">
                                         <div class="input-group col-xs-12">
                                             <input type="text" class="form-control file-upload-info" disabled="" placeholder="Upload Logo">
                                             <span class="input-group-append">

@@ -24,6 +24,16 @@ use App\Http\Controllers\Dashboard\KaryawanController;
 // 	dd(bcrypt('123'));
 // });
 
+// Route::get('create-admin',function(){
+// 	\DB::table('users')->insert([
+// 		'role_id' => 1,
+// 		'name' => 'Admin',
+// 		'email' => 'aa@g.com',
+// 		'password' => bcrypt('12345678'),
+// 		'is_verifikasi' => 1,
+// 	]);
+// });
+
 Route::get('/', function () {
     return view('welcome');
 });
