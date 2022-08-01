@@ -7,6 +7,22 @@
     <div class="col-md-12 grid-margin stretch-card">
         <div class="card">
             <div class="card-body">
+                <h4 class="card-title">Pilih Karyawan</h4>
+                <div class="form-group">
+                    <select class="form-control" onchange="location = this.value;">
+                        @foreach ($listKaryawan as $karya)
+                        <option value="{{ route('karyawan',$karya->username.'/katasandi') }}" {{ ($karyawan->id == $karya->id) ? 'selected' : '' }}>{{ $karya->name }}</option>
+                        @endforeach
+                    </select>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="row">
+    <div class="col-md-12 grid-margin stretch-card">
+        <div class="card">
+            <div class="card-body">
                 <h4 class="card-title">{{ $title }}</h4>
                 @include('dashboard.layouts.session')
                 <form class="forms-sample" method="POST" action="{{ route('karyawan.password',$karyawan->id) }}" enctype="multipart/form-data" id="password">

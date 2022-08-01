@@ -7,9 +7,32 @@
     <div class="col-md-12 grid-margin stretch-card">
         <div class="card">
             <div class="card-body">
+                <h4 class="card-title">Pilih Karyawan</h4>
+                <div class="form-group">
+                    <select class="form-control" onchange="location = this.value;">
+                        @foreach ($listKaryawan as $karyawan)
+                        <option value="{{ route('karyawan',$karyawan->username) }}" {{ ($profile->id == $karyawan->id) ? 'selected' : '' }}>{{ $karyawan->name }}</option>
+                        @endforeach
+                    </select>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="row">
+    <div class="col-md-12 grid-margin stretch-card">
+        <div class="card">
+            <div class="card-body">
                 <h4 class="card-title">{{ $title }} | {{ $profile->name }}</h4>
                 <div class="text-center">
                     <img src="@if(empty($profile->photo)) {{ asset('theme/template/images/user.png') }} @else {{ asset($profile->photo) }} @endif" style="width: 150px; height: 150px; object-fit: cover; border-radius: 50%" alt="people">
+                    <p class="mt-3">
+                        @if ($profile->is_verifikasi == 1)
+                            <button type="button" class="btn btn-success btn-sm" data-toggle="modal" data-target="#verifikasi">Sudah diverifikasi</button>
+                        @else
+                            <button type="button" class="btn btn-danger btn-sm" data-toggle="modal" data-target="#verifikasi">Belum diverifikasi</button>
+                        @endif
+                    </p>
                 </div>
             </div>
             <div class="card-body">
@@ -94,5 +117,31 @@
 @endsection
 
 @section('scripts')
+    <!-- Modal -->
+    <div class="modal fade" id="verifikasi" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="exampleModalLabel">Cek Verifikasi</h5>
+                </div>
+                <div class="modal-body">
+                @if ($profile->is_verifikasi == 1)
+                    <h4>Apakah Anda yakin akan membatalkan verifikasi <span style="font-weight: bold">{{ $profile->name }}</span>?</h4>
+                @else
+                    <h4>Apakah Anda yakin akan memverifikasi <span tstyle="font-weight: bold">{{ $profile->name }}</span>?</h4>
+                @endif
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-inverse-secondary btn-fw" data-dismiss="modal">Batal</button>
+                    @if ($profile->is_verifikasi == 1)
+                        <a href="{{ route('karyawan',$profile->id.'/undo_verifikasi') }}" class="btn btn-success">OK. Yakin</a>
+                    @else
+                        <a href="{{ route('karyawan',$profile->id.'/verifikasi') }}" class="btn btn-danger">OK. Yakin</a>
+                    @endif
+                </div>
+            </div>
+        </div>
+    </div>
+    {{-- akhir modal --}}
     @include('dashboard.profile.validation')
 @endsection

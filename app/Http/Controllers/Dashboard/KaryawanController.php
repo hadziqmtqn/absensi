@@ -93,8 +93,9 @@ class KaryawanController extends Controller
         $appName = Setting::first();
         $profile = User::where('username',$username)->first();
         $listRole = Role::get();
+        $listKaryawan = User::where('role_id',2)->get();
 
-        return view('dashboard.karyawan.detail', compact('title','appName','profile','listRole'));
+        return view('dashboard.karyawan.detail', compact('title','appName','profile','listRole','listKaryawan'));
     }
 
     public function update(Request $request, $id)
@@ -145,8 +146,9 @@ class KaryawanController extends Controller
         $appName = Setting::first();
         $karyawan = User::where('username',$username)->first();
         $listRole = Role::get();
+        $listKaryawan = User::where('role_id',2)->get();
 
-        return view('dashboard.karyawan.update_password', compact('title','appName','karyawan','listRole'));
+        return view('dashboard.karyawan.update_password', compact('title','appName','karyawan','listRole','listKaryawan'));
     }
 
     public function password(Request $request,$id)
@@ -167,6 +169,34 @@ class KaryawanController extends Controller
         } catch (\Exception $e) {
             \Session::flash('error',$e->getMessage());
         }
+        return redirect()->back();
+    }
+
+    public function verifikasi($id){
+        try {
+            User::where('id',$id)->update([
+                'is_verifikasi' => 1
+            ]);
+
+            \Session::flash('success','Karyawan ini berhasil diverifikasi');
+        } catch (\Exception $e) {
+            \Session::flash('error',$e->getMessage());
+        }
+
+        return redirect()->back();
+    }
+
+    public function undo_verifikasi($id){
+        try {
+            User::where('id',$id)->update([
+                'is_verifikasi' => 0
+            ]);
+
+            \Session::flash('success','Karyawan ini berhasil kembali belum diverifikasi');
+        } catch (\Exception $e) {
+            \Session::flash('error',$e->getMessage());
+        }
+
         return redirect()->back();
     }
 }
