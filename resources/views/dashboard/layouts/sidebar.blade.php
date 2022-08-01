@@ -5,6 +5,12 @@
             <span class="menu-title">Dashboard</span>
         </a>
     </li>
+    <li class="nav-item">
+        <a class="nav-link" href="{{ route('absensi.index') }}">
+            <i class="mdi mdi-calendar-clock menu-icon"></i>
+            <span class="menu-title">Absensi</span>
+        </a>
+    </li>
 
     @if (\auth::user()->role_id == 1)
     <li class="nav-item {{ ($title == 'Detail Karyawan' OR $title == 'Update Password Karyawan') ? 'active' : '' }}">

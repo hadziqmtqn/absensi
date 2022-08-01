@@ -16,9 +16,10 @@ class AbsensiController extends Controller
     {
         $title = 'Absensi';
         $appName = Setting::first();
-        $cekDateNow = Carbon::now()->format('Y-m-d');
+        // $cekDateNow = Carbon::now()->format('Y-m-d');
+        $cekDateNow = Carbon::now()->format('H:i:s');
         // dd($cekDateNow);
-        $cekAbsensi = Absensi::where('user_id',\Auth::user()->id)->whereDate('waktu_absen','=', $cekDateNow)->count();
+        $cekAbsensi = Absensi::where('user_id',\Auth::user()->id)->whereTime('waktu_absen','=', '13:26:20')->count();
         // dd($cekAbsensi);
 
         return view('dashboard.absensi.index', compact('title','appName','cekAbsensi'));
