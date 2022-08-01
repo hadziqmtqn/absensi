@@ -20,11 +20,11 @@ class AbsensiController extends Controller
         $waktuAbsensi = Setting::select('awal_absensi','akhir_absensi')->first();
         $awalAbsensi = $waktuAbsensi->awal_absensi;
         $akhirAbsensi = $waktuAbsensi->akhir_absensi;
+        $jamSekarang = Carbon::now()->format('H:i:s');
 
         $cekAbsensi = Absensi::where('user_id',\Auth::user()->id)->whereBetween(DB::raw('TIME(waktu_absen)'), array($awalAbsensi, $akhirAbsensi))->count();
-        // dd($cekAbsensi);
 
-        return view('dashboard.absensi.index', compact('title','appName','cekAbsensi','awalAbsensi','akhirAbsensi'));
+        return view('dashboard.absensi.index', compact('title','appName','cekAbsensi','awalAbsensi','akhirAbsensi','jamSekarang'));
     }
 
     public function store(){
