@@ -48,7 +48,7 @@ class AbsensiController extends Controller
                 'updated_at' => date('Y-m-d H:i:s'),
             ]);
 
-            Alert::success('Success','Terima kasih, sudah mengisi absensi hari ini');
+            Alert::success('Sukses','Terima kasih, sudah mengisi absensi hari ini');
         } catch (\Exception $e) {
             Alert::error('Error',$e->getMessage());
         }
@@ -78,8 +78,7 @@ class AbsensiController extends Controller
                 })
 
                 ->addColumn('action', function($row){
-					$btn = '<a href="absensi/'.$row->id.'" class="btn btn-primary">Detail</a>';
-                    $btn = $btn.' <button type="button" href="absensi/hapus/'.$row->id.'" class="btn btn-danger btn-hapus">Delete</button>';
+					$btn = '<button type="button" href="absensi/hapus/'.$row->id.'" class="btn btn-danger btn-hapus">Delete</button>';
                     return $btn;
                 })
 
@@ -89,5 +88,16 @@ class AbsensiController extends Controller
         }
 
         return response()->json(true);
+    }
+
+    public function delete($id){
+        try {
+            Absensi::where('id',$id)->delete();
+
+            Alert::success('Sukses','Data Absensi berhasil dihapus');
+        } catch (\Exception $e) {
+            Alert::error('Error',$e->getMessage());
+        }
+        return redirect()->back();
     }
 }
