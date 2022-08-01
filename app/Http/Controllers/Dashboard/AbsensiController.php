@@ -9,6 +9,7 @@ use App\Models\Absensi;
 use App\Models\Setting;
 
 use Carbon\Carbon;
+use DB;
 
 class AbsensiController extends Controller
 {
@@ -16,13 +17,14 @@ class AbsensiController extends Controller
     {
         $title = 'Absensi';
         $appName = Setting::first();
-        // $cekDateNow = Carbon::now()->format('Y-m-d');
-        $cekDateNow = Carbon::now()->format('H:i:s');
-        // dd($cekDateNow);
-        $cekAbsensi = Absensi::where('user_id',\Auth::user()->id)->whereTime('waktu_absen','=', '13:26:20')->count();
+        $waktuAbsensi = Setting::select('awal_absensi','akhir_absensi')->first();
+        $awalAbsensi = $waktuAbsensi->awal_absensi;
+        $akhirAbsensi = $waktuAbsensi->akhir_absensi;
+
+        $cekAbsensi = Absensi::where('user_id',\Auth::user()->id)->whereBetween(DB::raw('TIME(waktu_absen)'), array($awalAbsensi, $akhirAbsensi))->count();
         // dd($cekAbsensi);
 
-        return view('dashboard.absensi.index', compact('title','appName','cekAbsensi'));
+        return view('dashboard.absensi.index', compact('title','appName','cekAbsensi','awalAbsensi','akhirAbsensi'));
     }
 
     public function store(){
