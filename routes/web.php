@@ -54,6 +54,7 @@ Route::middleware(['auth',VerifikasiAkun::class])->group(function () {
     // absensi
     Route::get('absensi', [AbsensiController::class, 'index'])->name('absensi.index');
     Route::get('absensi/store', [AbsensiController::class, 'store'])->name('absensi.store');
+    Route::post('getjsonabsensi', [AbsensiController::class, 'getJsonAbsensi'])->name('getjsonabsensi');
 
     Route::middleware([Admin::class])->group(function(){
         Route::get('setting', [SettingController::class, 'index'])->name('setting.index');

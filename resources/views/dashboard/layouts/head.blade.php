@@ -18,6 +18,8 @@
 
 <link rel="stylesheet" href="https://cdn.datatables.net/scroller/2.0.7/css/scroller.bootstrap4.min.css">
 
+<link rel="stylesheet" href="https://cdn.datatables.net/buttons/2.2.3/css/buttons.bootstrap4.min.css">
+
 <style type="text/css">
     .error{
         color: #FF0000;

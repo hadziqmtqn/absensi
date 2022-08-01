@@ -11,22 +11,30 @@ use App\Models\Setting;
 
 use Carbon\Carbon;
 use DB;
+use DataTables;
 
 class AbsensiController extends Controller
 {
     public function index()
     {
-        $title = 'Absensi';
-        $appName = Setting::first();
-        $waktuAbsensi = Setting::select('awal_absensi','akhir_absensi')->first();
-        $awalAbsensi = $waktuAbsensi->awal_absensi;
-        $akhirAbsensi = $waktuAbsensi->akhir_absensi;
-        $jamSekarang = Carbon::now()->format('H:i:s');
-        $hariIni = Carbon::now();
-        
-        $cekAbsensi = Absensi::where('user_id',\Auth::user()->id)->whereDate('created_at',$hariIni)->whereBetween(DB::raw('TIME(waktu_absen)'), array($awalAbsensi, $akhirAbsensi))->count();
+        if (\Auth::user()->role_id == 1) {
+            $title = 'Absensi';
+            $appName = Setting::first();
+            
+            return view('dashboard.absensi.index', compact('title','appName'));
+        } else {
+            $title = 'Absensi';
+            $appName = Setting::first();
+            $waktuAbsensi = Setting::select('awal_absensi','akhir_absensi')->first();
+            $awalAbsensi = $waktuAbsensi->awal_absensi;
+            $akhirAbsensi = $waktuAbsensi->akhir_absensi;
+            $jamSekarang = Carbon::now()->format('H:i:s');
+            $hariIni = Carbon::now();
+            
+            $cekAbsensi = Absensi::where('user_id',\Auth::user()->id)->whereDate('created_at',$hariIni)->whereBetween(DB::raw('TIME(waktu_absen)'), array($awalAbsensi, $akhirAbsensi))->count();
 
-        return view('dashboard.absensi.index', compact('title','appName','cekAbsensi','awalAbsensi','akhirAbsensi','jamSekarang','hariIni'));
+            return view('dashboard.absensi.karyawan', compact('title','appName','cekAbsensi','awalAbsensi','akhirAbsensi','jamSekarang','hariIni'));
+        }
     }
 
     public function store(){
@@ -46,5 +54,40 @@ class AbsensiController extends Controller
         }
 
         return redirect()->back();
+    }
+
+    public function getJsonAbsensi(Request $request)
+    {
+        if ($request->ajax()) {
+			$data = Absensi::select('absensis.*','users.name as namakaryawan')
+			->join('users','absensis.user_id','=','users.id');
+            
+            return Datatables::of($data)
+                ->addIndexColumn()
+                ->filter(function ($instance) use ($request) {
+                    if (!empty($request->get('search'))) {
+                            $instance->where(function($w) use($request){
+                            $search = $request->get('search');
+                            $w->orWhere('users.name', 'LIKE', "%$search%");
+                        });
+                    }
+                })
+
+                ->addColumn('created_at', function ($row) {
+                    return $row->created_at ? with(new Carbon($row->created_at))->isoFormat('LLLL') : '';
+                })
+
+                ->addColumn('action', function($row){
+					$btn = '<a href="absensi/'.$row->id.'" class="btn btn-primary">Detail</a>';
+                    $btn = $btn.' <button type="button" href="absensi/hapus/'.$row->id.'" class="btn btn-danger btn-hapus">Delete</button>';
+                    return $btn;
+                })
+
+                ->rawColumns(['action'])
+                ->addIndexColumn()
+                ->make(true);
+        }
+
+        return response()->json(true);
     }
 }

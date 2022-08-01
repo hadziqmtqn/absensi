@@ -59,13 +59,8 @@
         var table = $('#laravel_datatable').DataTable({
             processing: true,
             serverSide: true,
-            bLengthChange: false,
             scrollX: true,
             scrollCollapse: true,
-            dom: 'lBfrtip',
-            buttons: [
-                'excel', 'csv', 'pdf', 'copy'
-            ],
             lengthMenu: [ [10, 25, 50, -1], [10, 25, 50, "All"] ],
             order: [[3,'asc']],
             ajax: {

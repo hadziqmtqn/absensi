@@ -8,26 +8,16 @@
             <div class="card">
                 <div class="card-body">
                     <h4 class="card-title">{{ $title }}</h4>
-                    @include('dashboard.layouts.session')
-                    @if ($jamSekarang > $awalAbsensi && $jamSekarang < $akhirAbsensi && $cekAbsensi < 1)
-                    <div class="text-center">
-                        <a href="{{ route('absensi.store') }}" class="btn btn-inverse-primary btn-rounded" style="padding: 30px; border-radius: 50%">
-                            <i class="ti-power-off" style="font-size: 70pt"></i>
-                        </a>
-                    </div>
-                    @elseif($jamSekarang > $awalAbsensi && $jamSekarang < $akhirAbsensi && $cekAbsensi > 0)
-                    <div class="text-center">
-                        <button class="btn btn-inverse-danger btn-rounded" onclick="absensi()" style="padding: 30px; border-radius: 50%">
-                            <i class="ti-power-off" style="font-size: 70pt"></i>
-                        </button>
-                    </div>
-                    @else
-                    <div class="text-center">
-                        <button class="btn btn-inverse-danger btn-rounded" onclick="absensiout()" style="padding: 30px; border-radius: 50%">
-                            <i class="ti-power-off" style="font-size: 70pt"></i>
-                        </button>
-                    </div>
-                    @endif
+                    <table id="laravel_datatable" class="display expandable-table nowrap" style="width:100%">
+                        <thead>
+                            <tr>
+                                <th>#</th>
+                                <th>Aksi</th>
+                                <th>Nama Lengkap</th>
+                                <th>Absen Pada</th>
+                            </tr>
+                        </thead>
+                    </table>
                 </div>
             </div>
         </div>
@@ -35,14 +25,38 @@
 @endsection
 
 @section('scripts')
-<script>
-    function absensi(){
-        swal("Opps!", "Anda sudah mengisi absensi hari ini!", "warning");
-    }
+
+<script type="text/javascript">
+    $(function () {
+    var table = $('#laravel_datatable').DataTable({
+        processing: true,
+        serverSide: true,
+        scrollX: true,
+        scrollCollapse: true,
+        lengthMenu: [ [10, 25, 50, -1], [10, 25, 50, "All"] ],
+        // order: [[3,'asc']],
+        ajax: {
+            url: "{{ route('getjsonabsensi') }}",
+            type: "POST",
+            headers: {
+                'X-CSRF-TOKEN': '{{ csrf_token() }}',
+            },
+            data: function (d) {
+                d.search = $('input[type="search"]').val()
+            }
+        },
+        columns: [
+            {data: 'DT_RowIndex', name: 'DT_RowIndex', orderable: false, searchable: false},
+            {data: 'action', name: 'action', orderable: false, searchable: false},
+            {data: 'namakaryawan', name: 'namakaryawan'},
+            {data: 'created_at', name: 'created_at'},
+        ]
+    });
+
+    $(".filter").on('change',function(){
+        table.ajax.reload(null,false)
+    });
+});
 </script>
-<script>
-    function absensiout(){
-        swal("Opps!", "Sekarang bukan waktu absensi!", "warning");
-    }
-</script>
+
 @endsection
