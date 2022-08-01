@@ -43,6 +43,7 @@
                             <label for="">Nama Lengkap</label>
                             <input type="text" class="form-control" name="name" value="{{ $profile->name }}" placeholder="Nama Lengkap">
                         </div>
+                        @if (\Auth::user()->role_id == 2)
                         <div class="form-group">
                             <label for="">Nama Panggilan</label>
                             <input type="text" class="form-control" name="short_name" value="{{ !is_null($profile->karyawan_r) ? $profile->karyawan_r->short_name : null }}" placeholder="Nama Panggilan">
@@ -59,6 +60,7 @@
                             <label for="">Nama Asal PT</label>
                             <input type="text" class="form-control" name="company_name" value="{{ !is_null($profile->karyawan_r) ? $profile->karyawan_r->company_name : null }}" placeholder="Nama Asal PT">
                         </div>
+                        @endif
                         <div class="form-group">
                             <label for="">Email address</label>
                             <input type="email" class="form-control" name="email" value="{{ $profile->email }}" placeholder="Email">

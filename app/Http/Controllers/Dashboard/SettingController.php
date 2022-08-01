@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Dashboard;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
+use RealRashid\SweetAlert\Facades\Alert;
 
 use App\Models\Setting;
 
@@ -42,7 +43,8 @@ class SettingController extends Controller
         }
 
 		Setting::insert($data);
-		return redirect()->back()->with('success','Pengaturan Aplikasi berhasil disimpan');
+        Alert::success('Sukses','Pengaturan Aplikasi berhasil disimpan');
+		return redirect()->back();
 	}
 
     public function update(Request $request, $id)
@@ -68,6 +70,7 @@ class SettingController extends Controller
         }
 
 		Setting::where('id',$id)->update($data);
-		return redirect()->back()->with('success','Pengaturan Aplikasi berhasil diupdate');
+        Alert::success('Sukses','Pengaturan Aplikasi berhasil diupdate');
+		return redirect()->back();
 	}
 }

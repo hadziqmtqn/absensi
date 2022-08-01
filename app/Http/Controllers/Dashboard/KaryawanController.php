@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Dashboard;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use Illuminate\Support\Carbon;
+use RealRashid\SweetAlert\Facades\Alert;
 
 use App\Models\User;
 use App\Models\Setting;
@@ -137,7 +138,8 @@ class KaryawanController extends Controller
             User::where('id', $id)->update($data);
             Karyawan::where('user_id', $id)->update($karyawan);
         });
-		return redirect()->back()->with('success','Profile berhasil diupdate');
+        Alert::success('Sukses','Profile berhasil diupdate');
+		return redirect()->back();
 	}
 
     public function update_password($username)
@@ -159,15 +161,15 @@ class KaryawanController extends Controller
             $confirm_password = $request->confirm_password;
 
             if($password != $confirm_password){
-                \Session::flash('error','Password harus sama');
+                Alert::error('Error','Password harus sama');
             }else{
                 User::where('id',$id)->update([
                     'password'=>bcrypt($password)
                 ]);
-                \Session::flash('success','Password berhasil diubah');
+                Alert::success('Sukses','Password berhasil diubah');
             }
         } catch (\Exception $e) {
-            \Session::flash('error',$e->getMessage());
+            Alert::error('Error',$e->getMessage());
         }
         return redirect()->back();
     }
@@ -178,9 +180,9 @@ class KaryawanController extends Controller
                 'is_verifikasi' => 1
             ]);
 
-            \Session::flash('success','Karyawan ini berhasil diverifikasi');
+            Alert::success('Sukses','Karyawan ini berhasil diverifikasi');
         } catch (\Exception $e) {
-            \Session::flash('error',$e->getMessage());
+            Alert::error('Error',$e->getMessage());
         }
 
         return redirect()->back();
@@ -192,9 +194,9 @@ class KaryawanController extends Controller
                 'is_verifikasi' => 0
             ]);
 
-            \Session::flash('success','Karyawan ini berhasil kembali belum diverifikasi');
+            Alert::success('Sukses','Karyawan ini berhasil kembali belum diverifikasi');
         } catch (\Exception $e) {
-            \Session::flash('error',$e->getMessage());
+            Alert::error('Error',$e->getMessage());
         }
 
         return redirect()->back();

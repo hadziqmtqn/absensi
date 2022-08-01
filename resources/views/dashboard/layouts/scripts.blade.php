@@ -25,3 +25,5 @@
 <script src="{{ asset('theme/template/js/select2.js') }}"></script>
 
 <script src="https://cdn.datatables.net/scroller/2.0.7/js/dataTables.scroller.min.js"></script>
+{{-- toastr js --}}
+<script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/2.1.0/js/toastr.js"></script>

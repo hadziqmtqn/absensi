@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Dashboard;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
+use RealRashid\SweetAlert\Facades\Alert;
 
 use App\Models\User;
 use App\Models\Setting;
@@ -62,7 +63,8 @@ class ProfileController extends Controller
             User::where('id', $id)->update($data);
             Karyawan::where('user_id', $id)->update($karyawan);
         });
-		return redirect()->back()->with('success','Profile berhasil diupdate');
+        Alert::success('Sukses','Profile berhasil diupdate');
+		return redirect()->back();
 	}
 
     public function update_password()
@@ -84,15 +86,15 @@ class ProfileController extends Controller
             $confirm_password = $request->confirm_password;
 
             if($password != $confirm_password){
-                \Session::flash('error','Password harus sama');
+                Alert::error('Error','Password harus sama');
             }else{
                 User::where('id',$id)->update([
                     'password'=>bcrypt($password)
                 ]);
-                \Session::flash('success','Password berhasil diubah');
+                Alert::success('Sukses','Password berhasil diupdate');
             }
         } catch (\Exception $e) {
-            \Session::flash('error',$e->getMessage());
+            Alert::error('Error',$e->getMessage());
         }
         return redirect()->back();
     }

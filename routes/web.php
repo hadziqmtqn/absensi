@@ -8,6 +8,7 @@ use App\Http\Controllers\RegisterController;
 use App\Http\Controllers\Dashboard\ProfileController;
 use App\Http\Middleware\VerifikasiAkun;
 use App\Http\Controllers\Dashboard\KaryawanController;
+use App\Http\Controllers\Dashboard\AbsensiController;
 
 /*
 |--------------------------------------------------------------------------
@@ -50,6 +51,9 @@ Route::middleware(['auth',VerifikasiAkun::class])->group(function () {
     Route::put('profile/update/{id}', [ProfileController::class, 'update'])->name('profile.update');
     Route::get('profile/update_password', [ProfileController::class, 'update_password'])->name('profile.update_password');
     Route::put('profile/password/{id}', [ProfileController::class, 'password'])->name('profile.password');
+    // absensi
+    Route::get('absensi', [AbsensiController::class, 'index'])->name('absensi.index');
+    Route::get('absensi/store', [AbsensiController::class, 'store'])->name('absensi.store');
 
     Route::middleware([Admin::class])->group(function(){
         Route::get('setting', [SettingController::class, 'index'])->name('setting.index');
