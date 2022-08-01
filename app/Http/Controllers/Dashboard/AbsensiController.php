@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Dashboard;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
+use RealRashid\SweetAlert\Facades\Alert;
 
 use App\Models\Absensi;
 use App\Models\Setting;
@@ -39,9 +40,9 @@ class AbsensiController extends Controller
                 'updated_at' => date('Y-m-d H:i:s'),
             ]);
 
-            \Session::flash('success','Terima kasih, sudah mengisi absensi hari ini');
+            Alert::success('Success','Terima kasih, sudah mengisi absensi hari ini');
         } catch (\Exception $e) {
-            \Session::flash('error',$e->getMessage());
+            Alert::error('Error',$e->getMessage());
         }
 
         return redirect()->back();
