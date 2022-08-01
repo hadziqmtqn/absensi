@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: localhost:3306
--- Generation Time: Aug 01, 2022 at 06:13 PM
+-- Generation Time: Aug 01, 2022 at 08:48 PM
 -- Server version: 10.3.34-MariaDB-0ubuntu0.20.04.1
 -- PHP Version: 7.4.3
 
@@ -31,10 +31,17 @@ SET time_zone = "+00:00";
 CREATE TABLE `absensis` (
   `id` bigint(20) UNSIGNED NOT NULL,
   `user_id` bigint(20) UNSIGNED NOT NULL,
-  `waktu_absen` timestamp NOT NULL DEFAULT current_timestamp() ON UPDATE current_timestamp(),
+  `waktu_absen` date NOT NULL DEFAULT current_timestamp(),
   `created_at` timestamp NULL DEFAULT NULL,
   `updated_at` timestamp NULL DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+--
+-- Dumping data for table `absensis`
+--
+
+INSERT INTO `absensis` (`id`, `user_id`, `waktu_absen`, `created_at`, `updated_at`) VALUES
+(12, 6, '2022-08-01', '2022-08-01 13:15:20', '2022-08-01 13:15:20');
 
 -- --------------------------------------------------------
 
@@ -74,7 +81,8 @@ CREATE TABLE `karyawans` (
 --
 
 INSERT INTO `karyawans` (`id`, `user_id`, `short_name`, `nik`, `phone`, `company_name`, `created_at`, `updated_at`) VALUES
-(3, 6, 'doni', '5834859023852444', '08798789734', NULL, '2022-08-01 11:09:55', '2022-08-01 11:09:55');
+(3, 6, 'doni', '5834859023852444', '08798789734', NULL, '2022-08-01 11:09:55', '2022-08-01 11:09:55'),
+(4, 7, 'Anis', NULL, '089397534543', NULL, '2022-08-01 12:37:41', '2022-08-01 12:37:41');
 
 -- --------------------------------------------------------
 
@@ -179,7 +187,7 @@ CREATE TABLE `settings` (
 --
 
 INSERT INTO `settings` (`id`, `application_name`, `email`, `no_hp`, `logo`, `awal_absensi`, `akhir_absensi`, `created_at`, `updated_at`) VALUES
-(1, 'My Apps', 'myapps@g.com', '084454513123', 'assets/1050473103-logo.svg', '06:00:00', '08:00:00', '2022-07-31 05:03:09', '2022-08-01 11:11:42');
+(1, 'My Apps', 'myapps@g.com', '084454513123', 'assets/1050473103-logo.svg', '06:00:00', '21:00:00', '2022-07-31 05:03:09', '2022-08-01 13:15:07');
 
 -- --------------------------------------------------------
 
@@ -208,7 +216,8 @@ CREATE TABLE `users` (
 
 INSERT INTO `users` (`id`, `role_id`, `name`, `username`, `photo`, `email`, `email_verified_at`, `password`, `remember_token`, `is_verifikasi`, `created_at`, `updated_at`) VALUES
 (5, 1, 'Admin', NULL, NULL, 'aa@g.com', NULL, '$2y$10$6ggDPvmyFiJNMk.ShGEMLOSQaYyZMdpIwljY9I7xjzFJ7hrZZAG2C', NULL, 1, NULL, NULL),
-(6, 2, 'Doni sudrajat', '1271693080', NULL, 'doni@g.com', NULL, '$2y$10$4LrDD4DwqkUL0r/Jxa2sd.2bsHraw1iVyByVML9GCjK9Nxx.mx.oC', NULL, 1, '2022-08-01 11:09:55', '2022-08-01 11:11:10');
+(6, 2, 'Doni sudrajat', '1271693080', NULL, 'doni@g.com', NULL, '$2y$10$4LrDD4DwqkUL0r/Jxa2sd.2bsHraw1iVyByVML9GCjK9Nxx.mx.oC', NULL, 1, '2022-08-01 11:09:55', '2022-08-01 11:11:10'),
+(7, 2, 'Anisa', '153595953', NULL, 'anis@g.com', NULL, '$2y$10$vfj6FHBuXRLD2p0b19y09eR2ioqg4uLNxocsAsRC0FAcOc/yg3H8i', NULL, 1, '2022-08-01 12:37:41', '2022-08-01 12:39:23');
 
 --
 -- Indexes for dumped tables
@@ -283,7 +292,7 @@ ALTER TABLE `users`
 -- AUTO_INCREMENT for table `absensis`
 --
 ALTER TABLE `absensis`
-  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=10;
+  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=13;
 
 --
 -- AUTO_INCREMENT for table `failed_jobs`
@@ -295,7 +304,7 @@ ALTER TABLE `failed_jobs`
 -- AUTO_INCREMENT for table `karyawans`
 --
 ALTER TABLE `karyawans`
-  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
+  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
 
 --
 -- AUTO_INCREMENT for table `migrations`
@@ -325,7 +334,7 @@ ALTER TABLE `settings`
 -- AUTO_INCREMENT for table `users`
 --
 ALTER TABLE `users`
-  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=7;
+  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=8;
 
 --
 -- Constraints for dumped tables

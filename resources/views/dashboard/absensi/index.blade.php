@@ -4,6 +4,17 @@
 @endsection
 @section('content')
     <div class="row">
+        <div class="col-12 grid-margin stretch-card">
+            <div class="card">
+                <div class="card-body">
+                    <h4 class="card-title">Data Filter</h4>
+                    <div class="form-group">
+                        <label for="">Pilih Tanggal Absensi</label>
+                        <input type="date" id="filter-waktuabsen" class="form-control filter" placeholder="Masukkan Tanggal">
+                    </div>
+                </div>
+            </div>
+        </div>
         <div class="col-md-12 grid-margin stretch-card">
             <div class="card">
                 <div class="card-body">
@@ -12,9 +23,9 @@
                         <thead>
                             <tr>
                                 <th>#</th>
-                                <th>Aksi</th>
                                 <th>Nama Lengkap</th>
                                 <th>Absen Pada</th>
+                                <th>Status</th>
                             </tr>
                         </thead>
                     </table>
@@ -42,18 +53,20 @@
                 'X-CSRF-TOKEN': '{{ csrf_token() }}',
             },
             data: function (d) {
+                d.waktu_absen = $('#filter-waktuabsen').val(),
                 d.search = $('input[type="search"]').val()
             }
         },
         columns: [
             {data: 'DT_RowIndex', name: 'DT_RowIndex', orderable: false, searchable: false},
-            {data: 'action', name: 'action', orderable: false, searchable: false},
             {data: 'namakaryawan', name: 'namakaryawan'},
             {data: 'created_at', name: 'created_at'},
+            {data: 'status', name: 'status', orderable: false, searchable: false},
         ]
     });
 
     $(".filter").on('change',function(){
+        waktu_absen = $("#filter-waktuabsen").val(),
         table.ajax.reload(null,false)
     });
 });

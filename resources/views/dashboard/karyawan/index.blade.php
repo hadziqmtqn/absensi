@@ -91,7 +91,7 @@
         });
     
         $(".filter").on('change',function(){
-            is_verifikasi = $("#filter-verifikasi").val()
+            is_verifikasi = $("#filter-verifikasi").val(),
             table.ajax.reload(null,false)
         });
     });

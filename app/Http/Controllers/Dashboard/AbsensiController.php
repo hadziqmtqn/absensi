@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Dashboard;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use RealRashid\SweetAlert\Facades\Alert;
+use Illuminate\Support\Str; 
 
 use App\Models\Absensi;
 use App\Models\Setting;
@@ -29,10 +30,10 @@ class AbsensiController extends Controller
             $awalAbsensi = $waktuAbsensi->awal_absensi;
             $akhirAbsensi = $waktuAbsensi->akhir_absensi;
             $jamSekarang = Carbon::now()->format('H:i:s');
-            $hariIni = Carbon::now();
+            $hariIni = Carbon::now()->format('Y-m-d');
             
-            $cekAbsensi = Absensi::where('user_id',\Auth::user()->id)->whereDate('created_at',$hariIni)->whereBetween(DB::raw('TIME(waktu_absen)'), array($awalAbsensi, $akhirAbsensi))->count();
-
+            $cekAbsensi = Absensi::where('user_id',\Auth::user()->id)->where('waktu_absen',$hariIni)->whereBetween(DB::raw('TIME(created_at)'), array($awalAbsensi, $akhirAbsensi))->count();
+            // dd($cekAbsensi);
             return view('dashboard.absensi.karyawan', compact('title','appName','cekAbsensi','awalAbsensi','akhirAbsensi','jamSekarang','hariIni'));
         }
     }
@@ -43,7 +44,7 @@ class AbsensiController extends Controller
 
             Absensi::where('user_id',$karyawan)->insert([
                 'user_id' => $karyawan,
-                'waktu_absen' => date('Y-m-d H:i:s'),
+                'waktu_absen' => date('Y-m-d'),
                 'created_at' => date('Y-m-d H:i:s'),
                 'updated_at' => date('Y-m-d H:i:s'),
             ]);
@@ -60,11 +61,20 @@ class AbsensiController extends Controller
     {
         if ($request->ajax()) {
 			$data = Absensi::select('absensis.*','users.name as namakaryawan')
-			->join('users','absensis.user_id','=','users.id');
+            ->rightJoin('karyawans','absensis.user_id','=','karyawans.user_id')
+			->join('users','karyawans.user_id','=','users.id');
             
             return Datatables::of($data)
                 ->addIndexColumn()
                 ->filter(function ($instance) use ($request) {
+                    // if ($request->has('waktu_absen')) {
+                    //     $query->where('waktu_absen', 'like', "%{$request->get('waktu_absen')}%");
+                    // }
+
+                    if ($request->get('waktu_absen') != null) {
+                        $instance->where('waktu_absen', $request->waktu_absen);
+                    }
+
                     if (!empty($request->get('search'))) {
                             $instance->where(function($w) use($request){
                             $search = $request->get('search');
@@ -77,12 +87,15 @@ class AbsensiController extends Controller
                     return $row->created_at ? with(new Carbon($row->created_at))->isoFormat('LLLL') : '';
                 })
 
-                ->addColumn('action', function($row){
-					$btn = '<button type="button" href="absensi/hapus/'.$row->id.'" class="btn btn-danger btn-hapus">Delete</button>';
-                    return $btn;
+                ->addColumn('status', function ($row) {
+                    if($row->created_at){
+                        return '<span class="badge badge-success">Sudah Absensi</span>';
+                    }else{
+                        return '<span class="badge badge-warning">Belum Absensi</span>';
+                    }
                 })
 
-                ->rawColumns(['action'])
+                ->rawColumns(['status'])
                 ->addIndexColumn()
                 ->make(true);
         }
