@@ -94,7 +94,7 @@ class KaryawanController extends Controller
         $profile = User::where('username',$username)->first();
         $listRole = Role::get();
 
-        return view('dashboard.karyawan.edit', compact('title','appName','profile','listRole'));
+        return view('dashboard.karyawan.detail', compact('title','appName','profile','listRole'));
     }
 
     public function update(Request $request, $id)
@@ -138,4 +138,35 @@ class KaryawanController extends Controller
         });
 		return redirect()->back()->with('success','Profile berhasil diupdate');
 	}
+
+    public function update_password($username)
+    {
+        $title = 'Update Password Karyawan';
+        $appName = Setting::first();
+        $karyawan = User::where('username',$username)->first();
+        $listRole = Role::get();
+
+        return view('dashboard.karyawan.update_password', compact('title','appName','karyawan','listRole'));
+    }
+
+    public function password(Request $request,$id)
+    {
+
+        try {
+            $password = $request->password;
+            $confirm_password = $request->confirm_password;
+
+            if($password != $confirm_password){
+                \Session::flash('error','Password harus sama');
+            }else{
+                User::where('id',$id)->update([
+                    'password'=>bcrypt($password)
+                ]);
+                \Session::flash('success','Password berhasil diubah');
+            }
+        } catch (\Exception $e) {
+            \Session::flash('error',$e->getMessage());
+        }
+        return redirect()->back();
+    }
 }

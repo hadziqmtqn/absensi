@@ -83,7 +83,8 @@
                             </div>
                         </div>
                         <hr>
-                        <button type="submit" class="btn btn-primary mr-2 pull-right">Submit</button>
+                        <button type="submit" class="btn btn-primary mr-2">Submit</button>
+                        <a href="{{ route('karyawan',$profile->username.'/katasandi') }}" class="btn btn-inverse-danger btn-fw">Ubah Password</a>
                     </div>
                 </form>
             </div>

@@ -60,6 +60,8 @@ Route::middleware(['auth',VerifikasiAkun::class])->group(function () {
         Route::post('getjsonkaryawan', [KaryawanController::class, 'getJsonKaryawan'])->name('getjsonkaryawan');
         Route::get('karyawan/{username}', [KaryawanController::class, 'detail'])->name('karyawan');
         Route::put('karyawan/update/{id}', [KaryawanController::class, 'update'])->name('karyawan.update');
+        Route::get('karyawan/{username}/katasandi', [KaryawanController::class, 'update_password'])->name('karyawan.katasandi');
+        Route::put('karyawan/password/{id}', [KaryawanController::class, 'password'])->name('karyawan.password');
     });
 
     Route::get('forbidden', function() {
