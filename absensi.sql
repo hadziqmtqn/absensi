@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: localhost:3306
--- Generation Time: Jul 31, 2022 at 12:35 PM
+-- Generation Time: Aug 01, 2022 at 06:13 PM
 -- Server version: 10.3.34-MariaDB-0ubuntu0.20.04.1
 -- PHP Version: 7.4.3
 
@@ -21,6 +21,20 @@ SET time_zone = "+00:00";
 --
 -- Database: `absensi`
 --
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `absensis`
+--
+
+CREATE TABLE `absensis` (
+  `id` bigint(20) UNSIGNED NOT NULL,
+  `user_id` bigint(20) UNSIGNED NOT NULL,
+  `waktu_absen` timestamp NOT NULL DEFAULT current_timestamp() ON UPDATE current_timestamp(),
+  `created_at` timestamp NULL DEFAULT NULL,
+  `updated_at` timestamp NULL DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 -- --------------------------------------------------------
 
@@ -60,8 +74,7 @@ CREATE TABLE `karyawans` (
 --
 
 INSERT INTO `karyawans` (`id`, `user_id`, `short_name`, `nik`, `phone`, `company_name`, `created_at`, `updated_at`) VALUES
-(1, 3, 'Sudi', '3345454545465454', '08455645443', 'PT. Teknologi', '2022-07-31 05:07:39', '2022-07-31 05:21:04'),
-(2, 4, 'Fitrina', NULL, '087899787878', NULL, '2022-07-31 05:23:07', '2022-07-31 05:23:07');
+(3, 6, 'doni', '5834859023852444', '08798789734', NULL, '2022-08-01 11:09:55', '2022-08-01 11:09:55');
 
 -- --------------------------------------------------------
 
@@ -88,7 +101,9 @@ INSERT INTO `migrations` (`id`, `migration`, `batch`) VALUES
 (6, '2022_07_30_064242_create_roles_table', 1),
 (7, '2022_07_30_064913_alter_role_users_table', 1),
 (8, '2022_07_31_110954_alter_is_verifikasi_table', 1),
-(9, '2022_07_31_114942_create_karyawans_table', 1);
+(9, '2022_07_31_114942_create_karyawans_table', 1),
+(10, '2022_08_01_103027_create_absensis_table', 2),
+(11, '2022_08_01_133616_alter_time_setting', 3);
 
 -- --------------------------------------------------------
 
@@ -153,6 +168,8 @@ CREATE TABLE `settings` (
   `email` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
   `no_hp` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
   `logo` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `awal_absensi` time DEFAULT NULL,
+  `akhir_absensi` time DEFAULT NULL,
   `created_at` timestamp NULL DEFAULT NULL,
   `updated_at` timestamp NULL DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
@@ -161,8 +178,8 @@ CREATE TABLE `settings` (
 -- Dumping data for table `settings`
 --
 
-INSERT INTO `settings` (`id`, `application_name`, `email`, `no_hp`, `logo`, `created_at`, `updated_at`) VALUES
-(1, 'My Apps', 'myapps@g.com', '084454513123', 'assets/1050473103-logo.svg', '2022-07-31 05:03:09', '2022-07-31 05:03:09');
+INSERT INTO `settings` (`id`, `application_name`, `email`, `no_hp`, `logo`, `awal_absensi`, `akhir_absensi`, `created_at`, `updated_at`) VALUES
+(1, 'My Apps', 'myapps@g.com', '084454513123', 'assets/1050473103-logo.svg', '06:00:00', '08:00:00', '2022-07-31 05:03:09', '2022-08-01 11:11:42');
 
 -- --------------------------------------------------------
 
@@ -190,13 +207,19 @@ CREATE TABLE `users` (
 --
 
 INSERT INTO `users` (`id`, `role_id`, `name`, `username`, `photo`, `email`, `email_verified_at`, `password`, `remember_token`, `is_verifikasi`, `created_at`, `updated_at`) VALUES
-(2, 1, 'Admin', NULL, NULL, 'aa@g.com', NULL, '$2y$10$uqWEdHTaGCeRIMO9n9sId.dIGtkSVw8yTSt60NA3I2AKsKMaXM/8S', NULL, 1, NULL, NULL),
-(3, 2, 'Sudirman', '826386493', NULL, 'doni@g.com', NULL, '$2y$10$rlOjwwFaLreFn87.L/a8YOHaq4YWsuyha7LCQl6jpIks6wSzyGP.i', NULL, 1, '2022-07-31 05:07:39', '2022-07-31 05:21:04'),
-(4, 2, 'Fitrina', '1105515701', NULL, 'fitrina@g.com', NULL, '$2y$10$DsSfoB1.Lmq9scDw494RqOOB0aMscILfNzY/c3GBCnSL1APCi1U2.', NULL, 0, '2022-07-31 05:23:07', '2022-07-31 05:23:07');
+(5, 1, 'Admin', NULL, NULL, 'aa@g.com', NULL, '$2y$10$6ggDPvmyFiJNMk.ShGEMLOSQaYyZMdpIwljY9I7xjzFJ7hrZZAG2C', NULL, 1, NULL, NULL),
+(6, 2, 'Doni sudrajat', '1271693080', NULL, 'doni@g.com', NULL, '$2y$10$4LrDD4DwqkUL0r/Jxa2sd.2bsHraw1iVyByVML9GCjK9Nxx.mx.oC', NULL, 1, '2022-08-01 11:09:55', '2022-08-01 11:11:10');
 
 --
 -- Indexes for dumped tables
 --
+
+--
+-- Indexes for table `absensis`
+--
+ALTER TABLE `absensis`
+  ADD PRIMARY KEY (`id`),
+  ADD KEY `absensis_user_id_foreign` (`user_id`);
 
 --
 -- Indexes for table `failed_jobs`
@@ -257,6 +280,12 @@ ALTER TABLE `users`
 --
 
 --
+-- AUTO_INCREMENT for table `absensis`
+--
+ALTER TABLE `absensis`
+  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=10;
+
+--
 -- AUTO_INCREMENT for table `failed_jobs`
 --
 ALTER TABLE `failed_jobs`
@@ -266,13 +295,13 @@ ALTER TABLE `failed_jobs`
 -- AUTO_INCREMENT for table `karyawans`
 --
 ALTER TABLE `karyawans`
-  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
+  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
 
 --
 -- AUTO_INCREMENT for table `migrations`
 --
 ALTER TABLE `migrations`
-  MODIFY `id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=10;
+  MODIFY `id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=12;
 
 --
 -- AUTO_INCREMENT for table `personal_access_tokens`
@@ -296,11 +325,17 @@ ALTER TABLE `settings`
 -- AUTO_INCREMENT for table `users`
 --
 ALTER TABLE `users`
-  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
+  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=7;
 
 --
 -- Constraints for dumped tables
 --
+
+--
+-- Constraints for table `absensis`
+--
+ALTER TABLE `absensis`
+  ADD CONSTRAINT `absensis_user_id_foreign` FOREIGN KEY (`user_id`) REFERENCES `users` (`id`) ON DELETE CASCADE;
 
 --
 -- Constraints for table `karyawans`
