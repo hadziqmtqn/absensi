@@ -1,31 +1,18 @@
 @extends('dashboard.layouts.master')
 @section('title')
-    {{ $title }}
+    {{ $title }} - {{ $profile->name }}
 @endsection
 @section('content')
 <div class="row">
-    {{-- <div class="col-md-3 mb-4">
-        <div class="card tale-bg">
-            <div class="card-people mt-auto">
-                <img src="@if(empty($profile->photo)) {{ asset('theme/template/images/user.png') }} @else {{ asset($profile->photo) }} @endif" style="object-fit: cover" alt="people">
-                <div class="weather-info" style="background-color: white; padding: 10px 10px 0px 0px; border-radius: 10px;">
-                    <div class="d-flex">
-                        <div class="ml-2">
-                            <h4 class="location font-weight-bold">{{ $profile->name }}</h4>
-                            <h6 class="font-weight-normal">{{ !is_null($profile->karyawan_r) ? $profile->karyawan_r->company_name : null }}</h6>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div> --}}
     <div class="col-md-12 grid-margin stretch-card">
         <div class="card">
             <div class="card-body">
-                <h4 class="card-title">{{ $title }}</h4>
-                <img src="@if(empty($profile->photo)) {{ asset('theme/template/images/user.png') }} @else {{ asset($profile->photo) }} @endif" style="width: 100px; object-fit: cover; padding-right: 10px" alt="people">
-                <button type="button" class="btn btn-outline-primary btn-sm" data-toggle="modal" data-target="#exampleModal">Upload</button>
-                <button type="button" class="btn btn-inverse-danger btn-sm">Hapus</button>
+                <h4 class="card-title">{{ $title }} | {{ $profile->name }}</h4>
+                <div class="text-center">
+                    <img src="@if(empty($profile->photo)) {{ asset('theme/template/images/user.png') }} @else {{ asset($profile->photo) }} @endif" style="width: 150px; height: 150px; object-fit: cover; border-radius: 50%" alt="people">
+                </div>
+            </div>
+            <div class="card-body">
                 <hr>
                 @include('dashboard.layouts.session')
                 <form class="forms-sample" method="POST" action="{{ route('karyawan.update',$profile->id) }}" enctype="multipart/form-data" id="profile">
@@ -95,28 +82,10 @@
                                 </div>
                             </div>
                         </div>
+                        <hr>
                         <button type="submit" class="btn btn-primary mr-2 pull-right">Submit</button>
                     </div>
                 </form>
-            </div>
-        </div>
-    </div>
-    <div class="col-md-12">
-        <!-- Modal -->
-        <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
-            <div class="modal-dialog">
-                <div class="modal-content">
-                    <div class="modal-header">
-                        <h5 class="modal-title" id="exampleModalLabel">Upload Avatar</h5>
-                    </div>
-                    <div class="modal-body">
-                    ...
-                    </div>
-                    <div class="modal-footer">
-                        <button type="button" class="btn btn-inverse-secondary btn-fw" data-dismiss="modal">Batal</button>
-                        <button type="button" class="btn btn-primary">Upload</button>
-                    </div>
-                </div>
             </div>
         </div>
     </div>
