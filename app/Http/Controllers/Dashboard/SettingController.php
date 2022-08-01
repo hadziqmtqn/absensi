@@ -26,12 +26,16 @@ class SettingController extends Controller
 			'application_name' => 'required',
             'email' => 'email|required',
             'no_hp',
-            'logo' => 'file|mimes:jpg,jpeg,png,svg|max:1024'
+            'logo' => 'file|mimes:jpg,jpeg,png,svg|max:1024',
+            'awal_absensi',
+            'akhir_absensi'
 		]);
 
         $data['application_name'] = $request->application_name;
 		$data['email'] = $request->email;
 		$data['no_hp'] = $request->no_hp;
+		$data['awal_absensi'] = $request->awal_absensi;
+		$data['akhir_absensi'] = $request->akhir_absensi;
 		$data['created_at'] = date('Y-m-d H:i:s');
 		$data['updated_at'] = date('Y-m-d H:i:s');
 
@@ -53,12 +57,16 @@ class SettingController extends Controller
 			'application_name' => 'required',
             'email' => 'email|required',
             'no_hp',
-            'logo' => 'file|mimes:jpg,jpeg,png,svg|max:1024'
+            'logo' => 'file|mimes:jpg,jpeg,png,svg|max:1024',
+            'awal_absensi',
+            'akhir_absensi'
 		]);
 
         $data['application_name'] = $request->application_name;
 		$data['email'] = $request->email;
 		$data['no_hp'] = $request->no_hp;
+		$data['awal_absensi'] = $request->awal_absensi;
+		$data['akhir_absensi'] = $request->akhir_absensi;
 		// $data['created_at'] = date('Y-m-d H:i:s');
 		$data['updated_at'] = date('Y-m-d H:i:s');
 
