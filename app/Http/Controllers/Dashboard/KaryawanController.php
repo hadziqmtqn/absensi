@@ -27,7 +27,7 @@ class KaryawanController extends Controller
     public function getJsonKaryawan(Request $request)
     {
         if ($request->ajax()) {
-			$data = User::select('karyawans.*','users.name as namakaryawan','users.username','users.is_verifikasi','users.photo','users.email')
+			$data = User::select('karyawans.*','users.name as namakaryawan','users.id as iduser','users.username','users.is_verifikasi','users.photo','users.email')
 			->join('karyawans','karyawans.user_id','=','users.id');
             
             return Datatables::of($data)
@@ -60,7 +60,7 @@ class KaryawanController extends Controller
 
                 ->addColumn('action', function($row){
 					$btn = '<a href="karyawan/'.$row->username.'" class="btn btn-primary">Detail</a>';
-                    $btn = $btn.' <button type="button" href="karyawan/hapus/'.$row->id.'" class="btn btn-danger btn-hapus">Delete</button>';
+                    $btn = $btn.' <button type="button" href="karyawan/hapus/'.$row->iduser.'" class="btn btn-danger btn-hapus">Delete</button>';
                     return $btn;
                 })
 
@@ -199,6 +199,17 @@ class KaryawanController extends Controller
             Alert::error('Error',$e->getMessage());
         }
 
+        return redirect()->back();
+    }
+
+    public function delete($id){
+        try {
+            User::where('id',$id)->delete();
+
+            Alert::success('Sukses','Data Karyawan berhasil dihapus');
+        } catch (\Exception $e) {
+            Alert::error('Error',$e->getMessage());
+        }
         return redirect()->back();
     }
 }

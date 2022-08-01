@@ -196,6 +196,28 @@
             <div class="main-panel">
                 <div class="content-wrapper">
                     @yield('content')
+
+                    <!-- modal hapus -->
+                    <div class="modal fade" id="modal-hapus" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                        <div class="modal-dialog">
+                            <div class="modal-content">
+                                <div class="modal-header">
+                                    <h5 class="modal-title" id="exampleModalLabel"><i class="mdi mdi-alert-outline"></i> Peringatan</h5>
+                                </div>
+                                <div class="modal-body">
+                                    <h4 class="heading mt-4">Apakah kamu yakin ingin menghapus data ini?</h4>
+                                </div>
+                                <div class="modal-footer">
+                                    <form action="" method="post">
+                                        {{ csrf_field() }}
+                                        {{ method_field('delete') }}
+                                        <button type="button" class="btn btn-inverse-secondary btn-fw" data-dismiss="modal">Batal</button>
+                                        <button type="submit" class="btn btn-primary">OK. Hapus</button>
+                                    </form>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
                 </div>
                 <!-- content-wrapper ends -->
                 <!-- partial:partials/_footer.html -->

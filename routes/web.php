@@ -69,6 +69,7 @@ Route::middleware(['auth',VerifikasiAkun::class])->group(function () {
         Route::put('karyawan/password/{id}', [KaryawanController::class, 'password'])->name('karyawan.password');
         Route::get('karyawan/{id}/verifikasi', [KaryawanController::class, 'verifikasi'])->name('karyawan.verifikasi');
         Route::get('karyawan/{id}/undo_verifikasi', [KaryawanController::class, 'undo_verifikasi'])->name('karyawan.undo_verifikasi');
+        Route::delete('karyawan/hapus/{id}',[KaryawanController::class, 'delete'])->name('karyawan.hapus');
     });
 
     Route::get('forbidden', function() {
