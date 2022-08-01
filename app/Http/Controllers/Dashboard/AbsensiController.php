@@ -67,10 +67,6 @@ class AbsensiController extends Controller
             return Datatables::of($data)
                 ->addIndexColumn()
                 ->filter(function ($instance) use ($request) {
-                    // if ($request->has('waktu_absen')) {
-                    //     $query->where('waktu_absen', 'like', "%{$request->get('waktu_absen')}%");
-                    // }
-
                     if ($request->get('waktu_absen') != null) {
                         $instance->where('waktu_absen', $request->waktu_absen);
                     }
@@ -88,7 +84,7 @@ class AbsensiController extends Controller
                 })
 
                 ->addColumn('status', function ($row) {
-                    if($row->created_at){
+                    if($row->waktu_absen){
                         return '<span class="badge badge-success">Sudah Absensi</span>';
                     }else{
                         return '<span class="badge badge-warning">Belum Absensi</span>';

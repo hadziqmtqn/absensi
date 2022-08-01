@@ -8,9 +8,13 @@
             <div class="card">
                 <div class="card-body">
                     <h4 class="card-title">Data Filter</h4>
-                    <div class="form-group">
-                        <label for="">Pilih Tanggal Absensi</label>
-                        <input type="date" id="filter-waktuabsen" class="form-control filter" placeholder="Masukkan Tanggal">
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label for="">Pilih Tanggal Absensi</label>
+                                <input type="date" id="filter-waktuabsen" class="form-control filter" placeholder="Masukkan Tanggal">
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>
