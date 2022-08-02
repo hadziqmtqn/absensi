@@ -32,6 +32,18 @@
                                     </div>
                                 </div>
                                 <div class="form-group row">
+                                    <label for="" class="col-sm-3 col-form-label">Awal Absensi</label>
+                                    <div class="col-sm-9">
+                                        <input type="time" class="form-control" name="awal_absensi" value="{{ old('awal_absensi') }}" placeholder="Awal Absensi">
+                                    </div>
+                                </div>
+                                <div class="form-group row">
+                                    <label for="" class="col-sm-3 col-form-label">Akhir Absensi</label>
+                                    <div class="col-sm-9">
+                                        <input type="time" class="form-control" name="akhir_absensi" value="{{ old('akhir_absensi') }}" placeholder="Akhir Absensi">
+                                    </div>
+                                </div>
+                                <div class="form-group row">
                                     <label class="col-sm-3 col-form-label">Logo</label>
                                     <div class="col-sm-9">
                                         <input type="file" name="logo" accept=".jpg,.jpeg,.png,.svg" class="file-upload-default">
