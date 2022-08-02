@@ -18,6 +18,7 @@ class SettingSeeder extends Seeder
         Setting::create([
             'application_name' => 'Absensi App',
             'email' => 'absensi@g.com',
+            'logo' => 'theme/template/images/logo.svg',
         ]);
     }
 }
