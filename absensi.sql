@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: localhost:3306
--- Generation Time: Aug 02, 2022 at 02:53 AM
+-- Generation Time: Aug 02, 2022 at 03:23 AM
 -- Server version: 5.7.33
 -- PHP Version: 7.4.19
 
@@ -34,6 +34,15 @@ CREATE TABLE `absensis` (
   `created_at` timestamp NULL DEFAULT NULL,
   `updated_at` timestamp NULL DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+--
+-- Dumping data for table `absensis`
+--
+
+INSERT INTO `absensis` (`id`, `user_id`, `waktu_absen`, `created_at`, `updated_at`) VALUES
+(1, 6, '2022-08-01', '2022-08-01 01:00:00', '2022-08-01 03:15:20'),
+(2, 6, '2022-08-02', '2022-08-02 03:17:46', '2022-08-02 03:17:46'),
+(3, 2, '2022-08-02', '2022-08-02 03:20:32', '2022-08-02 03:20:32');
 
 -- --------------------------------------------------------
 
@@ -67,6 +76,17 @@ CREATE TABLE `karyawans` (
   `created_at` timestamp NULL DEFAULT NULL,
   `updated_at` timestamp NULL DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+--
+-- Dumping data for table `karyawans`
+--
+
+INSERT INTO `karyawans` (`id`, `user_id`, `short_name`, `nik`, `phone`, `company_name`, `created_at`, `updated_at`) VALUES
+(1, 2, 'Doni', NULL, '08535734534', NULL, '2022-08-02 02:57:34', '2022-08-02 02:57:34'),
+(2, 3, 'Sulis', NULL, '08777774545', NULL, '2022-08-02 02:58:08', '2022-08-02 02:58:08'),
+(3, 4, 'Arman', NULL, '087743753434', NULL, '2022-08-02 03:09:46', '2022-08-02 03:09:46'),
+(4, 5, 'Devita', NULL, '087799399434', NULL, '2022-08-02 03:12:04', '2022-08-02 03:12:04'),
+(5, 6, 'Desti', NULL, '087799384834', NULL, '2022-08-02 03:12:42', '2022-08-02 03:12:42');
 
 -- --------------------------------------------------------
 
@@ -171,7 +191,7 @@ CREATE TABLE `settings` (
 --
 
 INSERT INTO `settings` (`id`, `application_name`, `email`, `no_hp`, `logo`, `awal_absensi`, `akhir_absensi`, `created_at`, `updated_at`) VALUES
-(1, 'Absensi App', 'absensi@g.com', NULL, 'assets/1384139838-logo.svg', '06:00:00', '08:00:00', '2022-08-02 02:50:50', '2022-08-02 02:52:36');
+(1, 'Absensi App', 'absensi@g.com', NULL, 'assets/1384139838-logo.svg', '06:00:00', '11:00:00', '2022-08-02 02:50:50', '2022-08-02 02:55:51');
 
 -- --------------------------------------------------------
 
@@ -199,7 +219,12 @@ CREATE TABLE `users` (
 --
 
 INSERT INTO `users` (`id`, `role_id`, `name`, `username`, `photo`, `email`, `email_verified_at`, `password`, `remember_token`, `is_verifikasi`, `created_at`, `updated_at`) VALUES
-(1, 1, 'Admin', NULL, NULL, 'aa@g.com', NULL, '$2y$10$2EsmXI.HfIl2Ghh.s6rbeu/S.habIyvEujNd.gLddJ8jVl0HBuzem', NULL, 1, '2022-08-02 02:50:50', '2022-08-02 02:50:50');
+(1, 1, 'Admin', NULL, NULL, 'aa@g.com', NULL, '$2y$10$2EsmXI.HfIl2Ghh.s6rbeu/S.habIyvEujNd.gLddJ8jVl0HBuzem', NULL, 1, '2022-08-02 02:50:50', '2022-08-02 02:50:50'),
+(2, 2, 'Doni Sudrajat', '1108666932', NULL, 'doni@g.com', NULL, '$2y$10$ewryIhFRC6iQfBdPrunQXOwhkf251Na7t49ifWlukPf9ZH4GUUFO.', NULL, 1, '2022-08-02 02:57:34', '2022-08-02 03:14:29'),
+(3, 2, 'Sulastri', '1207347903', NULL, 'sulis@g.com', NULL, '$2y$10$T5LpyQgrIDAoaQMl/PggAuxwNMaKbMhdrurRy5ud/CTW1.TXyzXYS', NULL, 0, '2022-08-02 02:58:08', '2022-08-02 02:58:08'),
+(4, 2, 'Arman', '1161331030', NULL, 'arman@g.com', NULL, '$2y$10$WBfnJT6wyMg3QHUzBDK82urrnCyOgL6.bo2mq9wfjpNlbiHu7/Wtm', NULL, 0, '2022-08-02 03:09:46', '2022-08-02 03:09:46'),
+(5, 2, 'Dewi Devita', '1148486217', NULL, 'devita@g.com', NULL, '$2y$10$cTP/MkTfCDP2XCOJjdM9S.5Zfw9lvsrKOcImur.d4Tjyj57mfe886', NULL, 0, '2022-08-02 03:12:04', '2022-08-02 03:12:04'),
+(6, 2, 'Desti', '676792662', NULL, 'desti@g.com', NULL, '$2y$10$7lfdbrH51902GaB3AgFe2OhIOld2ukbq47kNwkVHhEOaKFfXFDwH.', NULL, 1, '2022-08-02 03:12:42', '2022-08-02 03:14:05');
 
 --
 -- Indexes for dumped tables
@@ -274,7 +299,7 @@ ALTER TABLE `users`
 -- AUTO_INCREMENT for table `absensis`
 --
 ALTER TABLE `absensis`
-  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT;
+  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
 
 --
 -- AUTO_INCREMENT for table `failed_jobs`
@@ -286,7 +311,7 @@ ALTER TABLE `failed_jobs`
 -- AUTO_INCREMENT for table `karyawans`
 --
 ALTER TABLE `karyawans`
-  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT;
+  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=6;
 
 --
 -- AUTO_INCREMENT for table `migrations`
@@ -316,7 +341,7 @@ ALTER TABLE `settings`
 -- AUTO_INCREMENT for table `users`
 --
 ALTER TABLE `users`
-  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
+  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=7;
 
 --
 -- Constraints for dumped tables
