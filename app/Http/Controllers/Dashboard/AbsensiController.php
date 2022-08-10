@@ -19,12 +19,12 @@ class AbsensiController extends Controller
     public function index()
     {
         if (\Auth::user()->role_id == 1) {
-            $title = 'Absensi';
+            $title = 'Absensi Karyawan';
             $appName = Setting::first();
             
             return view('dashboard.absensi.index', compact('title','appName'));
         } else {
-            $title = 'Absensi';
+            $title = 'Absensi Karyawan';
             $appName = Setting::first();
             $waktuAbsensi = Setting::select('awal_absensi','akhir_absensi')->first();
             $awalAbsensi = $waktuAbsensi->awal_absensi;

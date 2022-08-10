@@ -11,7 +11,7 @@
 <!-- inject:js -->
 <script src="{{ asset('theme/template/js/off-canvas.js') }}"></script>
 <script src="{{ asset('theme/template/js/hoverable-collapse.js') }}"></script>
-<script src="{{ asset('theme/template/js/template.js') }}"></script>
+{{-- <script src="{{ asset('theme/template/js/template.js') }}"></script> --}}
 <script src="{{ asset('theme/template/js/settings.js') }}"></script>
 <script src="{{ asset('theme/template/js/todolist.js') }}"></script>
 <!-- endinject -->
