@@ -7,7 +7,8 @@
         <div class="col-md-12 grid-margin stretch-card">
             <div class="card">
                 <div class="card-body">
-                    <h4 class="card-title">{{ $title }}</h4>
+                    <h4 class="card-title" style="text-align: center">{{ $title }}</h4>
+                    <h3 style="text-align: center; margin-bottom: 25px">Klik Tombol dibawah Ini untuk Melakukan Absensi</h3>
                     @include('dashboard.layouts.session')
                     @if ($jamSekarang > $awalAbsensi && $jamSekarang < $akhirAbsensi && $cekAbsensi < 1)
                     <div class="text-center">
