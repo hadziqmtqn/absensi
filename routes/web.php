@@ -9,6 +9,7 @@ use App\Http\Controllers\Dashboard\ProfileController;
 use App\Http\Middleware\VerifikasiAkun;
 use App\Http\Controllers\Dashboard\KaryawanController;
 use App\Http\Controllers\Dashboard\AbsensiController;
+use App\Http\Controllers\Dashboard\DataJobController;
 
 /*
 |--------------------------------------------------------------------------
@@ -44,10 +45,11 @@ Route::middleware(['auth',VerifikasiAkun::class])->group(function () {
     Route::delete('absensi/hapus/{id}',[AbsensiController::class, 'delete'])->name('absensi.hapus');
 
     Route::middleware([Admin::class])->group(function(){
+        // setting
         Route::get('setting', [SettingController::class, 'index'])->name('setting.index');
         Route::post('setting/store', [SettingController::class, 'store'])->name('setting.store');
         Route::put('setting/update/{id}', [SettingController::class, 'update'])->name('setting.update');
-
+        // data karyawan
         Route::get('karyawan', [KaryawanController::class, 'index'])->name('karyawan.index');
         Route::post('getjsonkaryawan', [KaryawanController::class, 'getJsonKaryawan'])->name('getjsonkaryawan');
         Route::get('karyawan/{username}', [KaryawanController::class, 'detail'])->name('karyawan');
@@ -56,7 +58,11 @@ Route::middleware(['auth',VerifikasiAkun::class])->group(function () {
         Route::put('karyawan/password/{id}', [KaryawanController::class, 'password'])->name('karyawan.password');
         Route::get('karyawan/{id}/verifikasi', [KaryawanController::class, 'verifikasi'])->name('karyawan.verifikasi');
         Route::get('karyawan/{id}/undo_verifikasi', [KaryawanController::class, 'undo_verifikasi'])->name('karyawan.undo_verifikasi');
-        Route::delete('karyawan/hapus/{id}',[KaryawanController::class, 'delete'])->name('karyawan.hapus');
+        Route::delete('karyawan/hapus/{id}', [KaryawanController::class, 'delete'])->name('karyawan.hapus');
+        // data job
+        Route::get('data_job', [DataJobController::class, 'index'])->name('data_job.index');
+        Route::post('data_job/store', [DataJobController::class, 'store'])->name('data_job.store');
+        Route::post('getjsondatajob', [DataJobController::class, 'getJsonDataJob'])->name('getjsondatajob');
     });
 
     Route::get('forbidden', function() {

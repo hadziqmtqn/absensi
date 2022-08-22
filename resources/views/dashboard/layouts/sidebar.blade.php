@@ -5,6 +5,16 @@
             <span class="menu-title">Dashboard</span>
         </a>
     </li>
+
+    @if(\Auth::user()->role_id == 1)
+    <li class="nav-item {{ ($title == 'Data Job') ? 'active' : '' }}">
+        <a class="nav-link" href="{{ route('data_job.index') }}">
+            <i class="mdi mdi-buffer menu-icon"></i>
+            <span class="menu-title">Data Job</span>
+        </a>
+    </li>
+    @endif
+
     <li class="nav-item {{ ($title == 'Absensi Karyawan') ? 'active' : '' }}">
         <a class="nav-link" href="{{ route('absensi.index') }}">
             <i class="mdi mdi-calendar-clock menu-icon"></i>
@@ -12,7 +22,7 @@
         </a>
     </li>
 
-    @if (\auth::user()->role_id == 1)
+    @if (\Auth::user()->role_id == 1)
     <li class="nav-item {{ ($title == 'Data Karyawan' OR $title == 'Detail Karyawan' OR $title == 'Update Password Karyawan') ? 'active' : '' }}">
         <a class="nav-link" href="{{ route('karyawan.index') }}">
             <i class="mdi mdi-account-multiple menu-icon"></i>
