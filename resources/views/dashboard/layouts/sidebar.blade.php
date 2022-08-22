@@ -7,7 +7,7 @@
     </li>
 
     @if(\Auth::user()->role_id == 1)
-    <li class="nav-item {{ ($title == 'Data Job') ? 'active' : '' }}">
+    <li class="nav-item {{ ($title == 'Data Job' OR $title == 'Detail Job' OR $title == 'Edit Job') ? 'active' : '' }}">
         <a class="nav-link" href="{{ route('data_job.index') }}">
             <i class="mdi mdi-buffer menu-icon"></i>
             <span class="menu-title">Data Job</span>

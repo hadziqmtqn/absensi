@@ -63,6 +63,10 @@ Route::middleware(['auth',VerifikasiAkun::class])->group(function () {
         Route::get('data_job', [DataJobController::class, 'index'])->name('data_job.index');
         Route::post('data_job/store', [DataJobController::class, 'store'])->name('data_job.store');
         Route::post('getjsondatajob', [DataJobController::class, 'getJsonDataJob'])->name('getjsondatajob');
+        Route::get('data_job/{id}', [DataJobController::class, 'detail'])->name('data_job.detail');
+        Route::get('data_job/edit/{id}', [DataJobController::class, 'edit'])->name('data_job.edit');
+        Route::put('data_job/edit/{id}', [DataJobController::class, 'update'])->name('data_job.update');
+        Route::delete('data_job/hapus/{id}', [DataJobController::class, 'delete'])->name('data_job.hapus');
     });
 
     Route::get('forbidden', function() {

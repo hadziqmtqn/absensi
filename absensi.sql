@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: localhost:3306
--- Generation Time: Aug 22, 2022 at 12:57 AM
+-- Generation Time: Aug 22, 2022 at 02:10 AM
 -- Server version: 5.7.33
 -- PHP Version: 8.1.9
 
@@ -68,8 +68,8 @@ CREATE TABLE `data_jobs` (
 --
 
 INSERT INTO `data_jobs` (`id`, `kode`, `nama_pelanggan`, `no_hp`, `alamat`, `acuan_lokasi`, `foto`, `status`, `created_at`, `updated_at`) VALUES
-(1, '01', 'Doni', '08774364343', 'Jl. Kamboja No. 45', 'Pojok jalan kiri tengah belok kanan', NULL, '0', '2022-08-22 00:31:35', '2022-08-22 00:31:35'),
-(2, '02', 'Bintang', '0899435345', 'Jl. Kendeng No. 56 RT 03/03', 'Belok kanan', NULL, '0', '2022-08-22 00:33:27', '2022-08-22 00:33:27');
+(2, '02', 'Bintang', '0899435345', 'Jl. Kendeng No. 56 RT 03/03', 'Belok kanan', 'assets/295209988-6ed804a5-f429-42eb-b40f-334dd905d247.png', '1', '2022-08-22 00:33:27', '2022-08-22 01:56:02'),
+(3, '03', 'Meilan', '08998434543534', 'Jl. Dipenegoro No. 56', 'Lorem ipsum, dolor sit amet consectetur adipisicing elit. Consequatur vitae repellendus deserunt, corrupti recusandae eaque architecto cumque, ab quos beatae rerum dignissimos minima labore? Odit, corrupti magni. Magni, laboriosam omnis.', 'assets/1546736507-Screenshot_5.png', '0', '2022-08-22 01:58:20', '2022-08-22 01:58:20');
 
 -- --------------------------------------------------------
 
@@ -339,7 +339,7 @@ ALTER TABLE `absensis`
 -- AUTO_INCREMENT for table `data_jobs`
 --
 ALTER TABLE `data_jobs`
-  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
+  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
 
 --
 -- AUTO_INCREMENT for table `failed_jobs`

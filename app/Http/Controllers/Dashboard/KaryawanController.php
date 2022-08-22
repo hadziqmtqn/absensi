@@ -59,8 +59,8 @@ class KaryawanController extends Controller
                 })
 
                 ->addColumn('action', function($row){
-					$btn = '<a href="karyawan/'.$row->username.'" class="btn btn-primary">Detail</a>';
-                    $btn = $btn.' <button type="button" href="karyawan/hapus/'.$row->iduser.'" class="btn btn-danger btn-hapus">Delete</button>';
+					$btn = '<a href="karyawan/'.$row->username.'" class="btn btn-primary" style="padding: 7px 10px">Detail</a>';
+                    $btn = $btn.' <button type="button" href="karyawan/hapus/'.$row->iduser.'" class="btn btn-danger btn-hapus" style="padding: 7px 10px">Delete</button>';
                     return $btn;
                 })
 

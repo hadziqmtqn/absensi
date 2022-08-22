@@ -99,7 +99,7 @@
         scrollX: true,
         scrollCollapse: true,
         lengthMenu: [ [10, 25, 50, -1], [10, 25, 50, "All"] ],
-        order: [[8,'desc']],
+        order: [[2,'desc']],
         ajax: {
             url: "{{ route('getjsondatajob') }}",
             type: "POST",
