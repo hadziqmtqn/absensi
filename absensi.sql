@@ -3,9 +3,9 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: localhost:3306
--- Generation Time: Aug 02, 2022 at 03:23 AM
+-- Generation Time: Aug 22, 2022 at 02:10 AM
 -- Server version: 5.7.33
--- PHP Version: 7.4.19
+-- PHP Version: 8.1.9
 
 SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
 START TRANSACTION;
@@ -43,6 +43,33 @@ INSERT INTO `absensis` (`id`, `user_id`, `waktu_absen`, `created_at`, `updated_a
 (1, 6, '2022-08-01', '2022-08-01 01:00:00', '2022-08-01 03:15:20'),
 (2, 6, '2022-08-02', '2022-08-02 03:17:46', '2022-08-02 03:17:46'),
 (3, 2, '2022-08-02', '2022-08-02 03:20:32', '2022-08-02 03:20:32');
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `data_jobs`
+--
+
+CREATE TABLE `data_jobs` (
+  `id` bigint(20) UNSIGNED NOT NULL,
+  `kode` varchar(100) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `nama_pelanggan` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `no_hp` varchar(100) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `alamat` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `acuan_lokasi` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `foto` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `status` enum('0','1','2','3') COLLATE utf8mb4_unicode_ci DEFAULT '0',
+  `created_at` timestamp NULL DEFAULT NULL,
+  `updated_at` timestamp NULL DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+--
+-- Dumping data for table `data_jobs`
+--
+
+INSERT INTO `data_jobs` (`id`, `kode`, `nama_pelanggan`, `no_hp`, `alamat`, `acuan_lokasi`, `foto`, `status`, `created_at`, `updated_at`) VALUES
+(2, '02', 'Bintang', '0899435345', 'Jl. Kendeng No. 56 RT 03/03', 'Belok kanan', 'assets/295209988-6ed804a5-f429-42eb-b40f-334dd905d247.png', '1', '2022-08-22 00:33:27', '2022-08-22 01:56:02'),
+(3, '03', 'Meilan', '08998434543534', 'Jl. Dipenegoro No. 56', 'Lorem ipsum, dolor sit amet consectetur adipisicing elit. Consequatur vitae repellendus deserunt, corrupti recusandae eaque architecto cumque, ab quos beatae rerum dignissimos minima labore? Odit, corrupti magni. Magni, laboriosam omnis.', 'assets/1546736507-Screenshot_5.png', '0', '2022-08-22 01:58:20', '2022-08-22 01:58:20');
 
 -- --------------------------------------------------------
 
@@ -115,7 +142,8 @@ INSERT INTO `migrations` (`id`, `migration`, `batch`) VALUES
 (8, '2022_07_31_110954_alter_is_verifikasi_table', 1),
 (9, '2022_07_31_114942_create_karyawans_table', 1),
 (10, '2022_08_01_103027_create_absensis_table', 1),
-(11, '2022_08_01_133616_alter_time_setting', 1);
+(11, '2022_08_01_133616_alter_time_setting', 1),
+(13, '2022_08_21_194521_create_data_jobs_table', 2);
 
 -- --------------------------------------------------------
 
@@ -238,6 +266,12 @@ ALTER TABLE `absensis`
   ADD KEY `absensis_user_id_foreign` (`user_id`);
 
 --
+-- Indexes for table `data_jobs`
+--
+ALTER TABLE `data_jobs`
+  ADD PRIMARY KEY (`id`);
+
+--
 -- Indexes for table `failed_jobs`
 --
 ALTER TABLE `failed_jobs`
@@ -302,6 +336,12 @@ ALTER TABLE `absensis`
   MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
 
 --
+-- AUTO_INCREMENT for table `data_jobs`
+--
+ALTER TABLE `data_jobs`
+  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
+
+--
 -- AUTO_INCREMENT for table `failed_jobs`
 --
 ALTER TABLE `failed_jobs`
@@ -317,7 +357,7 @@ ALTER TABLE `karyawans`
 -- AUTO_INCREMENT for table `migrations`
 --
 ALTER TABLE `migrations`
-  MODIFY `id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=12;
+  MODIFY `id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=14;
 
 --
 -- AUTO_INCREMENT for table `personal_access_tokens`
