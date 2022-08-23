@@ -11,22 +11,22 @@
                     @include('dashboard.layouts.session')
                     <div class="row">
                         <div class="col-12 mb-3">
-                            <button class="btn btn-primary" data-toggle="modal" data-target="#tambah_job">Tambah Baru</button>
+                            <button class="btn btn-primary" data-toggle="modal" data-target="#pasang_baru">Tambah Baru</button>
                         </div>
                         <!-- Modal -->
-                        <div class="modal fade" id="tambah_job" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                        <div class="modal fade" id="pasang_baru" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
                             <div class="modal-dialog" role="document">
                                 <div class="modal-content">
                                     <div class="modal-header">
-                                        <h5 class="modal-title">Tambah Job Baru</h5>
+                                        <h5 class="modal-title">Tambah Pasang Baru</h5>
                                     </div>
-                                    <form class="forms-sample" method="POST" action="{{ route('data_job.store') }}" enctype="multipart/form-data" id="datajob">
+                                    <form class="forms-sample" method="POST" action="{{ route('data_pasang_baru.store') }}" enctype="multipart/form-data" id="datajob">
                                         @csrf
                                         <div id="datajob">
                                             <div class="modal-body">
                                                 <div class="form-group">
-                                                    <label for="">Kode Job</label>
-                                                    <input type="text" class="form-control" name="kode" value="{{ old('kode') }}" placeholder="Kode Job">
+                                                    <label for="">Kode</label>
+                                                    <input type="text" class="form-control" name="kode" value="{{ old('kode') }}" placeholder="Kode">
                                                 </div>
                                                 <div class="form-group">
                                                     <label for="">Nama Pelanggan</label>
@@ -101,7 +101,7 @@
         lengthMenu: [ [10, 25, 50, -1], [10, 25, 50, "All"] ],
         order: [[2,'desc']],
         ajax: {
-            url: "{{ route('getjsondatajob') }}",
+            url: "{{ route('getjsonpasangbaru') }}",
             type: "POST",
             headers: {
                 'X-CSRF-TOKEN': '{{ csrf_token() }}',
@@ -132,5 +132,5 @@
 });
 </script>
 
-@include('dashboard.data_job.validation')
+@include('dashboard.data_pasang_baru.validation')
 @endsection

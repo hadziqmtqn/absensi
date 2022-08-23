@@ -10,8 +10,8 @@
                 <h4 class="card-title">Pilih Job</h4>
                 <div class="form-group">
                     <select class="form-control" onchange="location = this.value;">
-                        @foreach ($listJob as $job)
-                        <option value="{{ route('data_job.edit',$job->id) }}" {{ ($data->id == $job->id) ? 'selected' : '' }}>{{ $job->kode }}</option>
+                        @foreach ($listPasangBaru as $pasang)
+                        <option value="{{ route('data_pasang_baru.edit',$pasang->id) }}" {{ ($data->id == $pasang->id) ? 'selected' : '' }}>{{ $pasang->kode }}</option>
                         @endforeach
                     </select>
                 </div>
@@ -24,10 +24,10 @@
         <div class="card">
             <div class="card-body">
                 <h4 class="card-title">{{ $title }}</h4>
-                <form class="forms-sample" method="POST" action="{{ route('data_job.update', $data->id) }}" enctype="multipart/form-data" id="datajob">
+                <form class="forms-sample" method="POST" action="{{ route('data_pasang_baru.update', $data->id) }}" enctype="multipart/form-data" id="pasang_baru">
                     @csrf
                     {{ method_field('PUT') }}
-                    <div id="datajob">
+                    <div id="pasang_baru">
                         <div class="form-group">
                             <label for="">Kode Job</label>
                             <input type="text" class="form-control" name="kode" value="{{ $data->kode }}" placeholder="Kode Job">
@@ -68,5 +68,5 @@
 @endsection
 
 @section('scripts')
-@include('dashboard.data_job.validation')
+@include('dashboard.data_pasang_baru.validation')
 @endsection

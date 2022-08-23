@@ -9,7 +9,7 @@ use App\Http\Controllers\Dashboard\ProfileController;
 use App\Http\Middleware\VerifikasiAkun;
 use App\Http\Controllers\Dashboard\KaryawanController;
 use App\Http\Controllers\Dashboard\AbsensiController;
-use App\Http\Controllers\Dashboard\DataJobController;
+use App\Http\Controllers\Dashboard\DataPasangBaruController;
 
 /*
 |--------------------------------------------------------------------------
@@ -59,14 +59,14 @@ Route::middleware(['auth',VerifikasiAkun::class])->group(function () {
         Route::get('karyawan/{id}/verifikasi', [KaryawanController::class, 'verifikasi'])->name('karyawan.verifikasi');
         Route::get('karyawan/{id}/undo_verifikasi', [KaryawanController::class, 'undo_verifikasi'])->name('karyawan.undo_verifikasi');
         Route::delete('karyawan/hapus/{id}', [KaryawanController::class, 'delete'])->name('karyawan.hapus');
-        // data job
-        Route::get('data_job', [DataJobController::class, 'index'])->name('data_job.index');
-        Route::post('data_job/store', [DataJobController::class, 'store'])->name('data_job.store');
-        Route::post('getjsondatajob', [DataJobController::class, 'getJsonDataJob'])->name('getjsondatajob');
-        Route::get('data_job/{id}', [DataJobController::class, 'detail'])->name('data_job.detail');
-        Route::get('data_job/edit/{id}', [DataJobController::class, 'edit'])->name('data_job.edit');
-        Route::put('data_job/edit/{id}', [DataJobController::class, 'update'])->name('data_job.update');
-        Route::delete('data_job/hapus/{id}', [DataJobController::class, 'delete'])->name('data_job.hapus');
+        // data pasang baru
+        Route::get('data_pasang_baru', [DataPasangBaruController::class, 'index'])->name('data_pasang_baru.index');
+        Route::post('data_pasang_baru/store', [DataPasangBaruController::class, 'store'])->name('data_pasang_baru.store');
+        Route::post('getjsonpasangbaru', [DataPasangBaruController::class, 'getJsonPasangBaru'])->name('getjsonpasangbaru');
+        Route::get('data_pasang_baru/{id}', [DataPasangBaruController::class, 'detail'])->name('data_pasang_baru.detail');
+        Route::get('data_pasang_baru/edit/{id}', [DataPasangBaruController::class, 'edit'])->name('data_pasang_baru.edit');
+        Route::put('data_pasang_baru/edit/{id}', [DataPasangBaruController::class, 'update'])->name('data_pasang_baru.update');
+        Route::delete('data_pasang_baru/hapus/{id}', [DataPasangBaruController::class, 'delete'])->name('data_pasang_baru.hapus');
     });
 
     Route::get('forbidden', function() {

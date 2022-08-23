@@ -10,8 +10,8 @@
                 <h4 class="card-title">Pilih Job</h4>
                 <div class="form-group">
                     <select class="form-control" onchange="location = this.value;">
-                        @foreach ($listJob as $job)
-                        <option value="{{ route('data_job.detail',$job->id) }}" {{ ($data->id == $job->id) ? 'selected' : '' }}>{{ $job->kode }}</option>
+                        @foreach ($listPasangBaru as $pasang)
+                        <option value="{{ route('data_pasang_baru.detail',$pasang->id) }}" {{ ($data->id == $pasang->id) ? 'selected' : '' }}>{{ $pasang->kode }}</option>
                         @endforeach
                     </select>
                 </div>
