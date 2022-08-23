@@ -144,12 +144,12 @@ class DataPasangBaruController extends Controller
 
     public function edit($id)
     {
-        $title = 'Edit Job';
+        $title = 'Edit Pasang Baru';
         $appName = Setting::first();
         $data = DataPasangBaru::find($id);
         $listPasangBaru = DataPasangBaru::orderBy('created_at','DESC')->get();
 
-        return view('dashboard.data_job.edit', compact('title','appName','data','listPasangBaru'));
+        return view('dashboard.data_pasang_baru.edit', compact('title','appName','data','listPasangBaru'));
     }
 
     public function update(Request $request, $id)
