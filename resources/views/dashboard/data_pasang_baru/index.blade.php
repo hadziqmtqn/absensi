@@ -4,13 +4,30 @@
 @endsection
 @section('content')
     <div class="row">
+        <div class="col-12 grid-margin stretch-card">
+            <div class="card">
+                <div class="card-body">
+                    <h4 class="card-title">Data Filter</h4>
+                    <div class="form-group">
+                        <label for="exampleSelectGender">Pilih Status</label>
+                        <select class="form-control filter" id="filter-status">
+                            <option value="">Pilih Semua</option>
+                            <option value="0">Open</option>
+                            <option value="1">In Progress</option>
+                            <option value="2">Pending</option>
+                            <option value="3">Success</option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+        </div>
         <div class="col-md-12 grid-margin stretch-card">
             <div class="card">
                 <div class="card-body">
                     <h4 class="card-title">{{ $title }}</h4>
                     @include('dashboard.layouts.session')
                     <div class="row">
-                        <div class="col-12 mb-3">
+                        <div class="col-6 mb-3">
                             <button class="btn btn-primary" data-toggle="modal" data-target="#pasang_baru">Tambah Baru</button>
                         </div>
                         <!-- Modal -->

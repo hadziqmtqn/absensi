@@ -13,6 +13,13 @@
             <span class="menu-title">Data Pasang Baru</span>
         </a>
     </li>
+
+    <li class="nav-item {{ ($title == 'Data Job' OR $title == 'Detail Job' OR $title == 'Edit Job') ? 'active' : '' }}">
+        <a class="nav-link" href="{{ route('data_job.index') }}">
+            <i class="mdi mdi-buffer menu-icon"></i>
+            <span class="menu-title">Data Job</span>
+        </a>
+    </li>
     @endif
 
     <li class="nav-item {{ ($title == 'Absensi Karyawan') ? 'active' : '' }}">

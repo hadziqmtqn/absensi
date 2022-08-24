@@ -34,11 +34,12 @@ class DataJobController extends Controller
     public function getJsonDataJob(Request $request)
     {
         if ($request->ajax()) {
-			$data = DataJob::select('data_jobs.id','data_jobs.created_at','data_jobs.updated_at','data_pasang_barus.kode','data_pasang_barus.nama_pelanggan','data_pasang_barus.no_hp','data_pasang_barus.acuan_lokasi',
-            'data_pasang_barus.status','users.name')
+			$data = DataJob::select('data_jobs.id as idjob','data_jobs.kode_pasang_baru','data_jobs.created_at','data_jobs.updated_at','data_pasang_barus.kode','data_pasang_barus.nama_pelanggan','data_pasang_barus.no_hp','data_pasang_barus.alamat',
+            'data_pasang_barus.acuan_lokasi','data_pasang_barus.status','users.name')
             ->join('data_pasang_barus','data_jobs.kode_pasang_baru','=','data_pasang_barus.id')
-            ->join('absensis','data_jobs.user_id','=','data_pasang_barus.id')
-            ->join('users','absensis.user_id','=','users.id');
+            ->leftJoin('absensis','data_jobs.user_id','=','absensis.id')
+            ->leftJoin('users','absensis.user_id','=','users.id')
+            ->orderBy('data_jobs.created_at','DESC');
             
             return Datatables::of($data)
                 ->addIndexColumn()
@@ -61,11 +62,7 @@ class DataJobController extends Controller
                 })
 
                 ->addColumn('created_at', function ($row) {
-                    return $row->created_at ? with(new Carbon($row->created_at))->isoFormat('LLLL') : '';
-                })
-
-                ->addColumn('updated_at', function ($row) {
-                    return $row->updated_at ? with(new Carbon($row->updated_at))->isoFormat('LLLL') : '';
+                    return $row->created_at ? with(new Carbon($row->created_at))->isoFormat('lll') : '';
                 })
 
                 ->addColumn('action', function($row){
@@ -87,13 +84,7 @@ class DataJobController extends Controller
                     }
                 })
 
-                ->addColumn('foto', function($row){
-                    if(!empty($row->foto)){
-                        return '<img src="'.asset($row->foto).'" style="width: 30px; border-radius: 50%;" alt="image">';
-                    }
-                })
-
-                ->rawColumns(['action','status','foto'])
+                ->rawColumns(['action','status'])
                 ->addIndexColumn()
                 ->make(true);
         }

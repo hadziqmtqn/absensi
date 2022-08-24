@@ -4,6 +4,23 @@
 @endsection
 @section('content')
     <div class="row">
+        <div class="col-12 grid-margin stretch-card">
+            <div class="card">
+                <div class="card-body">
+                    <h4 class="card-title">Data Filter</h4>
+                    <div class="form-group">
+                        <label for="exampleSelectGender">Pilih Status</label>
+                        <select class="form-control filter" id="filter-status">
+                            <option value="">Pilih Semua</option>
+                            <option value="0">Open</option>
+                            <option value="1">In Progress</option>
+                            <option value="2">Pending</option>
+                            <option value="3">Success</option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+        </div>
         <div class="col-md-12 grid-margin stretch-card">
             <div class="card">
                 <div class="card-body">
@@ -62,11 +79,11 @@
                                         <th>Kode</th>
                                         <th>Nama Pelanggan</th>
                                         <th>No. HP</th>
-                                        <th>Alamat</th>
+                                        <th>Alamat Pasang Baru</th>
                                         <th>Acuan Lokasi</th>
+                                        <th>Nama Karyawan</th>
                                         <th>Status</th>
                                         <th>Dibuat pada</th>
-                                        <th>Diupdate pada</th>
                                     </tr>
                                 </thead>
                             </table>
@@ -87,7 +104,7 @@
         scrollX: true,
         scrollCollapse: true,
         lengthMenu: [ [10, 25, 50, -1], [10, 25, 50, "All"] ],
-        order: [[2,'desc']],
+        order: [[9,'desc']],
         ajax: {
             url: "{{ route('getjsondatajob') }}",
             type: "POST",
@@ -107,9 +124,9 @@
             {data: 'no_hp', name: 'no_hp'},
             {data: 'alamat', name: 'alamat'},
             {data: 'acuan_lokasi', name: 'acuan_lokasi'},
+            {data: 'name', name: 'name'},
             {data: 'status', name: 'status', orderable: false, searchable: false},
             {data: 'created_at', name: 'created_at'},
-            {data: 'updated_at', name: 'updated_at'},
         ]
     });
 

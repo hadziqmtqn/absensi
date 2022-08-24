@@ -47,11 +47,11 @@ class DataPasangBaruController extends Controller
                 })
 
                 ->addColumn('created_at', function ($row) {
-                    return $row->created_at ? with(new Carbon($row->created_at))->isoFormat('LLLL') : '';
+                    return $row->created_at ? with(new Carbon($row->created_at))->isoFormat('lll') : '';
                 })
 
                 ->addColumn('updated_at', function ($row) {
-                    return $row->updated_at ? with(new Carbon($row->updated_at))->isoFormat('LLLL') : '';
+                    return $row->updated_at ? with(new Carbon($row->updated_at))->isoFormat('lll') : '';
                 })
 
                 ->addColumn('action', function($row){
