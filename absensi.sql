@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: localhost:3306
--- Generation Time: Aug 22, 2022 at 02:10 AM
+-- Generation Time: Aug 23, 2022 at 04:25 PM
 -- Server version: 5.7.33
 -- PHP Version: 8.1.9
 
@@ -42,7 +42,8 @@ CREATE TABLE `absensis` (
 INSERT INTO `absensis` (`id`, `user_id`, `waktu_absen`, `created_at`, `updated_at`) VALUES
 (1, 6, '2022-08-01', '2022-08-01 01:00:00', '2022-08-01 03:15:20'),
 (2, 6, '2022-08-02', '2022-08-02 03:17:46', '2022-08-02 03:17:46'),
-(3, 2, '2022-08-02', '2022-08-02 03:20:32', '2022-08-02 03:20:32');
+(3, 2, '2022-08-02', '2022-08-02 03:20:32', '2022-08-02 03:20:32'),
+(4, 4, '2022-08-23', '2022-08-23 16:07:34', '2022-08-23 16:07:35');
 
 -- --------------------------------------------------------
 
@@ -51,6 +52,27 @@ INSERT INTO `absensis` (`id`, `user_id`, `waktu_absen`, `created_at`, `updated_a
 --
 
 CREATE TABLE `data_jobs` (
+  `id` bigint(20) UNSIGNED NOT NULL,
+  `user_id` bigint(20) UNSIGNED NOT NULL,
+  `kode_pasang_baru` bigint(20) UNSIGNED NOT NULL,
+  `created_at` timestamp NULL DEFAULT NULL,
+  `updated_at` timestamp NULL DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+--
+-- Dumping data for table `data_jobs`
+--
+
+INSERT INTO `data_jobs` (`id`, `user_id`, `kode_pasang_baru`, `created_at`, `updated_at`) VALUES
+(1, 4, 2, '2022-08-23 16:21:39', '2022-08-23 16:21:39');
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `data_pasang_barus`
+--
+
+CREATE TABLE `data_pasang_barus` (
   `id` bigint(20) UNSIGNED NOT NULL,
   `kode` varchar(100) COLLATE utf8mb4_unicode_ci NOT NULL,
   `nama_pelanggan` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
@@ -64,12 +86,12 @@ CREATE TABLE `data_jobs` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 --
--- Dumping data for table `data_jobs`
+-- Dumping data for table `data_pasang_barus`
 --
 
-INSERT INTO `data_jobs` (`id`, `kode`, `nama_pelanggan`, `no_hp`, `alamat`, `acuan_lokasi`, `foto`, `status`, `created_at`, `updated_at`) VALUES
-(2, '02', 'Bintang', '0899435345', 'Jl. Kendeng No. 56 RT 03/03', 'Belok kanan', 'assets/295209988-6ed804a5-f429-42eb-b40f-334dd905d247.png', '1', '2022-08-22 00:33:27', '2022-08-22 01:56:02'),
-(3, '03', 'Meilan', '08998434543534', 'Jl. Dipenegoro No. 56', 'Lorem ipsum, dolor sit amet consectetur adipisicing elit. Consequatur vitae repellendus deserunt, corrupti recusandae eaque architecto cumque, ab quos beatae rerum dignissimos minima labore? Odit, corrupti magni. Magni, laboriosam omnis.', 'assets/1546736507-Screenshot_5.png', '0', '2022-08-22 01:58:20', '2022-08-22 01:58:20');
+INSERT INTO `data_pasang_barus` (`id`, `kode`, `nama_pelanggan`, `no_hp`, `alamat`, `acuan_lokasi`, `foto`, `status`, `created_at`, `updated_at`) VALUES
+(1, '01', 'Doni', '0897788798798', 'Jl. Kenanga No. 67 RT 08/03', 'Samping lapangan kuripan kidul pojok utara', NULL, '0', '2022-08-22 15:34:04', '2022-08-22 15:34:04'),
+(2, '02', 'Putry', '089848234242', 'Jl. Barangturi No. 88 RT 01/02', 'Depan ruko Matahari, Bandung Barat', NULL, '0', '2022-08-23 15:34:58', '2022-08-23 15:34:58');
 
 -- --------------------------------------------------------
 
@@ -143,7 +165,8 @@ INSERT INTO `migrations` (`id`, `migration`, `batch`) VALUES
 (9, '2022_07_31_114942_create_karyawans_table', 1),
 (10, '2022_08_01_103027_create_absensis_table', 1),
 (11, '2022_08_01_133616_alter_time_setting', 1),
-(13, '2022_08_21_194521_create_data_jobs_table', 2);
+(17, '2022_08_23_213740_create_data_pasang_barus_table', 2),
+(19, '2022_08_23_294521_create_data_jobs_table', 3);
 
 -- --------------------------------------------------------
 
@@ -269,6 +292,14 @@ ALTER TABLE `absensis`
 -- Indexes for table `data_jobs`
 --
 ALTER TABLE `data_jobs`
+  ADD PRIMARY KEY (`id`),
+  ADD KEY `data_jobs_user_id_foreign` (`user_id`),
+  ADD KEY `data_jobs_kode_pasang_baru_foreign` (`kode_pasang_baru`);
+
+--
+-- Indexes for table `data_pasang_barus`
+--
+ALTER TABLE `data_pasang_barus`
   ADD PRIMARY KEY (`id`);
 
 --
@@ -333,13 +364,19 @@ ALTER TABLE `users`
 -- AUTO_INCREMENT for table `absensis`
 --
 ALTER TABLE `absensis`
-  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
+  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
 
 --
 -- AUTO_INCREMENT for table `data_jobs`
 --
 ALTER TABLE `data_jobs`
-  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
+  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
+
+--
+-- AUTO_INCREMENT for table `data_pasang_barus`
+--
+ALTER TABLE `data_pasang_barus`
+  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
 
 --
 -- AUTO_INCREMENT for table `failed_jobs`
@@ -357,7 +394,7 @@ ALTER TABLE `karyawans`
 -- AUTO_INCREMENT for table `migrations`
 --
 ALTER TABLE `migrations`
-  MODIFY `id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=14;
+  MODIFY `id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=20;
 
 --
 -- AUTO_INCREMENT for table `personal_access_tokens`
@@ -392,6 +429,13 @@ ALTER TABLE `users`
 --
 ALTER TABLE `absensis`
   ADD CONSTRAINT `absensis_user_id_foreign` FOREIGN KEY (`user_id`) REFERENCES `users` (`id`) ON DELETE CASCADE;
+
+--
+-- Constraints for table `data_jobs`
+--
+ALTER TABLE `data_jobs`
+  ADD CONSTRAINT `data_jobs_kode_pasang_baru_foreign` FOREIGN KEY (`kode_pasang_baru`) REFERENCES `data_pasang_barus` (`id`) ON DELETE CASCADE,
+  ADD CONSTRAINT `data_jobs_user_id_foreign` FOREIGN KEY (`user_id`) REFERENCES `absensis` (`id`) ON DELETE CASCADE;
 
 --
 -- Constraints for table `karyawans`
