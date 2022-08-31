@@ -64,8 +64,8 @@ Route::middleware(['auth',VerifikasiAkun::class])->group(function () {
         Route::get('data_pasang_baru', [DataPasangBaruController::class, 'index'])->name('data_pasang_baru.index');
         Route::post('data_pasang_baru/store', [DataPasangBaruController::class, 'store'])->name('data_pasang_baru.store');
         Route::post('getjsonpasangbaru', [DataPasangBaruController::class, 'getJsonPasangBaru'])->name('getjsonpasangbaru');
-        Route::get('data_pasang_baru/{id}', [DataPasangBaruController::class, 'detail'])->name('data_pasang_baru.detail');
-        Route::get('data_pasang_baru/edit/{id}', [DataPasangBaruController::class, 'edit'])->name('data_pasang_baru.edit');
+        Route::get('data_pasang_baru/{kode}', [DataPasangBaruController::class, 'detail'])->name('data_pasang_baru.detail');
+        Route::get('data_pasang_baru/edit/{kode}', [DataPasangBaruController::class, 'edit'])->name('data_pasang_baru.edit');
         Route::put('data_pasang_baru/edit/{id}', [DataPasangBaruController::class, 'update'])->name('data_pasang_baru.update');
         Route::delete('data_pasang_baru/hapus/{id}', [DataPasangBaruController::class, 'delete'])->name('data_pasang_baru.hapus');
         // data job

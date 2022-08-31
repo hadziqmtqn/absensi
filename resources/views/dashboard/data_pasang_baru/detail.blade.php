@@ -11,7 +11,7 @@
                 <div class="form-group">
                     <select class="form-control" onchange="location = this.value;">
                         @foreach ($listPasangBaru as $pasang)
-                        <option value="{{ route('data_pasang_baru.detail',$pasang->id) }}" {{ ($data->id == $pasang->id) ? 'selected' : '' }}>{{ $pasang->kode }}</option>
+                        <option value="{{ route('data_pasang_baru.detail',$pasang->kode) }}" {{ ($data->kode == $pasang->kode) ? 'selected' : '' }}>{{ $pasang->kode }}</option>
                         @endforeach
                     </select>
                 </div>

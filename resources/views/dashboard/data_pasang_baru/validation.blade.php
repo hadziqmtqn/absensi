@@ -2,9 +2,6 @@
     if ($("#datajob").length > 0) {
         $("#datajob").validate({
             rules: {
-                kode: {
-                    required: true,
-                },
                 nama_pelanggan: {
                     required: true,
                 },
@@ -19,9 +16,6 @@
                 },
             },
             messages: {
-                kode: {
-                    required: "Kode Job Harus diisi",
-                },
                 nama_pelanggan: {
                     required: "Nama Pelanggan Harus diisi",
                 },
