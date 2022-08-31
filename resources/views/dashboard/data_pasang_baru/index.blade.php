@@ -42,6 +42,10 @@
                                         <div id="datajob">
                                             <div class="modal-body">
                                                 <div class="form-group">
+                                                    <label for="">Inet</label>
+                                                    <input type="number" class="form-control" name="inet" value="{{ old('inet') }}" placeholder="No. Internet">
+                                                </div>
+                                                <div class="form-group">
                                                     <label for="">Nama Pelanggan</label>
                                                     <input type="text" class="form-control" name="nama_pelanggan" value="{{ old('nama_pelanggan') }}" placeholder="Nama Pelanggan">
                                                 </div>
@@ -85,6 +89,7 @@
                                         <th>#</th>
                                         <th>Aksi</th>
                                         <th>Kode</th>
+                                        <th>Inet</th>
                                         <th>Nama Pelanggan</th>
                                         <th>No. HP</th>
                                         <th>Alamat</th>
@@ -128,6 +133,7 @@
             {data: 'DT_RowIndex', name: 'DT_RowIndex', orderable: false, searchable: false},
             {data: 'action', name: 'action', orderable: false, searchable: false},
             {data: 'kode', name: 'kode'},
+            {data: 'inet', name: 'inet'},
             {data: 'nama_pelanggan', name: 'nama_pelanggan'},
             {data: 'no_hp', name: 'no_hp'},
             {data: 'alamat', name: 'alamat'},

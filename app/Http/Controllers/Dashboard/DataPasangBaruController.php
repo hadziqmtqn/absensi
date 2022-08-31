@@ -38,6 +38,7 @@ class DataPasangBaruController extends Controller
                             $instance->where(function($w) use($request){
                             $search = $request->get('search');
                             $w->orWhere('data_pasang_barus.kode', 'LIKE', "%$search%")
+							->orWhere('data_pasang_barus.inet', 'LIKE', "%$search%")
 							->orWhere('data_pasang_barus.nama_pelanggan', 'LIKE', "%$search%")
 							->orWhere('data_pasang_barus.no_hp', 'LIKE', "%$search%")
 							->orWhere('data_pasang_barus.alamat', 'LIKE', "%$search%")
@@ -90,6 +91,7 @@ class DataPasangBaruController extends Controller
     public function store(Request $request)
 	{
 		$request->validate([
+            'inet' => 'required',
             'nama_pelanggan' => 'required',
             'no_hp' => 'required',
             'alamat' => 'required',
@@ -97,6 +99,7 @@ class DataPasangBaruController extends Controller
             'foto' => 'file|mimes:jpg,jpeg,png|max:1024'
 		]);
 
+		$data['inet'] = $request->inet;
         $data['kode'] = 'SC-'.rand();
 		$data['nama_pelanggan'] = $request->nama_pelanggan;
 		$data['no_hp'] = $request->no_hp;
@@ -154,6 +157,7 @@ class DataPasangBaruController extends Controller
     public function update(Request $request, $id)
 	{
 		$request->validate([
+            'inet' => 'required',
             'nama_pelanggan' => 'required',
             'no_hp' => 'required',
             'alamat' => 'required',
@@ -161,6 +165,7 @@ class DataPasangBaruController extends Controller
             'foto' => 'file|mimes:jpg,jpeg,png|max:1024'
 		]);
 
+		$data['inet'] = $request->inet;
 		$data['nama_pelanggan'] = $request->nama_pelanggan;
 		$data['no_hp'] = $request->no_hp;
 		$data['alamat'] = $request->alamat;

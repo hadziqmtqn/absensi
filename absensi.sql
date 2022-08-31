@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: localhost:3306
--- Generation Time: Aug 23, 2022 at 04:25 PM
+-- Generation Time: Aug 31, 2022 at 03:30 PM
 -- Server version: 5.7.33
 -- PHP Version: 8.1.9
 
@@ -35,16 +35,6 @@ CREATE TABLE `absensis` (
   `updated_at` timestamp NULL DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
---
--- Dumping data for table `absensis`
---
-
-INSERT INTO `absensis` (`id`, `user_id`, `waktu_absen`, `created_at`, `updated_at`) VALUES
-(1, 6, '2022-08-01', '2022-08-01 01:00:00', '2022-08-01 03:15:20'),
-(2, 6, '2022-08-02', '2022-08-02 03:17:46', '2022-08-02 03:17:46'),
-(3, 2, '2022-08-02', '2022-08-02 03:20:32', '2022-08-02 03:20:32'),
-(4, 4, '2022-08-23', '2022-08-23 16:07:34', '2022-08-23 16:07:35');
-
 -- --------------------------------------------------------
 
 --
@@ -59,13 +49,6 @@ CREATE TABLE `data_jobs` (
   `updated_at` timestamp NULL DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
---
--- Dumping data for table `data_jobs`
---
-
-INSERT INTO `data_jobs` (`id`, `user_id`, `kode_pasang_baru`, `created_at`, `updated_at`) VALUES
-(1, 4, 2, '2022-08-23 16:21:39', '2022-08-23 16:21:39');
-
 -- --------------------------------------------------------
 
 --
@@ -75,6 +58,7 @@ INSERT INTO `data_jobs` (`id`, `user_id`, `kode_pasang_baru`, `created_at`, `upd
 CREATE TABLE `data_pasang_barus` (
   `id` bigint(20) UNSIGNED NOT NULL,
   `kode` varchar(100) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `inet` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
   `nama_pelanggan` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
   `no_hp` varchar(100) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
   `alamat` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
@@ -89,9 +73,8 @@ CREATE TABLE `data_pasang_barus` (
 -- Dumping data for table `data_pasang_barus`
 --
 
-INSERT INTO `data_pasang_barus` (`id`, `kode`, `nama_pelanggan`, `no_hp`, `alamat`, `acuan_lokasi`, `foto`, `status`, `created_at`, `updated_at`) VALUES
-(1, '01', 'Doni', '0897788798798', 'Jl. Kenanga No. 67 RT 08/03', 'Samping lapangan kuripan kidul pojok utara', NULL, '0', '2022-08-22 15:34:04', '2022-08-22 15:34:04'),
-(2, '02', 'Putry', '089848234242', 'Jl. Barangturi No. 88 RT 01/02', 'Depan ruko Matahari, Bandung Barat', NULL, '0', '2022-08-23 15:34:58', '2022-08-23 15:34:58');
+INSERT INTO `data_pasang_barus` (`id`, `kode`, `inet`, `nama_pelanggan`, `no_hp`, `alamat`, `acuan_lokasi`, `foto`, `status`, `created_at`, `updated_at`) VALUES
+(1, 'SC-1532072142', '7897977987', 'Asri Indah Fatmani', '08996562214', 'Jl. Dipengoro No. 67', 'Dekat kantor pedesaan barat', 'assets/1239852423-Screenshot_1.png', '0', '2022-08-31 14:48:16', '2022-08-31 14:48:16');
 
 -- --------------------------------------------------------
 
@@ -126,17 +109,6 @@ CREATE TABLE `karyawans` (
   `updated_at` timestamp NULL DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
---
--- Dumping data for table `karyawans`
---
-
-INSERT INTO `karyawans` (`id`, `user_id`, `short_name`, `nik`, `phone`, `company_name`, `created_at`, `updated_at`) VALUES
-(1, 2, 'Doni', NULL, '08535734534', NULL, '2022-08-02 02:57:34', '2022-08-02 02:57:34'),
-(2, 3, 'Sulis', NULL, '08777774545', NULL, '2022-08-02 02:58:08', '2022-08-02 02:58:08'),
-(3, 4, 'Arman', NULL, '087743753434', NULL, '2022-08-02 03:09:46', '2022-08-02 03:09:46'),
-(4, 5, 'Devita', NULL, '087799399434', NULL, '2022-08-02 03:12:04', '2022-08-02 03:12:04'),
-(5, 6, 'Desti', NULL, '087799384834', NULL, '2022-08-02 03:12:42', '2022-08-02 03:12:42');
-
 -- --------------------------------------------------------
 
 --
@@ -165,8 +137,8 @@ INSERT INTO `migrations` (`id`, `migration`, `batch`) VALUES
 (9, '2022_07_31_114942_create_karyawans_table', 1),
 (10, '2022_08_01_103027_create_absensis_table', 1),
 (11, '2022_08_01_133616_alter_time_setting', 1),
-(17, '2022_08_23_213740_create_data_pasang_barus_table', 2),
-(19, '2022_08_23_294521_create_data_jobs_table', 3);
+(12, '2022_08_23_213740_create_data_pasang_barus_table', 1),
+(13, '2022_08_23_294521_create_data_jobs_table', 1);
 
 -- --------------------------------------------------------
 
@@ -216,8 +188,8 @@ CREATE TABLE `roles` (
 --
 
 INSERT INTO `roles` (`id`, `name`, `created_at`, `updated_at`) VALUES
-(1, 'Admin', '2022-08-02 02:50:50', '2022-08-02 02:50:50'),
-(2, 'Karyawan', '2022-08-02 02:50:50', '2022-08-02 02:50:50');
+(1, 'Admin', '2022-08-31 14:38:51', '2022-08-31 14:38:51'),
+(2, 'Karyawan', '2022-08-31 14:38:51', '2022-08-31 14:38:51');
 
 -- --------------------------------------------------------
 
@@ -242,7 +214,7 @@ CREATE TABLE `settings` (
 --
 
 INSERT INTO `settings` (`id`, `application_name`, `email`, `no_hp`, `logo`, `awal_absensi`, `akhir_absensi`, `created_at`, `updated_at`) VALUES
-(1, 'Absensi App', 'absensi@g.com', NULL, 'assets/1384139838-logo.svg', '06:00:00', '11:00:00', '2022-08-02 02:50:50', '2022-08-02 02:55:51');
+(1, 'Absensi App', 'absensi@g.com', NULL, 'theme/template/images/logo.svg', NULL, NULL, '2022-08-31 14:38:52', '2022-08-31 14:38:52');
 
 -- --------------------------------------------------------
 
@@ -270,12 +242,7 @@ CREATE TABLE `users` (
 --
 
 INSERT INTO `users` (`id`, `role_id`, `name`, `username`, `photo`, `email`, `email_verified_at`, `password`, `remember_token`, `is_verifikasi`, `created_at`, `updated_at`) VALUES
-(1, 1, 'Admin', NULL, NULL, 'aa@g.com', NULL, '$2y$10$2EsmXI.HfIl2Ghh.s6rbeu/S.habIyvEujNd.gLddJ8jVl0HBuzem', NULL, 1, '2022-08-02 02:50:50', '2022-08-02 02:50:50'),
-(2, 2, 'Doni Sudrajat', '1108666932', NULL, 'doni@g.com', NULL, '$2y$10$ewryIhFRC6iQfBdPrunQXOwhkf251Na7t49ifWlukPf9ZH4GUUFO.', NULL, 1, '2022-08-02 02:57:34', '2022-08-02 03:14:29'),
-(3, 2, 'Sulastri', '1207347903', NULL, 'sulis@g.com', NULL, '$2y$10$T5LpyQgrIDAoaQMl/PggAuxwNMaKbMhdrurRy5ud/CTW1.TXyzXYS', NULL, 0, '2022-08-02 02:58:08', '2022-08-02 02:58:08'),
-(4, 2, 'Arman', '1161331030', NULL, 'arman@g.com', NULL, '$2y$10$WBfnJT6wyMg3QHUzBDK82urrnCyOgL6.bo2mq9wfjpNlbiHu7/Wtm', NULL, 0, '2022-08-02 03:09:46', '2022-08-02 03:09:46'),
-(5, 2, 'Dewi Devita', '1148486217', NULL, 'devita@g.com', NULL, '$2y$10$cTP/MkTfCDP2XCOJjdM9S.5Zfw9lvsrKOcImur.d4Tjyj57mfe886', NULL, 0, '2022-08-02 03:12:04', '2022-08-02 03:12:04'),
-(6, 2, 'Desti', '676792662', NULL, 'desti@g.com', NULL, '$2y$10$7lfdbrH51902GaB3AgFe2OhIOld2ukbq47kNwkVHhEOaKFfXFDwH.', NULL, 1, '2022-08-02 03:12:42', '2022-08-02 03:14:05');
+(1, 1, 'Admin', NULL, NULL, 'aa@g.com', NULL, '$2y$10$E4JtIVWJ./aFreZuF8iGIOjjP.GpfdM0P6Xx4qRmlpRflHrkhze7q', NULL, 1, '2022-08-31 14:38:52', '2022-08-31 14:38:52');
 
 --
 -- Indexes for dumped tables
@@ -364,19 +331,19 @@ ALTER TABLE `users`
 -- AUTO_INCREMENT for table `absensis`
 --
 ALTER TABLE `absensis`
-  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
+  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT;
 
 --
 -- AUTO_INCREMENT for table `data_jobs`
 --
 ALTER TABLE `data_jobs`
-  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
+  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT;
 
 --
 -- AUTO_INCREMENT for table `data_pasang_barus`
 --
 ALTER TABLE `data_pasang_barus`
-  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
+  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
 
 --
 -- AUTO_INCREMENT for table `failed_jobs`
@@ -388,13 +355,13 @@ ALTER TABLE `failed_jobs`
 -- AUTO_INCREMENT for table `karyawans`
 --
 ALTER TABLE `karyawans`
-  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=6;
+  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT;
 
 --
 -- AUTO_INCREMENT for table `migrations`
 --
 ALTER TABLE `migrations`
-  MODIFY `id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=20;
+  MODIFY `id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=14;
 
 --
 -- AUTO_INCREMENT for table `personal_access_tokens`
@@ -418,7 +385,7 @@ ALTER TABLE `settings`
 -- AUTO_INCREMENT for table `users`
 --
 ALTER TABLE `users`
-  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=7;
+  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
 
 --
 -- Constraints for dumped tables

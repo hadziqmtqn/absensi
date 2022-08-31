@@ -32,6 +32,10 @@
                                 <td>{{ $data->kode }}</td>
                             </tr>
                             <tr>
+                                <th style="width: 150px">Inet</th>
+                                <td>{{ $data->inet }}</td>
+                            </tr>
+                            <tr>
                                 <th style="width: 150px">Nama Pelanggan</th>
                                 <td>{{ $data->nama_pelanggan }}</td>
                             </tr>

@@ -33,6 +33,10 @@
                             <input type="text" class="form-control" value="{{ $data->kode }}" placeholder="Kode Job" readonly>
                         </div>
                         <div class="form-group">
+                            <label for="">Inet</label>
+                            <input type="number" class="form-control" name="inet" value="{{ $data->inet }}" placeholder="No. Internet">
+                        </div>
+                        <div class="form-group">
                             <label for="">Nama Pelanggan</label>
                             <input type="text" class="form-control" name="nama_pelanggan" value="{{ $data->nama_pelanggan }}" placeholder="Nama Pelanggan">
                         </div>

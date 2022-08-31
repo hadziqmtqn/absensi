@@ -2,11 +2,16 @@
     if ($("#datajob").length > 0) {
         $("#datajob").validate({
             rules: {
+                inet: {
+                    required: true,
+                },
                 nama_pelanggan: {
                     required: true,
                 },
                 no_hp: {
                     required: true,
+                    minlength: 10,
+                    maxlength: 13,
                 },
                 alamat: {
                     required: true,
@@ -16,6 +21,10 @@
                 },
             },
             messages: {
+                inet: {
+                    required: "No. Internet Harus diisi",
+                    number: "No. Internet Harus Berupa Angka",
+                },
                 nama_pelanggan: {
                     required: "Nama Pelanggan Harus diisi",
                 },

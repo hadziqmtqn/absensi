@@ -46,7 +46,7 @@
                                                     <select name="kode_pasang_baru" class="form-control">
                                                         <option value="">Pilih</option>
                                                         @foreach ($listPasangBaru as $pasang)
-                                                            <option value="{{ $pasang->id }}" {{ old('kode_pasang_baru') == $pasang->id ? 'selected' : '' }}>Kode {{ $pasang->kode }} | Diinput Pada {{ $pasang->created_at }}</option>
+                                                            <option value="{{ $pasang->id }}" {{ old('kode_pasang_baru') == $pasang->id ? 'selected' : '' }}>{{ $pasang->kode }} | Diinput Pada {{ $pasang->created_at }}</option>
                                                         @endforeach
                                                     </select>
                                                 </div>

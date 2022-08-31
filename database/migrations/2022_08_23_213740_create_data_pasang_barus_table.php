@@ -16,12 +16,13 @@ class CreateDataPasangBarusTable extends Migration
         Schema::create('data_pasang_barus', function (Blueprint $table) {
             $table->id();
             $table->string('kode', 100);
+            $table->string('inet');
             $table->string('nama_pelanggan');
             $table->string('no_hp', 100)->nullable();
             $table->string('alamat')->nullable();
             $table->string('acuan_lokasi')->nullable();
             $table->string('foto')->nullable();
-            $table->enum('status', ['0','1','2','3'])->nullable()->default('0'); // 0 = Open, 1 = In Progress, 2 = Pending, 3 = Success
+            $table->enum('status', ['0','1','2','3'])->nullable()->default('0'); // 0 = Waiting, 1 = In Progress, 2 = Pending, 3 = Success
             $table->timestamps();
         });
     }
