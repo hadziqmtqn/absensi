@@ -12,7 +12,7 @@
                         <label for="exampleSelectGender">Pilih Status</label>
                         <select class="form-control filter" id="filter-status">
                             <option value="">Pilih Semua</option>
-                            <option value="0">Open</option>
+                            <option value="0">Waiting</option>
                             <option value="1">In Progress</option>
                             <option value="2">Pending</option>
                             <option value="3">Success</option>

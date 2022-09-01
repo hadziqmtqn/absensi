@@ -24,6 +24,7 @@
         <div class="card">
             <div class="card-body">
                 <h4 class="card-title">{{ $title }}</h4>
+                @include('dashboard.layouts.session')
                 <form class="forms-sample" method="POST" action="{{ route('data_pasang_baru.update', $data->id) }}" enctype="multipart/form-data" id="pasang_baru">
                     @csrf
                     {{ method_field('PUT') }}

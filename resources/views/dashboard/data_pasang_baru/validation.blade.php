@@ -1,6 +1,6 @@
 <script>
-    if ($("#datajob").length > 0) {
-        $("#datajob").validate({
+    if ($("#pasang_baru").length > 0) {
+        $("#pasang_baru").validate({
             rules: {
                 inet: {
                     required: true,

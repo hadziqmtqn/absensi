@@ -61,8 +61,7 @@ class AbsensiController extends Controller
     {
         if ($request->ajax()) {
 			$data = Absensi::select('absensis.*','users.name as namakaryawan')
-            ->join('karyawans','absensis.user_id','=','karyawans.user_id')
-			->join('users','karyawans.user_id','=','users.id');
+			->join('users','absensis.user_id','=','users.id');
             
             return Datatables::of($data)
                 ->addIndexColumn()

@@ -27,8 +27,7 @@ class KaryawanController extends Controller
     public function getJsonKaryawan(Request $request)
     {
         if ($request->ajax()) {
-			$data = User::select('karyawans.*','users.name as namakaryawan','users.id as iduser','users.username','users.is_verifikasi','users.photo','users.email')
-			->join('karyawans','karyawans.user_id','=','users.id');
+			$data = User::select('*')->where('role_id',2);
             
             return Datatables::of($data)
                 ->addIndexColumn()
@@ -42,10 +41,10 @@ class KaryawanController extends Controller
                             $search = $request->get('search');
                             $w->orWhere('users.name', 'LIKE', "%$search%")
 							->orWhere('users.email', 'LIKE', "%$search%")
-							->orWhere('karyawans.short_name', 'LIKE', "%$search%")
-							->orWhere('karyawans.phone', 'LIKE', "%$search%")
-							->orWhere('karyawans.nik', 'LIKE', "%$search%")
-							->orWhere('karyawans.company_name', 'LIKE', "%$search%");
+							->orWhere('users.short_name', 'LIKE', "%$search%")
+							->orWhere('users.phone', 'LIKE', "%$search%")
+							->orWhere('users.nik', 'LIKE', "%$search%")
+							->orWhere('users.company_name', 'LIKE', "%$search%");
                         });
                     }
                 })
@@ -117,15 +116,12 @@ class KaryawanController extends Controller
         }
         $data['name'] = $request->name;
 		$data['email'] = $request->email;
-		// $data['created_at'] = date('Y-m-d H:i:s');
-		$data['updated_at'] = date('Y-m-d H:i:s');
-
-        $karyawan['short_name'] = $request->short_name;
-        $karyawan['nik'] = $request->nik;
-        $karyawan['phone'] = $request->phone;
-        $karyawan['company_name'] = $request->company_name;
-        // $karyawan['created_at'] = date('Y-m-d H:i:s');
-        $karyawan['updated_at'] = date('Y-m-d H:i:s');
+        $data['short_name'] = $request->short_name;
+        $data['nik'] = $request->nik;
+        $data['phone'] = $request->phone;
+        $data['company_name'] = $request->company_name;
+        // $data['created_at'] = date('Y-m-d H:i:s');
+        $data['updated_at'] = date('Y-m-d H:i:s');
 
         $file = $request->file('photo');
         if($file){
@@ -134,10 +130,7 @@ class KaryawanController extends Controller
             $data['photo'] = 'assets/' .$nama_file;
         }
 
-		\DB::transaction(function () use ($data, $karyawan, $id) {
-            User::where('id', $id)->update($data);
-            Karyawan::where('user_id', $id)->update($karyawan);
-        });
+        User::where('id', $id)->update($data);
         Alert::success('Sukses','Profile berhasil diupdate');
 		return redirect()->back();
 	}
