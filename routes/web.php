@@ -24,7 +24,7 @@ use App\Http\Controllers\Dashboard\DataJobController;
 */
 
 Route::get('/', function () {
-    return view('welcome');
+    return view('auth.login');
 });
 
 Route::middleware(['guest'])->group(function () {

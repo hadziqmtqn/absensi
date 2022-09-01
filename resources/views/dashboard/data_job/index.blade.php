@@ -55,7 +55,7 @@
                                                     <select name="user_id" class="form-control">
                                                         <option value="">Pilih</option>
                                                         @foreach ($listAbsensi as $absen)
-                                                            <option value="{{ $absen->id }}" {{ old('user_id') == $absen->id ? 'selected' : '' }}>{{ $absen->name }} | Absen Pada {{ \Carbon\Carbon::parse($absen->created_at)->format('H:i') }}</option>
+                                                            <option value="{{ $absen->id }}" {{ old('user_id') == $absen->id ? 'selected' : '' }}>{{ $absen->name }} | Absen Pada Pukul {{ \Carbon\Carbon::parse($absen->created_at)->format('H:i') }}</option>
                                                         @endforeach
                                                     </select>
                                                 </div>

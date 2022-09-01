@@ -20,8 +20,10 @@ class DataJobController extends Controller
     {
         $title = 'Data Job';
         $appName = Setting::first();
+        $listPasangBaru = DataPasangBaru::whereDoesntHave('data_job')
+        ->orderBy('created_at','DESC')
+        ->get();
         $toDay = Carbon::now()->format('Y-m-d');
-        $listPasangBaru = DataPasangBaru::whereDate('created_at', $toDay)->orderBy('created_at','DESC')->get();
         $listAbsensi = Absensi::select('absensis.id','absensis.user_id','absensis.created_at as tgl_absen','users.name')
         ->join('users','absensis.user_id','=','users.id')
         ->whereDate('absensis.created_at',$toDay)
@@ -34,7 +36,8 @@ class DataJobController extends Controller
     public function getJsonDataJob(Request $request)
     {
         if ($request->ajax()) {
-			$data = DataJob::select('data_jobs.id as idjob','data_jobs.kode_pasang_baru','data_jobs.created_at','data_jobs.updated_at','data_pasang_barus.kode','data_pasang_barus.nama_pelanggan','data_pasang_barus.no_hp','data_pasang_barus.alamat',
+			$data = DataJob::select('data_jobs.id as idjob','data_jobs.kode_pasang_baru','data_jobs.created_at','data_jobs.updated_at',
+            'data_pasang_barus.kode','data_pasang_barus.nama_pelanggan','data_pasang_barus.no_hp','data_pasang_barus.alamat',
             'data_pasang_barus.acuan_lokasi','data_pasang_barus.status','users.name')
             ->join('data_pasang_barus','data_jobs.kode_pasang_baru','=','data_pasang_barus.id')
             ->leftJoin('absensis','data_jobs.user_id','=','absensis.id')
@@ -66,8 +69,8 @@ class DataJobController extends Controller
                 })
 
                 ->addColumn('action', function($row){
-					$btn = '<a href="data_pasang_baru/'.$row->id.'" class="btn btn-primary" style="padding: 7px 10px">Detail</a>';
-                    $btn = $btn.' <a href="data_pasang_baru/edit/'.$row->id.'" class="btn btn-warning" style="padding: 7px 10px">Edit</a>';
+					$btn = '<a href="data_pasang_baru/'.$row->kode.'" class="btn btn-primary" style="padding: 7px 10px">Detail</a>';
+                    $btn = $btn.' <a href="data_pasang_baru/edit/'.$row->kode.'" class="btn btn-warning" style="padding: 7px 10px">Edit</a>';
                     $btn = $btn.' <button type="button" href="data_pasang_baru/hapus/'.$row->id.'" class="btn btn-danger btn-hapus" style="padding: 7px 10px">Delete</button>';
                     return $btn;
                 })
