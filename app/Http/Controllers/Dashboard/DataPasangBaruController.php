@@ -56,9 +56,9 @@ class DataPasangBaruController extends Controller
                 })
 
                 ->addColumn('action', function($row){
-					$btn = '<a href="data_pasang_baru/'.$row->kode.'" class="btn btn-primary" style="padding: 7px 10px">Detail</a>';
-                    $btn = $btn.' <a href="data_pasang_baru/edit/'.$row->kode.'" class="btn btn-warning" style="padding: 7px 10px">Edit</a>';
-                    $btn = $btn.' <button type="button" href="data_pasang_baru/hapus/'.$row->id.'" class="btn btn-danger btn-hapus" style="padding: 7px 10px">Delete</button>';
+					$btn = '<a href="data-pasang-baru/'.$row->kode.'" class="btn btn-primary" style="padding: 7px 10px">Detail</a>';
+                    $btn = $btn.' <a href="data-pasang-baru/edit/'.$row->kode.'" class="btn btn-warning" style="padding: 7px 10px">Edit</a>';
+                    $btn = $btn.' <button type="button" href="data-pasang-baru/hapus/'.$row->id.'" class="btn btn-danger btn-hapus" style="padding: 7px 10px">Delete</button>';
                     return $btn;
                 })
 

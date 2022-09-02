@@ -11,4 +11,9 @@ class Karyawan extends Model
 
     protected $table = 'users';
     protected $guarded = [];
+
+    public function absensi()
+    {
+        return $this->hasOne(Absensi::class, 'user_id');
+    }
 }

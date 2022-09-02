@@ -36,7 +36,7 @@
                                 <div class="modal-header">
                                     <h5 class="modal-title">Tambah Job Baru</h5>
                                 </div>
-                                <form class="forms-sample" method="POST" action="{{ route('data_job.store') }}" enctype="multipart/form-data" id="datajob">
+                                <form class="forms-sample" method="POST" action="{{ route('data-job.store') }}" enctype="multipart/form-data" id="datajob">
                                     @csrf
                                     <div id="datajob">
                                         <div class="modal-body">
@@ -54,7 +54,7 @@
                                                 <select name="user_id" class="form-control">
                                                     <option value="">Pilih</option>
                                                     @foreach ($listAbsensi as $absen)
-                                                        <option value="{{ $absen->id }}" {{ old('user_id') == $absen->id ? 'selected' : '' }}>{{ $absen->name }} | Absen Pada Pukul {{ \Carbon\Carbon::parse($absen->created_at)->format('H:i') }}</option>
+                                                        <option value="{{ $absen->user_id }}" {{ old('user_id') == $absen->user_id ? 'selected' : '' }}>{{ $absen->name }} | Absen Pada Pukul {{ \Carbon\Carbon::parse($absen->created_at)->format('H:i') }}</option>
                                                     @endforeach
                                                 </select>
                                             </div>
@@ -120,7 +120,7 @@
             {data: 'no_hp', name: 'no_hp'},
             {data: 'alamat', name: 'alamat'},
             {data: 'acuan_lokasi', name: 'acuan_lokasi'},
-            {data: 'name', name: 'name'},
+            {data: 'karyawan', name: 'karyawan'},
             {data: 'status', name: 'status', orderable: false, searchable: false},
             {data: 'created_at', name: 'created_at'},
         ]

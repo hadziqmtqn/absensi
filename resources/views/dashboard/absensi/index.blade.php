@@ -23,7 +23,7 @@
             <div class="card">
                 <div class="card-body">
                     <h4 class="card-title">{{ $title }}</h4>
-                    <div class="col-12 mb-3">
+                    <div class="mb-3">
                         <button class="btn btn-primary" data-toggle="modal" data-target="#data_job">Tambah Baru</button>
                     </div>
                     <!-- Modal -->
@@ -31,14 +31,14 @@
                         <div class="modal-dialog" role="document">
                             <div class="modal-content">
                                 <div class="modal-header">
-                                    <h5 class="modal-title">Tambah Job Baru</h5>
+                                    <h5 class="modal-title">Tambah Absensi Baru</h5>
                                 </div>
                                 <form class="forms-sample" method="POST" action="{{ route('absensi.store') }}" id="absensi">
                                     @csrf
                                     <div id="absensi">
                                         <div class="modal-body">
                                             <div class="form-group">
-                                                <label for="">Nama Karyawan</label>
+                                                <label for="">Pilih Nama Karyawan</label>
                                                 <select name="user_id" class="form-control">
                                                     <option value="">Pilih</option>
                                                     @foreach ($listKaryawan as $karyawan)
@@ -83,7 +83,7 @@
         scrollX: true,
         scrollCollapse: true,
         lengthMenu: [ [10, 25, 50, -1], [10, 25, 50, "All"] ],
-        // order: [[3,'asc']],
+        order: [[1,'asc']],
         ajax: {
             url: "{{ route('getjsonabsensi') }}",
             type: "POST",

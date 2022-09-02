@@ -19,7 +19,7 @@ class CreateDataJobsTable extends Migration
             $table->bigInteger('kode_pasang_baru')->unsigned();
             $table->timestamps();
 
-            $table->foreign('user_id')->references('id')->on('absensis')->onDelete('cascade');
+            $table->foreign('user_id')->references('id')->on('users')->onDelete('cascade');
             $table->foreign('kode_pasang_baru')->references('id')->on('data_pasang_barus')->onDelete('cascade');
         });
     }

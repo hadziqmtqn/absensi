@@ -61,21 +61,21 @@ Route::middleware(['auth',VerifikasiAkun::class])->group(function () {
         Route::get('karyawan/{id}/undo_verifikasi', [KaryawanController::class, 'undo_verifikasi'])->name('karyawan.undo_verifikasi');
         Route::delete('karyawan/hapus/{id}', [KaryawanController::class, 'delete'])->name('karyawan.hapus');
         // data pasang baru
-        Route::get('data_pasang_baru', [DataPasangBaruController::class, 'index'])->name('data_pasang_baru.index');
-        Route::post('data_pasang_baru/store', [DataPasangBaruController::class, 'store'])->name('data_pasang_baru.store');
+        Route::get('data-pasang-baru', [DataPasangBaruController::class, 'index'])->name('data-pasang-baru.index');
+        Route::post('data-pasang-baru/store', [DataPasangBaruController::class, 'store'])->name('data-pasang-baru.store');
         Route::post('getjsonpasangbaru', [DataPasangBaruController::class, 'getJsonPasangBaru'])->name('getjsonpasangbaru');
-        Route::get('data_pasang_baru/{kode}', [DataPasangBaruController::class, 'detail'])->name('data_pasang_baru.detail');
-        Route::get('data_pasang_baru/edit/{kode}', [DataPasangBaruController::class, 'edit'])->name('data_pasang_baru.edit');
-        Route::put('data_pasang_baru/edit/{id}', [DataPasangBaruController::class, 'update'])->name('data_pasang_baru.update');
-        Route::delete('data_pasang_baru/hapus/{id}', [DataPasangBaruController::class, 'delete'])->name('data_pasang_baru.hapus');
+        Route::get('data-pasang-baru/{kode}', [DataPasangBaruController::class, 'detail'])->name('data-pasang-baru.detail');
+        Route::get('data-pasang-baru/edit/{kode}', [DataPasangBaruController::class, 'edit'])->name('data-pasang-baru.edit');
+        Route::put('data-pasang-baru/edit/{id}', [DataPasangBaruController::class, 'update'])->name('data-pasang-baru.update');
+        Route::delete('data-pasang-baru/hapus/{id}', [DataPasangBaruController::class, 'delete'])->name('data-pasang-baru.hapus');
         // data job
-        Route::get('data_job', [DataJobController::class, 'index'])->name('data_job.index');
-        Route::post('data_job/store', [DataJobController::class, 'store'])->name('data_job.store');
+        Route::get('data-job', [DataJobController::class, 'index'])->name('data-job.index');
+        Route::post('data-job/store', [DataJobController::class, 'store'])->name('data-job.store');
         Route::post('getjsondatajob', [DataJobController::class, 'getJsonDataJob'])->name('getjsondatajob');
-        Route::get('data_job/{id}', [DataJobController::class, 'detail'])->name('data_job.detail');
-        Route::get('data_job/edit/{id}', [DataJobController::class, 'edit'])->name('data_job.edit');
-        Route::put('data_job/edit/{id}', [DataJobController::class, 'update'])->name('data_job.update');
-        Route::delete('data_job/hapus/{id}', [DataJobController::class, 'delete'])->name('data_job.hapus');
+        Route::get('data-job/{id}', [DataJobController::class, 'detail'])->name('data-job.detail');
+        Route::get('data-job/edit/{id}', [DataJobController::class, 'edit'])->name('data-job.edit');
+        Route::put('data-job/edit/{id}', [DataJobController::class, 'update'])->name('data-job.update');
+        Route::delete('data-job/hapus/{id}', [DataJobController::class, 'delete'])->name('data-job.hapus');
         // absen
         Route::post('absensi/store', [AbsensiController::class, 'store'])->name('absensi.store');
     });

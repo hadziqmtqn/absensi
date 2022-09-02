@@ -11,7 +11,7 @@
                 <div class="form-group">
                     <select class="form-control" onchange="location = this.value;">
                         @foreach ($listPasangBaru as $pasang)
-                        <option value="{{ route('data_pasang_baru.edit',$pasang->kode) }}" {{ ($data->kode == $pasang->kode) ? 'selected' : '' }}>{{ $pasang->kode }}</option>
+                        <option value="{{ route('data-pasang-baru.edit',$pasang->kode) }}" {{ ($data->kode == $pasang->kode) ? 'selected' : '' }}>{{ $pasang->kode }}</option>
                         @endforeach
                     </select>
                 </div>
@@ -25,7 +25,7 @@
             <div class="card-body">
                 <h4 class="card-title">{{ $title }}</h4>
                 @include('dashboard.layouts.session')
-                <form class="forms-sample" method="POST" action="{{ route('data_pasang_baru.update', $data->id) }}" enctype="multipart/form-data" id="pasang_baru">
+                <form class="forms-sample" method="POST" action="{{ route('data-pasang-baru.update', $data->id) }}" enctype="multipart/form-data" id="pasang_baru">
                     @csrf
                     {{ method_field('PUT') }}
                     <div id="pasang_baru">

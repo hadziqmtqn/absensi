@@ -65,7 +65,7 @@
             <div class="modal-header">
                 <h5 class="modal-title">Tambah Pasang Baru</h5>
             </div>
-            <form class="forms-sample" method="POST" action="{{ route('data_pasang_baru.store') }}" enctype="multipart/form-data" id="pasang_baru">
+            <form class="forms-sample" method="POST" action="{{ route('data-pasang-baru.store') }}" enctype="multipart/form-data" id="pasang_baru">
                 @csrf
                 <div class="modal-body" id="pasang_baru">
                     <div class="form-group">

@@ -12,7 +12,6 @@ use Yajra\Datatables\Datatables;
 use App\Models\Absensi;
 use App\Models\Setting;
 use App\Models\Karyawan;
-
 use Carbon\Carbon;
 
 class AbsensiController extends Controller
@@ -22,10 +21,15 @@ class AbsensiController extends Controller
         if (Auth::user()->role_id == 1) {
             $title = 'Absensi Karyawan';
             $appName = Setting::first();
-            $listKaryawan = Karyawan::orderBy('name','ASC')
-            ->where('role_id',2)
+            $listKaryawan = Karyawan::where('role_id',2)->select('id','name')
+            ->withCount('absensi')
+            ->whereDoesnthave('absensi', function($e){
+                $hariIni = Carbon::now()->format('Y-m-d');
+                $e->where('waktu_absen', $hariIni);
+            })
+            ->orderBy('name','ASC')
             ->get();
-            
+
             return view('dashboard.absensi.index', compact('title','appName','listKaryawan'));
         } else {
             $title = 'Absensi Karyawan';
@@ -81,7 +85,8 @@ class AbsensiController extends Controller
     {
         if ($request->ajax()) {
 			$data = Absensi::select('absensis.*','users.name as namakaryawan')
-			->join('users','absensis.user_id','=','users.id');
+			->join('users','absensis.user_id','=','users.id')
+            ->orderBy('created_at','DESC');
             
             return Datatables::of($data)
                 ->addIndexColumn()
