@@ -51,6 +51,18 @@
                                     </select>
                                 </div>
                             </div>
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label for="">Status</label>
+                                    <select name="status" class="form-control">
+                                        <option value="">Pilih</option>
+                                        <option value="0" {{ $data->dataPasangBaru->status == '0' ? 'selected' : '' }}>Waiting</option>
+                                        <option value="1" {{ $data->dataPasangBaru->status == '1' ? 'selected' : '' }}>Is Progress</option>
+                                        <option value="2" {{ $data->dataPasangBaru->status == '2' ? 'selected' : '' }}>Pending</option>
+                                        <option value="3" {{ $data->dataPasangBaru->status == '3' ? 'selected' : '' }}>Success</option>
+                                    </select>
+                                </div>
+                            </div>
                         </div>
                         <button type="submit" class="btn btn-primary">Submit</button>
                     </div>

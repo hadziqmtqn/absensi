@@ -10,9 +10,9 @@ use Yajra\Datatables\Datatables;
 use App\Models\DataJob;
 use App\Models\Setting;
 use App\Models\DataPasangBaru;
-use App\Models\Absensi;
 use App\Models\Karyawan;
 use Carbon\Carbon;
+use Illuminate\Support\Facades\DB;
 
 class DataJobController extends Controller
 {
@@ -24,13 +24,17 @@ class DataJobController extends Controller
         ->orderBy('created_at','ASC')
         ->get();
         $toDay = Carbon::now()->format('Y-m-d');
-        $listAbsensi = Absensi::select('absensis.id','absensis.user_id','absensis.created_at as tgl_absen','users.name')
-        ->join('users','absensis.user_id','=','users.id')
-        ->whereDate('absensis.created_at',$toDay)
-        ->orderBy('absensis.created_at','ASC')
+        $listKaryawan = Karyawan::whereHas('absensi', function($e){
+            $hariIni = Carbon::now()->format('Y-m-d');
+            $e->whereDate('created_at',$hariIni);
+        })
+        ->whereDoesntHave('dataJob', function($e){
+            $hariIni = Carbon::now()->format('Y-m-d');
+            $e->whereDate('created_at',$hariIni);
+        })
         ->get();
 
-        return view('dashboard.data_job.index', compact('title','appName','listPasangBaru','listAbsensi'));
+        return view('dashboard.data_job.index', compact('title','appName','listPasangBaru','listKaryawan'));
     }
 
     public function getJsonDataJob(Request $request)
@@ -142,24 +146,34 @@ class DataJobController extends Controller
         $data = DataJob::find($id);
         $listDataJob = DataJob::orderBy('created_at','DESC')->get();
         $listPasangBaru = DataPasangBaru::orderBy('created_at', 'DESC')->get();
-        $listKaryawan = Karyawan::where('role_id',2)->get();
+        $listKaryawan = Karyawan::whereHas('absensi', function($e){
+            $hariIni = Carbon::now()->format('Y-m-d');
+            $e->whereDate('created_at',$hariIni);
+        })->get();
 
         return view('dashboard.data_job.edit', compact('title','appName','data','listDataJob','listPasangBaru','listKaryawan'));
     }
 
     public function update(Request $request,$id)
 	{
-		$request->validate([
-			'user_id' => 'required',
+        $request->validate([
+            'user_id' => 'required',
             'kode_pasang_baru' => 'required',
+            'status',
 		]);
-
+        
         $data['user_id'] = $request->user_id;
 		$data['kode_pasang_baru'] = $request->kode_pasang_baru;
 		// $data['created_at'] = date('Y-m-d H:i:s');
 		$data['updated_at'] = date('Y-m-d H:i:s');
-
-		DataJob::where('id',$id)->update($data);
+        
+        $pasangbaru['status'] = $request->status;
+        
+        DB::transaction(function () use ($data, $pasangbaru, $id) {
+            DataJob::where('id', $id)->update($data);
+            $idJob = DataJob::findOrFail($id);
+            DataPasangBaru::where('id', $idJob->kode_pasang_baru)->update($pasangbaru);
+        });
         Alert::success('Sukses','Data Job Baru berhasil diupdate');
 		return redirect()->back();
 	}

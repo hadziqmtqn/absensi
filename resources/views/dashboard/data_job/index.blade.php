@@ -53,8 +53,8 @@
                                                 <label for="">Nama Karyawan</label>
                                                 <select name="user_id" class="form-control">
                                                     <option value="">Pilih</option>
-                                                    @foreach ($listAbsensi as $absen)
-                                                        <option value="{{ $absen->user_id }}" {{ old('user_id') == $absen->user_id ? 'selected' : '' }}>{{ $absen->name }} | Absen Pada Pukul {{ \Carbon\Carbon::parse($absen->created_at)->format('H:i') }}</option>
+                                                    @foreach ($listKaryawan as $karyawan)
+                                                        <option value="{{ $karyawan->id }}" {{ old('user_id') == $karyawan->id ? 'selected' : '' }}>{{ $karyawan->name }} | Absen Pada Pukul {{ \Carbon\Carbon::parse($karyawan->absensi->created_at)->format('H:i') }}</option>
                                                     @endforeach
                                                 </select>
                                             </div>
@@ -75,11 +75,11 @@
                                 <th>#</th>
                                 <th>Aksi</th>
                                 <th>Kode</th>
+                                <th>Nama Teknisi</th>
                                 <th>Nama Pelanggan</th>
                                 <th>No. HP</th>
                                 <th>Alamat Pasang Baru</th>
                                 <th>Acuan Lokasi</th>
-                                <th>Nama Karyawan</th>
                                 <th>Status</th>
                                 <th>Dibuat pada</th>
                             </tr>
@@ -116,11 +116,11 @@
             {data: 'DT_RowIndex', name: 'DT_RowIndex', orderable: false, searchable: false},
             {data: 'action', name: 'action', orderable: false, searchable: false},
             {data: 'kode', name: 'kode'},
+            {data: 'karyawan', name: 'karyawan'},
             {data: 'nama_pelanggan', name: 'nama_pelanggan'},
             {data: 'no_hp', name: 'no_hp'},
             {data: 'alamat', name: 'alamat'},
             {data: 'acuan_lokasi', name: 'acuan_lokasi'},
-            {data: 'karyawan', name: 'karyawan'},
             {data: 'status', name: 'status', orderable: false, searchable: false},
             {data: 'created_at', name: 'created_at'},
         ]

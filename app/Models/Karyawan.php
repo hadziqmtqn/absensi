@@ -16,4 +16,9 @@ class Karyawan extends Model
     {
         return $this->hasOne(Absensi::class, 'user_id');
     }
+
+    public function dataJob()
+    {
+        return $this->hasOne(DataJob::class, 'user_id');
+    }
 }
