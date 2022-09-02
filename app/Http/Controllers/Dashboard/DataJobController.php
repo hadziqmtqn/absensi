@@ -20,7 +20,8 @@ class DataJobController extends Controller
     {
         $title = 'Data Job';
         $appName = Setting::first();
-        $listPasangBaru = DataPasangBaru::whereDoesntHave('data_job')
+        $listPasangBaru = DataPasangBaru::where('status','0')
+        ->whereDoesntHave('data_job')
         ->orderBy('created_at','ASC')
         ->get();
         $toDay = Carbon::now()->format('Y-m-d');
@@ -143,9 +144,13 @@ class DataJobController extends Controller
     {
         $title = 'Edit Data Job';
         $appName = Setting::first();
-        $data = DataJob::find($id);
+        $data = DataJob::findOrFail($id);
         $listDataJob = DataJob::orderBy('created_at','DESC')->get();
-        $listPasangBaru = DataPasangBaru::orderBy('created_at', 'DESC')->get();
+        $listPasangBaru = DataPasangBaru::where('status','0')
+        ->whereDoesntHave('data_job')
+        ->orWhere('id',$data->kode_pasang_baru)
+        ->orderBy('created_at', 'DESC')
+        ->get();
         $listKaryawan = Karyawan::whereHas('absensi', function($e){
             $hariIni = Carbon::now()->format('Y-m-d');
             $e->whereDate('created_at',$hariIni);

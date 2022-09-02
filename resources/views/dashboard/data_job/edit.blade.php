@@ -35,7 +35,7 @@
                                     <select name="kode_pasang_baru" class="form-control">
                                         <option value="">Pilih</option>
                                         @foreach ($listPasangBaru as $pasang)
-                                            <option value="{{ $pasang->id }}" {{ $pasang->id == $data->kode_pasang_baru ? 'selected' : '' }}>{{ $pasang->kode }}</option>
+                                            <option value="{{ $pasang->id }}" {{ $pasang->id == $data->kode_pasang_baru ? 'selected' : '' }}>{{ $pasang->id }} - {{ $pasang->kode }}</option>
                                         @endforeach
                                     </select>
                                 </div>

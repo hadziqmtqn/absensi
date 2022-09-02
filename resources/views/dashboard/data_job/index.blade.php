@@ -45,7 +45,7 @@
                                                 <select name="kode_pasang_baru" class="form-control">
                                                     <option value="">Pilih</option>
                                                     @foreach ($listPasangBaru as $pasang)
-                                                        <option value="{{ $pasang->id }}" {{ old('kode_pasang_baru') == $pasang->id ? 'selected' : '' }}>{{ $pasang->kode }} | Diinput Pada {{ $pasang->created_at }}</option>
+                                                        <option value="{{ $pasang->id }}" {{ old('kode_pasang_baru') == $pasang->id ? 'selected' : '' }}>{{ $pasang->id }} - {{ $pasang->kode }} | Diinput Pada {{ $pasang->created_at }}</option>
                                                     @endforeach
                                                 </select>
                                             </div>
@@ -74,13 +74,13 @@
                             <tr>
                                 <th>#</th>
                                 <th>Aksi</th>
+                                <th>Status</th>
                                 <th>Kode</th>
                                 <th>Nama Teknisi</th>
                                 <th>Nama Pelanggan</th>
                                 <th>No. HP</th>
                                 <th>Alamat Pasang Baru</th>
                                 <th>Acuan Lokasi</th>
-                                <th>Status</th>
                                 <th>Dibuat pada</th>
                             </tr>
                         </thead>
@@ -100,7 +100,7 @@
         scrollX: true,
         scrollCollapse: true,
         lengthMenu: [ [10, 25, 50, -1], [10, 25, 50, "All"] ],
-        order: [[9,'desc']],
+        order: [[3,'desc']],
         ajax: {
             url: "{{ route('getjsondatajob') }}",
             type: "POST",
@@ -115,13 +115,13 @@
         columns: [
             {data: 'DT_RowIndex', name: 'DT_RowIndex', orderable: false, searchable: false},
             {data: 'action', name: 'action', orderable: false, searchable: false},
+            {data: 'status', name: 'status', orderable: false, searchable: false},
             {data: 'kode', name: 'kode'},
             {data: 'karyawan', name: 'karyawan'},
             {data: 'nama_pelanggan', name: 'nama_pelanggan'},
             {data: 'no_hp', name: 'no_hp'},
             {data: 'alamat', name: 'alamat'},
             {data: 'acuan_lokasi', name: 'acuan_lokasi'},
-            {data: 'status', name: 'status', orderable: false, searchable: false},
             {data: 'created_at', name: 'created_at'},
         ]
     });

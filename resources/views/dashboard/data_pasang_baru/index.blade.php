@@ -36,13 +36,13 @@
                                     <tr>
                                         <th>#</th>
                                         <th>Aksi</th>
+                                        <th>Status</th>
                                         <th>Kode</th>
                                         <th>Inet</th>
                                         <th>Nama Pelanggan</th>
                                         <th>No. HP</th>
                                         <th>Alamat</th>
                                         <th>Acuan Lokasi</th>
-                                        <th>Status</th>
                                         <th>Dibuat pada</th>
                                         <th>Diupdate pada</th>
                                     </tr>
@@ -117,7 +117,7 @@
         scrollX: true,
         scrollCollapse: true,
         lengthMenu: [ [10, 25, 50, -1], [10, 25, 50, "All"] ],
-        order: [[2,'desc']],
+        order: [[3,'desc']],
         ajax: {
             url: "{{ route('getjsonpasangbaru') }}",
             type: "POST",
@@ -132,13 +132,13 @@
         columns: [
             {data: 'DT_RowIndex', name: 'DT_RowIndex', orderable: false, searchable: false},
             {data: 'action', name: 'action', orderable: false, searchable: false},
+            {data: 'status', name: 'status', orderable: false, searchable: false},
             {data: 'kode', name: 'kode'},
             {data: 'inet', name: 'inet'},
             {data: 'nama_pelanggan', name: 'nama_pelanggan'},
             {data: 'no_hp', name: 'no_hp'},
             {data: 'alamat', name: 'alamat'},
             {data: 'acuan_lokasi', name: 'acuan_lokasi'},
-            {data: 'status', name: 'status', orderable: false, searchable: false},
             {data: 'created_at', name: 'created_at'},
             {data: 'updated_at', name: 'updated_at'},
         ]
