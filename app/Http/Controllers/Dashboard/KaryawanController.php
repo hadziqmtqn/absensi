@@ -6,13 +6,13 @@ use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use Illuminate\Support\Carbon;
 use RealRashid\SweetAlert\Facades\Alert;
+use Illuminate\Support\Facades\Auth;
+use Yajra\Datatables\Datatables;
 
 use App\Models\User;
 use App\Models\Setting;
 use App\Models\Karyawan;
 use App\Models\Role;
-
-use DataTables;
 
 class KaryawanController extends Controller
 {
@@ -27,7 +27,7 @@ class KaryawanController extends Controller
     public function getJsonKaryawan(Request $request)
     {
         if ($request->ajax()) {
-			$data = User::select('*')->where('role_id',2);
+			$data = Karyawan::select('*')->where('role_id',2);
             
             return Datatables::of($data)
                 ->addIndexColumn()
@@ -111,7 +111,7 @@ class KaryawanController extends Controller
             'email' => 'email|required',
 		]);
 
-        if(\Auth::user()->role_id == 1){
+        if(Auth::user()->role_id == 1){
             $data['role_id'] = $request->role_id;
         }
         $data['name'] = $request->name;

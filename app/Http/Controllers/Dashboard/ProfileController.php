@@ -5,17 +5,19 @@ namespace App\Http\Controllers\Dashboard;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use RealRashid\SweetAlert\Facades\Alert;
+use Illuminate\Support\Facades\Auth;
 
 use App\Models\User;
 use App\Models\Setting;
 use App\Models\Role;
 use App\Models\Karyawan;
+use Illuminate\Support\Facades\DB;
 
 class ProfileController extends Controller
 {
     public function index()
     {
-        $idUser = \Auth::user()->id;
+        $idUser = Auth::user()->id;
         $title = 'Profile Setting';
         $appName = Setting::first();
         $profile = User::with('karyawan_r')->where('id',$idUser)->first();
@@ -37,7 +39,7 @@ class ProfileController extends Controller
             'email' => 'email|required',
 		]);
 
-        if(\Auth::user()->role_id == 1){
+        if(Auth::user()->role_id == 1){
             $data['role_id'] = $request->role_id;
         }
         $data['name'] = $request->name;
@@ -59,7 +61,7 @@ class ProfileController extends Controller
             $data['photo'] = 'assets/' .$nama_file;
         }
 
-		\DB::transaction(function () use ($data, $karyawan, $id) {
+		DB::transaction(function () use ($data, $karyawan, $id) {
             User::where('id', $id)->update($data);
             Karyawan::where('user_id', $id)->update($karyawan);
         });
@@ -69,7 +71,7 @@ class ProfileController extends Controller
 
     public function update_password()
     {
-        $idUser = \Auth::user()->id;
+        $idUser = Auth::user()->id;
         $title = 'Update Password';
         $appName = Setting::first();
         $profile = User::where('id',$idUser)->first();

@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 
 use App\Models\User;
 use App\Models\Karyawan;
@@ -45,7 +46,7 @@ class RegisterController extends Controller
         $karyawan['created_at'] = date('Y-m-d H:i:s');
         $karyawan['updated_at'] = date('Y-m-d H:i:s');
 
-        \DB::transaction(function () use ($data, $karyawan) {
+        DB::transaction(function () use ($data, $karyawan) {
             $id_user = User::insertGetId($data);
 
             $karyawan['user_id'] = $id_user;

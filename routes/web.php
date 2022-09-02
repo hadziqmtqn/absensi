@@ -1,7 +1,7 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
-use App\Http\Controllers\HomeController;
+use Illuminate\Support\Facades\Auth;
 use App\Http\Controllers\Dashboard\DashboardController;
 use App\Http\Controllers\Dashboard\SettingController;
 use App\Http\Controllers\RegisterController;
@@ -24,7 +24,7 @@ use App\Http\Controllers\Dashboard\DataJobController;
 */
 
 Route::get('/', function () {
-    return view('auth.login');
+    return redirect('login');
 });
 
 Route::middleware(['guest'])->group(function () {
@@ -41,7 +41,7 @@ Route::middleware(['auth',VerifikasiAkun::class])->group(function () {
     Route::put('profile/password/{id}', [ProfileController::class, 'password'])->name('profile.password');
     // absensi
     Route::get('absensi', [AbsensiController::class, 'index'])->name('absensi.index');
-    Route::get('absensi/store', [AbsensiController::class, 'store'])->name('absensi.store');
+    Route::get('absensi/add_absensi', [AbsensiController::class, 'add_absensi'])->name('absensi.add_absensi');
     Route::post('getjsonabsensi', [AbsensiController::class, 'getJsonAbsensi'])->name('getjsonabsensi');
     Route::delete('absensi/hapus/{id}',[AbsensiController::class, 'delete'])->name('absensi.hapus');
 
@@ -76,6 +76,8 @@ Route::middleware(['auth',VerifikasiAkun::class])->group(function () {
         Route::get('data_job/edit/{id}', [DataJobController::class, 'edit'])->name('data_job.edit');
         Route::put('data_job/edit/{id}', [DataJobController::class, 'update'])->name('data_job.update');
         Route::delete('data_job/hapus/{id}', [DataJobController::class, 'delete'])->name('data_job.hapus');
+        // absen
+        Route::post('absensi/store', [AbsensiController::class, 'store'])->name('absensi.store');
     });
 
     Route::get('forbidden', function() {
