@@ -78,7 +78,7 @@
                 {data: 'DT_RowIndex', name: 'DT_RowIndex', orderable: false, searchable: false},
                 {data: 'action', name: 'action', orderable: false, searchable: false},
                 {data: 'photo', name: 'photo', orderable: false, searchable: false},
-                {data: 'namakaryawan', name: 'namakaryawan'},
+                {data: 'name', name: 'name'},
                 {data: 'short_name', name: 'short_name'},
                 {data: 'nik', name: 'nik'},
                 {data: 'phone', name: 'phone'},

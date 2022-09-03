@@ -16,7 +16,12 @@ class AlterRoleUsersTable extends Migration
         Schema::table('users', function (Blueprint $table) {
             $table->bigInteger('role_id')->nullable()->unsigned()->after('id');
             $table->string('username')->nullable()->after('name');
+            $table->string('short_name')->nullable()->after('username');
+            $table->string('nik')->nullable()->after('short_name');
+            $table->string('phone')->nullable()->after('nik');
+            $table->string('company_name')->nullable()->after('phone');
             $table->string('photo')->nullable()->after('username');
+            $table->boolean('is_verifikasi')->nullable()->default(false)->after('remember_token');
 
             $table->foreign('role_id')->references('id')->on('roles')->onDelete('restrict');
         });

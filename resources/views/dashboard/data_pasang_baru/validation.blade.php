@@ -1,8 +1,8 @@
 <script>
-    if ($("#datajob").length > 0) {
-        $("#datajob").validate({
+    if ($("#pasang_baru").length > 0) {
+        $("#pasang_baru").validate({
             rules: {
-                kode: {
+                inet: {
                     required: true,
                 },
                 nama_pelanggan: {
@@ -10,6 +10,8 @@
                 },
                 no_hp: {
                     required: true,
+                    minlength: 10,
+                    maxlength: 13,
                 },
                 alamat: {
                     required: true,
@@ -19,8 +21,9 @@
                 },
             },
             messages: {
-                kode: {
-                    required: "Kode Job Harus diisi",
+                inet: {
+                    required: "No. Internet Harus diisi",
+                    number: "No. Internet Harus Berupa Angka",
                 },
                 nama_pelanggan: {
                     required: "Nama Pelanggan Harus diisi",

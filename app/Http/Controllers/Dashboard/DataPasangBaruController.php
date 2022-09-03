@@ -5,11 +5,11 @@ namespace App\Http\Controllers\Dashboard;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use RealRashid\SweetAlert\Facades\Alert;
+use Yajra\Datatables\Datatables;
 
 use App\Models\Setting;
 use App\Models\DataPasangBaru;
 
-use DataTables;
 use Carbon\Carbon;
 
 class DataPasangBaruController extends Controller
@@ -38,6 +38,7 @@ class DataPasangBaruController extends Controller
                             $instance->where(function($w) use($request){
                             $search = $request->get('search');
                             $w->orWhere('data_pasang_barus.kode', 'LIKE', "%$search%")
+							->orWhere('data_pasang_barus.inet', 'LIKE', "%$search%")
 							->orWhere('data_pasang_barus.nama_pelanggan', 'LIKE', "%$search%")
 							->orWhere('data_pasang_barus.no_hp', 'LIKE', "%$search%")
 							->orWhere('data_pasang_barus.alamat', 'LIKE', "%$search%")
@@ -55,15 +56,15 @@ class DataPasangBaruController extends Controller
                 })
 
                 ->addColumn('action', function($row){
-					$btn = '<a href="data_pasang_baru/'.$row->id.'" class="btn btn-primary" style="padding: 7px 10px">Detail</a>';
-                    $btn = $btn.' <a href="data_pasang_baru/edit/'.$row->id.'" class="btn btn-warning" style="padding: 7px 10px">Edit</a>';
-                    $btn = $btn.' <button type="button" href="data_pasang_baru/hapus/'.$row->id.'" class="btn btn-danger btn-hapus" style="padding: 7px 10px">Delete</button>';
+					$btn = '<a href="data-pasang-baru/'.$row->kode.'" class="btn btn-primary" style="padding: 7px 10px">Detail</a>';
+                    $btn = $btn.' <a href="data-pasang-baru/edit/'.$row->kode.'" class="btn btn-warning" style="padding: 7px 10px">Edit</a>';
+                    $btn = $btn.' <button type="button" href="data-pasang-baru/hapus/'.$row->id.'" class="btn btn-danger btn-hapus" style="padding: 7px 10px">Delete</button>';
                     return $btn;
                 })
 
                 ->addColumn('status', function($row){
                     if($row->status == 0){
-                        return '<span class="badge badge-info">Open</span>';
+                        return '<span class="badge badge-info">Waiting</span>';
                     }elseif($row->status == 1){
                         return '<span class="badge badge-primary">In Progress</span>';
                     }elseif($row->status == 2){
@@ -90,7 +91,7 @@ class DataPasangBaruController extends Controller
     public function store(Request $request)
 	{
 		$request->validate([
-			'kode' => 'required',
+            'inet' => 'required',
             'nama_pelanggan' => 'required',
             'no_hp' => 'required',
             'alamat' => 'required',
@@ -98,7 +99,8 @@ class DataPasangBaruController extends Controller
             'foto' => 'file|mimes:jpg,jpeg,png|max:1024'
 		]);
 
-        $data['kode'] = $request->kode;
+		$data['inet'] = $request->inet;
+        $data['kode'] = 'SC-'.rand();
 		$data['nama_pelanggan'] = $request->nama_pelanggan;
 		$data['no_hp'] = $request->no_hp;
 		$data['alamat'] = $request->alamat;
@@ -118,16 +120,16 @@ class DataPasangBaruController extends Controller
 		return redirect()->back();
 	}
 
-    public function detail($id)
+    public function detail($kode)
     {
         $title = 'Detail Pasang Baru';
         $appName = Setting::first();
-        $data = DataPasangBaru::find($id);
+        $data = DataPasangBaru::where('kode',$kode)->first();
         $listPasangBaru = DataPasangBaru::orderBy('created_at','DESC')->get();
 
         if($data->status == 0){
             $badge = 'badge-info';
-            $status = 'Open';
+            $status = 'Waiting';
         }elseif($data->status == 1){
             $badge = 'badge-primary';
             $status = 'In Progress';
@@ -142,11 +144,11 @@ class DataPasangBaruController extends Controller
         return view('dashboard.data_pasang_baru.detail', compact('title','appName','data','listPasangBaru','badge','status'));
     }
 
-    public function edit($id)
+    public function edit($kode)
     {
         $title = 'Edit Pasang Baru';
         $appName = Setting::first();
-        $data = DataPasangBaru::find($id);
+        $data = DataPasangBaru::where('kode',$kode)->first();
         $listPasangBaru = DataPasangBaru::orderBy('created_at','DESC')->get();
 
         return view('dashboard.data_pasang_baru.edit', compact('title','appName','data','listPasangBaru'));
@@ -155,7 +157,7 @@ class DataPasangBaruController extends Controller
     public function update(Request $request, $id)
 	{
 		$request->validate([
-			'kode' => 'required',
+            'inet' => 'required',
             'nama_pelanggan' => 'required',
             'no_hp' => 'required',
             'alamat' => 'required',
@@ -163,7 +165,7 @@ class DataPasangBaruController extends Controller
             'foto' => 'file|mimes:jpg,jpeg,png|max:1024'
 		]);
 
-        $data['kode'] = $request->kode;
+		$data['inet'] = $request->inet;
 		$data['nama_pelanggan'] = $request->nama_pelanggan;
 		$data['no_hp'] = $request->no_hp;
 		$data['alamat'] = $request->alamat;

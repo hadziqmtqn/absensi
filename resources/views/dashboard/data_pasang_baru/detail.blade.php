@@ -11,7 +11,7 @@
                 <div class="form-group">
                     <select class="form-control" onchange="location = this.value;">
                         @foreach ($listPasangBaru as $pasang)
-                        <option value="{{ route('data_pasang_baru.detail',$pasang->id) }}" {{ ($data->id == $pasang->id) ? 'selected' : '' }}>{{ $pasang->kode }}</option>
+                        <option value="{{ route('data-pasang-baru.detail',$pasang->kode) }}" {{ ($data->kode == $pasang->kode) ? 'selected' : '' }}>{{ $pasang->kode }}</option>
                         @endforeach
                     </select>
                 </div>
@@ -30,6 +30,10 @@
                             <tr>
                                 <th style="width: 150px">Kode</th>
                                 <td>{{ $data->kode }}</td>
+                            </tr>
+                            <tr>
+                                <th style="width: 150px">Inet</th>
+                                <td>{{ $data->inet }}</td>
                             </tr>
                             <tr>
                                 <th style="width: 150px">Nama Pelanggan</th>

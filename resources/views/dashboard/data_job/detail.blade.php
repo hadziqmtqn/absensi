@@ -10,8 +10,8 @@
                 <h4 class="card-title">Pilih Kode</h4>
                 <div class="form-group">
                     <select class="form-control" onchange="location = this.value;">
-                        @foreach ($listPasangBaru as $pasang)
-                        <option value="{{ route('data_pasang_baru.detail',$pasang->id) }}" {{ ($data->id == $pasang->id) ? 'selected' : '' }}>{{ $pasang->kode }}</option>
+                        @foreach ($listDataJob as $job)
+                        <option value="{{ route('data-job.detail',$job->id) }}" {{ ($data->id == $job->id) ? 'selected' : '' }}>{{ $job->dataPasangBaru->kode }}</option>
                         @endforeach
                     </select>
                 </div>
@@ -29,23 +29,27 @@
                         <tbody>
                             <tr>
                                 <th style="width: 150px">Kode</th>
-                                <td>{{ $data->kode }}</td>
+                                <td>{{ $data->dataPasangBaru->kode }}</td>
                             </tr>
                             <tr>
                                 <th style="width: 150px">Nama Pelanggan</th>
-                                <td>{{ $data->nama_pelanggan }}</td>
+                                <td>{{ $data->dataPasangBaru->nama_pelanggan }}</td>
                             </tr>
                             <tr>
                                 <th style="width: 150px">No. HP</th>
-                                <td>{{ $data->no_hp }}</td>
+                                <td>{{ $data->dataPasangBaru->no_hp }}</td>
                             </tr>
                             <tr>
                                 <th style="width: 150px">Alamat</th>
-                                <td>{{ $data->alamat }}</td>
+                                <td>{{ $data->dataPasangBaru->alamat }}</td>
                             </tr>
                             <tr>
                                 <th style="width: 150px">Acuan Lokasi</th>
-                                <td>{{ $data->acuan_lokasi }}</td>
+                                <td>{{ $data->dataPasangBaru->acuan_lokasi }}</td>
+                            </tr>
+                            <tr>
+                                <th style="width: 150px">Nama Teknisi</th>
+                                <td>{{ $data->karyawan->name }}</td>
                             </tr>
                             <tr>
                                 <th style="width: 150px">Status</th>
@@ -62,8 +66,8 @@
         <div class="card">
             <div class="card-body">
                 <h4 class="card-title">Foto {{ $title }}</h4>
-                @if(!empty($data->foto))
-                <img src="{{ asset($data->foto) }}" alt="{{ $data->kode }}" style="width: 100%">
+                @if(!empty($data->dataPasangBaru->foto))
+                <img src="{{ asset($data->dataPasangBaru->foto) }}" alt="{{ $data->dataPasangBaru->kode }}" style="width: 100%">
                 @endif
             </div>
         </div>

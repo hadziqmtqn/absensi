@@ -5,24 +5,33 @@ namespace App\Http\Controllers\Dashboard;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use RealRashid\SweetAlert\Facades\Alert;
-use Illuminate\Support\Str; 
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
+use Yajra\Datatables\Datatables;
 
 use App\Models\Absensi;
 use App\Models\Setting;
-
+use App\Models\Karyawan;
 use Carbon\Carbon;
-use DB;
-use DataTables;
 
 class AbsensiController extends Controller
 {
     public function index()
     {
-        if (\Auth::user()->role_id == 1) {
+        if (Auth::user()->role_id == 1) {
             $title = 'Absensi Karyawan';
             $appName = Setting::first();
-            
-            return view('dashboard.absensi.index', compact('title','appName'));
+            $listKaryawan = Karyawan::where('role_id',2)->select('id','name')
+            ->withCount('absensi')
+            ->whereDoesnthave('absensi', function($e){
+                $hariIni = Carbon::now()->format('Y-m-d');
+                $e->where('waktu_absen', $hariIni);
+            })
+            ->where('is_verifikasi',1)
+            ->orderBy('name','ASC')
+            ->get();
+
+            return view('dashboard.absensi.index', compact('title','appName','listKaryawan'));
         } else {
             $title = 'Absensi Karyawan';
             $appName = Setting::first();
@@ -32,15 +41,15 @@ class AbsensiController extends Controller
             $jamSekarang = Carbon::now()->format('H:i:s');
             $hariIni = Carbon::now()->format('Y-m-d');
             
-            $cekAbsensi = Absensi::where('user_id',\Auth::user()->id)->where('waktu_absen',$hariIni)->whereBetween(DB::raw('TIME(created_at)'), array($awalAbsensi, $akhirAbsensi))->count();
+            $cekAbsensi = Absensi::where('user_id',Auth::user()->id)->where('waktu_absen',$hariIni)->whereBetween(DB::raw('TIME(created_at)'), array($awalAbsensi, $akhirAbsensi))->count();
             // dd($cekAbsensi);
             return view('dashboard.absensi.karyawan', compact('title','appName','cekAbsensi','awalAbsensi','akhirAbsensi','jamSekarang','hariIni'));
         }
     }
 
-    public function store(){
+    public function add_absensi(){
         try {
-            $karyawan = \Auth::user()->id;
+            $karyawan = Auth::user()->id;
 
             Absensi::where('user_id',$karyawan)->insert([
                 'user_id' => $karyawan,
@@ -57,12 +66,28 @@ class AbsensiController extends Controller
         return redirect()->back();
     }
 
+    public function store(Request $request)
+	{
+		$request->validate([
+			'user_id' => 'required',
+		]);
+
+        $data['user_id'] = $request->user_id;
+        $data['waktu_absen'] = date('Y-m-d');
+		$data['created_at'] = date('Y-m-d H:i:s');
+		$data['updated_at'] = date('Y-m-d H:i:s');
+
+		Absensi::insert($data);
+        Alert::success('Sukses','Data Absensi berhasil disimpan');
+		return redirect()->back();
+	}
+
     public function getJsonAbsensi(Request $request)
     {
         if ($request->ajax()) {
 			$data = Absensi::select('absensis.*','users.name as namakaryawan')
-            ->join('karyawans','absensis.user_id','=','karyawans.user_id')
-			->join('users','karyawans.user_id','=','users.id');
+			->join('users','absensis.user_id','=','users.id')
+            ->orderBy('created_at','DESC');
             
             return Datatables::of($data)
                 ->addIndexColumn()

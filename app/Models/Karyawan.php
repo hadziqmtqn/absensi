@@ -9,5 +9,16 @@ class Karyawan extends Model
 {
     use HasFactory;
 
+    protected $table = 'users';
     protected $guarded = [];
+
+    public function absensi()
+    {
+        return $this->hasOne(Absensi::class, 'user_id');
+    }
+
+    public function dataJob()
+    {
+        return $this->hasOne(DataJob::class, 'user_id');
+    }
 }

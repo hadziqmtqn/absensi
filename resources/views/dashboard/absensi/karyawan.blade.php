@@ -12,7 +12,7 @@
                     @include('dashboard.layouts.session')
                     @if ($jamSekarang > $awalAbsensi && $jamSekarang < $akhirAbsensi && $cekAbsensi < 1)
                     <div class="text-center">
-                        <a href="{{ route('absensi.store') }}" class="btn btn-inverse-primary btn-rounded" style="padding: 30px; border-radius: 50%">
+                        <a href="{{ route('absensi.add_absensi') }}" class="btn btn-inverse-primary btn-rounded" style="padding: 30px; border-radius: 50%">
                             <i class="ti-power-off" style="font-size: 70pt"></i>
                         </a>
                     </div>

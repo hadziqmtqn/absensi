@@ -11,7 +11,7 @@
                 <div class="form-group">
                     <select class="form-control" onchange="location = this.value;">
                         @foreach ($listPasangBaru as $pasang)
-                        <option value="{{ route('data_pasang_baru.edit',$pasang->id) }}" {{ ($data->id == $pasang->id) ? 'selected' : '' }}>{{ $pasang->kode }}</option>
+                        <option value="{{ route('data-pasang-baru.edit',$pasang->kode) }}" {{ ($data->kode == $pasang->kode) ? 'selected' : '' }}>{{ $pasang->kode }}</option>
                         @endforeach
                     </select>
                 </div>
@@ -24,13 +24,18 @@
         <div class="card">
             <div class="card-body">
                 <h4 class="card-title">{{ $title }}</h4>
-                <form class="forms-sample" method="POST" action="{{ route('data_pasang_baru.update', $data->id) }}" enctype="multipart/form-data" id="pasang_baru">
+                @include('dashboard.layouts.session')
+                <form class="forms-sample" method="POST" action="{{ route('data-pasang-baru.update', $data->id) }}" enctype="multipart/form-data" id="pasang_baru">
                     @csrf
                     {{ method_field('PUT') }}
                     <div id="pasang_baru">
                         <div class="form-group">
                             <label for="">Kode Job</label>
-                            <input type="text" class="form-control" name="kode" value="{{ $data->kode }}" placeholder="Kode Job">
+                            <input type="text" class="form-control" value="{{ $data->kode }}" placeholder="Kode Job" readonly>
+                        </div>
+                        <div class="form-group">
+                            <label for="">Inet</label>
+                            <input type="number" class="form-control" name="inet" value="{{ $data->inet }}" placeholder="No. Internet">
                         </div>
                         <div class="form-group">
                             <label for="">Nama Pelanggan</label>

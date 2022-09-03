@@ -19,6 +19,8 @@ class SettingSeeder extends Seeder
             'application_name' => 'Absensi App',
             'email' => 'absensi@g.com',
             'logo' => 'theme/template/images/logo.svg',
+            'awal_absensi' => '08:00:00',
+            'akhir_absensi' => '11:00:00',
         ]);
     }
 }
