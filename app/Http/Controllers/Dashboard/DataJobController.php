@@ -25,20 +25,22 @@ class DataJobController extends Controller
         ->whereDoesntHave('data_job')
         ->orderBy('created_at','ASC')
         ->get();
+
         $toDay = Carbon::now()->format('Y-m-d');
         $listKaryawan = Karyawan::whereHas('absensi', function($e){
             $hariIni = Carbon::now()->format('Y-m-d');
             $e->whereDate('created_at',$hariIni);
-        })
+        }) // => karyawan yang sudah absensi
         ->whereDoesntHave('dataJob', function($e){
             $hariIni = Carbon::now()->format('Y-m-d');
             $e->whereDate('created_at',$hariIni);
-        })
+        }) // => karyawan yang tidak memiliki job
         ->orWhereHas('dataJob', function($e){
             $e->whereHas('dataPasangBaru', function($e){
                 $e->where('status','3');
             });
-        })
+        }) // => karyawan yang memiliki job berstatus sukses
+        ->where('is_verifikasi',1)
         ->get();
 
         return view('dashboard.data_job.index', compact('title','appName','listPasangBaru','listKaryawan'));
@@ -173,12 +175,14 @@ class DataJobController extends Controller
                     });
                 })
                 ->where('id',$data->user_id)
-                ->orWhereHas('dataJob', function($e){
-                    $e->whereHas('dataPasangBaru', function($e){
-                        $e->where('status','3');
-                    });
-                })
+                // ->orWhereHas('dataJob', function($e){
+                //     $e->whereHas('dataPasangBaru', function($e){
+                //         $e->where('status','3');
+                //     });
+                // })
+                ->where('is_verifikasi',1)
                 ->get();
+
                 break;
             
             case $cekStatusPasangBaru->status == 1:
@@ -193,12 +197,14 @@ class DataJobController extends Controller
                     });
                 })
                 ->where('id',$data->user_id)
-                ->orWhereHas('dataJob', function($e){
-                    $e->whereHas('dataPasangBaru', function($e){
-                        $e->where('status','3');
-                    });
-                })
+                // ->orWhereHas('dataJob', function($e){
+                //     $e->whereHas('dataPasangBaru', function($e){
+                //         $e->where('status','3');
+                //     });
+                // })
+                ->where('is_verifikasi',1)
                 ->get();
+
                 break;
 
             case $cekStatusPasangBaru->status == 2:
@@ -213,12 +219,14 @@ class DataJobController extends Controller
                     });
                 })
                 ->where('id',$data->user_id)
-                ->orWhereHas('dataJob', function($e){
-                    $e->whereHas('dataPasangBaru', function($e){
-                        $e->where('status','3');
-                    });
-                })
+                // ->orWhereHas('dataJob', function($e){
+                //     $e->whereHas('dataPasangBaru', function($e){
+                //         $e->where('status','3');
+                //     });
+                // })
+                ->where('is_verifikasi',1)
                 ->get();
+
                 break;
                 
             case $cekStatusPasangBaru->status == 3:
@@ -228,6 +236,7 @@ class DataJobController extends Controller
                 })
                 ->where('id',$data->user_id)
                 ->get();
+
                 break;
         }
 

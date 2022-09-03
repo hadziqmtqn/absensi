@@ -27,6 +27,7 @@ class AbsensiController extends Controller
                 $hariIni = Carbon::now()->format('Y-m-d');
                 $e->where('waktu_absen', $hariIni);
             })
+            ->where('is_verifikasi',1)
             ->orderBy('name','ASC')
             ->get();
 
