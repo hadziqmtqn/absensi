@@ -164,10 +164,15 @@ class DataJobController extends Controller
                 ->whereDoesntHave('dataJob') // yang belum memili job
                 ->orWhereHas('dataJob', function($e){
                     $e->whereHas('dataPasangBaru', function($e){
-                        $e->whereIn('status',['0','3']);
+                        $e->where('status','0');
                     });
                 })
                 ->where('id',$data->user_id)
+                ->orWhereHas('dataJob', function($e){
+                    $e->whereHas('dataPasangBaru', function($e){
+                        $e->where('status','3');
+                    });
+                })
                 ->get();
                 break;
             
@@ -179,10 +184,15 @@ class DataJobController extends Controller
                 ->whereDoesntHave('dataJob') // yang belum memili job
                 ->orWhereHas('dataJob', function($e){
                     $e->whereHas('dataPasangBaru', function($e){
-                        $e->whereIn('status',['1','3']);
+                        $e->where('status','1');
                     });
                 })
                 ->where('id',$data->user_id)
+                ->orWhereHas('dataJob', function($e){
+                    $e->whereHas('dataPasangBaru', function($e){
+                        $e->where('status','3');
+                    });
+                })
                 ->get();
                 break;
 
@@ -194,10 +204,15 @@ class DataJobController extends Controller
                 ->whereDoesntHave('dataJob') // yang belum memili job
                 ->orWhereHas('dataJob', function($e){
                     $e->whereHas('dataPasangBaru', function($e){
-                        $e->whereIn('status',['2','3']);
+                        $e->where('status','2');
                     });
                 })
                 ->where('id',$data->user_id)
+                ->orWhereHas('dataJob', function($e){
+                    $e->whereHas('dataPasangBaru', function($e){
+                        $e->where('status','3');
+                    });
+                })
                 ->get();
                 break;
                 
@@ -205,12 +220,6 @@ class DataJobController extends Controller
                 $listKaryawan = Karyawan::whereHas('absensi', function($e){
                     $hariIni = Carbon::now()->format('Y-m-d');
                     $e->whereDate('created_at',$hariIni); // mengisi absensi pada hari ini
-                })
-                ->whereDoesntHave('dataJob') // yang belum memili job
-                ->orWhereHas('dataJob', function($e){
-                    $e->whereHas('dataPasangBaru', function($e){
-                        $e->whereIn('status',['3']);
-                    });
                 })
                 ->where('id',$data->user_id)
                 ->get();
