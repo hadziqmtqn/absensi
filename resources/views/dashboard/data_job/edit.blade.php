@@ -64,7 +64,7 @@
                                 </div>
                             </div>
                         </div>
-                        <button type="submit" class="btn btn-primary">Submit</button>
+                        <button {{ $cekStatusPasangBaru->status < 3 ? 'type="submit"' : 'type="button" disabled' }} class="btn btn-primary">Submit</button>
                     </div>
                 </form>
             </div>

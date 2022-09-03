@@ -34,6 +34,11 @@ class DataJobController extends Controller
             $hariIni = Carbon::now()->format('Y-m-d');
             $e->whereDate('created_at',$hariIni);
         })
+        ->orWhereHas('dataJob', function($e){
+            $e->whereHas('dataPasangBaru', function($e){
+                $e->where('status','3');
+            });
+        })
         ->get();
 
         return view('dashboard.data_job.index', compact('title','appName','listPasangBaru','listKaryawan'));
@@ -226,7 +231,7 @@ class DataJobController extends Controller
                 break;
         }
 
-        return view('dashboard.data_job.edit', compact('title','appName','data','listDataJob','listPasangBaru','listKaryawan'));
+        return view('dashboard.data_job.edit', compact('title','appName','data','listDataJob','listPasangBaru','listKaryawan','cekStatusPasangBaru'));
     }
 
     public function update(Request $request,$id)
