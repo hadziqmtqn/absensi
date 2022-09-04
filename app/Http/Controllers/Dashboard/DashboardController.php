@@ -4,12 +4,14 @@ namespace App\Http\Controllers\Dashboard;
 
 use App\Http\Controllers\Controller;
 use App\Models\DataJob;
+use App\Models\DataPasangBaru;
 use App\Models\Karyawan;
 use Illuminate\Http\Request;
 
 use App\Models\Setting;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\Auth;
+use RealRashid\SweetAlert\Facades\Alert;
 
 class DashboardController extends Controller
 {
@@ -51,5 +53,47 @@ class DashboardController extends Controller
 
             return view('dashboard.dashboard.karyawan', compact('title','appName','subTitle','listJobs','search'));
         }
+    }
+
+    public function inProgress($id){
+        try {
+            DataPasangBaru::where('id',$id)->update([
+                'status' => '1',
+            ]);
+
+            Alert::success('Sukses','Status Job In Progress');
+        } catch (\Exception $e) {
+            Alert::error('Error',$e->getMessage());
+        }
+
+        return redirect()->back();
+    }
+
+    public function pending($id){
+        try {
+            DataPasangBaru::where('id',$id)->update([
+                'status' => '2',
+            ]);
+
+            Alert::success('Sukses','Status Job Pending');
+        } catch (\Exception $e) {
+            Alert::error('Error',$e->getMessage());
+        }
+
+        return redirect()->back();
+    }
+
+    public function success($id){
+        try {
+            DataPasangBaru::where('id',$id)->update([
+                'status' => '3',
+            ]);
+
+            Alert::success('Sukses','Status Job Success');
+        } catch (\Exception $e) {
+            Alert::error('Error',$e->getMessage());
+        }
+
+        return redirect()->back();
     }
 }

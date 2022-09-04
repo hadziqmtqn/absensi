@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use RealRashid\SweetAlert\Facades\Alert;
 use Yajra\Datatables\Datatables;
+use Illuminate\Support\Str; 
 
 use App\Models\Setting;
 use App\Models\DataPasangBaru;
@@ -40,6 +41,10 @@ class DataPasangBaruController extends Controller
                 ->filter(function ($instance) use ($request) {
 					if ($request->get('status') == '0' || $request->get('status') == '1' || $request->get('status') == '2' || $request->get('status') == '3') {
                         $instance->where('status', $request->get('status'));
+                    }
+
+                    if ($request->get('created_at') != null) {
+                        $instance->whereDate('created_at', $request->created_at);
                     }
 
                     if (!empty($request->get('search'))) {

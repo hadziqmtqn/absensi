@@ -14,6 +14,7 @@ $(function () {
             },
             data: function (d) {
                 d.status = $('#filter-status').val(),
+                d.created_at = $('#filter-tanggal').val(),
                 d.search = $('input[type="search"]').val()
             }
         },
@@ -34,6 +35,7 @@ $(function () {
 
     $(".filter").on('change',function(){
         status = $("#filter-status").val(),
+        created_at = $("#filter-tanggal").val(),
         table.ajax.reload(null,false)
     });
 });

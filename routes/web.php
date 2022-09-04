@@ -36,6 +36,9 @@ Route::middleware(['guest'])->group(function () {
 
 Route::middleware(['auth',VerifikasiAkun::class])->group(function () {
     Route::get('dashboard', [DashboardController::class, 'index'])->name('dashboard.index');
+    Route::get('in-progress/{id}', [DashboardController::class, 'inProgress'])->name('in-progress');
+    Route::get('pending/{id}', [DashboardController::class, 'pending'])->name('pending');
+    Route::get('success/{id}', [DashboardController::class, 'success'])->name('success');
     // profile
     Route::get('profile', [ProfileController::class, 'index'])->name('profile.index');
     Route::put('profile/update/{id}', [ProfileController::class, 'update'])->name('profile.update');
