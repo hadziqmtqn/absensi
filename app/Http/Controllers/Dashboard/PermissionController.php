@@ -3,7 +3,6 @@
 namespace App\Http\Controllers\Dashboard;
 
 use App\Http\Controllers\Controller;
-// use App\Models\Permission;
 use App\Models\Setting;
 use Illuminate\Http\Request;
 use Yajra\Datatables\Datatables;
@@ -72,5 +71,30 @@ class PermissionController extends Controller
 
         Alert::success('Sukses','Permission Berhasil ditambah');
         return redirect()->back();
+    }
+
+    public function edit($id)
+    {
+        $title = 'Edit Permission';
+        $appName = Setting::first();
+        $data = Permission::findOrFail($id);
+
+        return view('dashboard.permission.edit',compact('title','appName','data'));
+    }
+
+    public function update(Request $request, $id)
+    {
+        $this->validate($request, [
+            'name' => 'required',
+        ]);
+    
+        $data['name'] = $request->name;
+        // $data['created_at'] = date('Y-m-d H:i:s');
+        $data['updated_at'] = date('Y-m-d H:i:s');
+        
+        Permission::where('id',$id)->update($data);
+
+        Alert::success('Sukses','Permission berhasil diupdate');
+        return redirect()->route('permission.index');
     }
 }

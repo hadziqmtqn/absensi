@@ -56,6 +56,8 @@ Route::middleware(['auth',VerifikasiAkun::class])->group(function () {
     Route::get('permission', [PermissionController::class, 'index'])->name('permission.index');
     Route::post('getjsonpermission', [PermissionController::class, 'getJsonPermission'])->name('getjsonpermission');
     Route::post('permission/store', [PermissionController::class, 'store'])->name('permission.store');
+    Route::get('permission/edit/{id}', [PermissionController::class, 'edit'])->name('permission.edit');
+    Route::put('permission/edit/{id}', [PermissionController::class, 'update'])->name('permission.update');
     // setting
     Route::get('setting', [SettingController::class, 'index'])->name('setting.index');
     Route::post('setting/store', [SettingController::class, 'store'])->name('setting.store');

@@ -14,7 +14,7 @@ class AlterRoleUsersTable extends Migration
     public function up()
     {
         Schema::table('users', function (Blueprint $table) {
-            $table->bigInteger('role_id')->nullable()->unsigned()->after('id');
+            $table->bigInteger('role_id')->unsigned()->after('id')->default('2');
             $table->string('username')->nullable()->after('name');
             $table->string('short_name')->nullable()->after('username');
             $table->string('nik')->nullable()->after('short_name');
