@@ -20,7 +20,7 @@ class ProfileController extends Controller
         $idUser = Auth::user()->id;
         $title = 'Profile Setting';
         $appName = Setting::first();
-        $profile = User::with('karyawan_r')->where('id',$idUser)->first();
+        $profile = User::where('id',$idUser)->first();
         $listRole = Role::get();
 
         return view('dashboard.profile.index', compact('title','appName','profile','listRole'));

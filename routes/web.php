@@ -11,6 +11,7 @@ use App\Http\Controllers\Dashboard\KaryawanController;
 use App\Http\Controllers\Dashboard\AbsensiController;
 use App\Http\Controllers\Dashboard\DataPasangBaruController;
 use App\Http\Controllers\Dashboard\DataJobController;
+use App\Http\Controllers\Dashboard\RoleController;
 
 /*
 |--------------------------------------------------------------------------
@@ -45,8 +46,11 @@ Route::middleware(['auth',VerifikasiAkun::class])->group(function () {
     Route::post('getjsonabsensi', [AbsensiController::class, 'getJsonAbsensi'])->name('getjsonabsensi');
     Route::delete('absensi/hapus/{id}',[AbsensiController::class, 'delete'])->name('absensi.hapus');
 
-    // Route::middleware([Admin::class])->group(function(){
-    // });
+    Route::get('role', [RoleController::class, 'index'])->name('role.index');
+    Route::post('getjsonrole', [RoleController::class, 'getJsonRole'])->name('getjsonrole');
+    Route::get('role/{id}', [RoleController::class, 'detail'])->name('role.detail');
+    Route::get('role/edit/{id}', [RoleController::class, 'edit'])->name('role.edit');
+    Route::put('role/edit/{id}', [RoleController::class, 'update'])->name('role.update');
     // setting
     Route::get('setting', [SettingController::class, 'index'])->name('setting.index');
     Route::post('setting/store', [SettingController::class, 'store'])->name('setting.store');

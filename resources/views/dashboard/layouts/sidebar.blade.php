@@ -42,6 +42,19 @@
             <span class="menu-title">Pengaturan Aplikasi</span>
         </a>
     </li>
+
+    <li class="nav-item {{ ($title == 'Data Role' OR $title == 'Detail Role' OR $title == 'Edit Role') ? 'active' : '' }}">
+        <a class="nav-link collapsed" data-toggle="collapse" href="#auth" aria-expanded="false" aria-controls="auth">
+            <i class="mdi mdi-account-key menu-icon"></i>
+            <span class="menu-title">Hak Akses</span>
+            <i class="menu-arrow"></i>
+        </a>
+        <div class="collapse {{ ($title == 'Data Role' OR $title == 'Detail Role' OR $title == 'Edit Role') ? 'show' : '' }}" id="auth" style="">
+            <ul class="nav flex-column sub-menu">
+                <li class="nav-item"> <a class="nav-link" href="{{ route('role.index') }}"> Role </a></li>
+            </ul>
+        </div>
+    </li>
     @endif
 
     <li class="nav-item {{ ($title == 'Profile Setting' OR $title == 'Update Password') ? 'active' : '' }}">

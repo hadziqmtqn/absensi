@@ -12,7 +12,7 @@
                     <div class="d-flex">
                         <div class="ml-2">
                             <h4 class="location font-weight-bold">{{ $profile->name }}</h4>
-                            <h6 class="font-weight-normal">{{ !is_null($profile->karyawan_r) ? $profile->karyawan_r->company_name : null }}</h6>
+                            <h6 class="font-weight-normal">{{ $profile->company_name }}</h6>
                         </div>
                     </div>
                 </div>
@@ -46,19 +46,19 @@
                         @if (\Auth::user()->role_id == 2)
                         <div class="form-group">
                             <label for="">Nama Panggilan</label>
-                            <input type="text" class="form-control" name="short_name" value="{{ !is_null($profile->karyawan_r) ? $profile->karyawan_r->short_name : null }}" placeholder="Nama Panggilan">
+                            <input type="text" class="form-control" name="short_name" value="{{ $profile->short_name }}" placeholder="Nama Panggilan">
                         </div>
                         <div class="form-group">
                             <label for="">NIK</label>
-                            <input type="number" class="form-control" name="nik" value="{{ !is_null($profile->karyawan_r) ? $profile->karyawan_r->nik : null }}" placeholder="Nomor Induk Kependudukan">
+                            <input type="number" class="form-control" name="nik" value="{{ $profile->nik }}" placeholder="Nomor Induk Kependudukan">
                         </div>
                         <div class="form-group">
                             <label for="">No. Telp/HP</label>
-                            <input type="number" class="form-control" name="phone" value="{{ !is_null($profile->karyawan_r) ? $profile->karyawan_r->phone : null }}" placeholder="No. Telp/HP">
+                            <input type="number" class="form-control" name="phone" value="{{ $profile->phone }}" placeholder="No. Telp/HP">
                         </div>
                         <div class="form-group">
                             <label for="">Nama Asal PT</label>
-                            <input type="text" class="form-control" name="company_name" value="{{ !is_null($profile->karyawan_r) ? $profile->karyawan_r->company_name : null }}" placeholder="Nama Asal PT">
+                            <input type="text" class="form-control" name="company_name" value="{{ $profile->company_name }}" placeholder="Nama Asal PT">
                         </div>
                         @endif
                         <div class="form-group">
