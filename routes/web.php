@@ -11,6 +11,7 @@ use App\Http\Controllers\Dashboard\KaryawanController;
 use App\Http\Controllers\Dashboard\AbsensiController;
 use App\Http\Controllers\Dashboard\DataPasangBaruController;
 use App\Http\Controllers\Dashboard\DataJobController;
+use App\Http\Controllers\Dashboard\PermissionController;
 use App\Http\Controllers\Dashboard\RoleController;
 
 /*
@@ -45,12 +46,16 @@ Route::middleware(['auth',VerifikasiAkun::class])->group(function () {
     Route::get('absensi/add_absensi', [AbsensiController::class, 'add_absensi'])->name('absensi.add_absensi');
     Route::post('getjsonabsensi', [AbsensiController::class, 'getJsonAbsensi'])->name('getjsonabsensi');
     Route::delete('absensi/hapus/{id}',[AbsensiController::class, 'delete'])->name('absensi.hapus');
-
+    // role
     Route::get('role', [RoleController::class, 'index'])->name('role.index');
     Route::post('getjsonrole', [RoleController::class, 'getJsonRole'])->name('getjsonrole');
     Route::get('role/{id}', [RoleController::class, 'detail'])->name('role.detail');
     Route::get('role/edit/{id}', [RoleController::class, 'edit'])->name('role.edit');
     Route::put('role/edit/{id}', [RoleController::class, 'update'])->name('role.update');
+    // permission
+    Route::get('permission', [PermissionController::class, 'index'])->name('permission.index');
+    Route::post('getjsonpermission', [PermissionController::class, 'getJsonPermission'])->name('getjsonpermission');
+    Route::post('permission/store', [PermissionController::class, 'store'])->name('permission.store');
     // setting
     Route::get('setting', [SettingController::class, 'index'])->name('setting.index');
     Route::post('setting/store', [SettingController::class, 'store'])->name('setting.store');

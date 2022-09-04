@@ -14,6 +14,14 @@ use Carbon\Carbon;
 
 class DataPasangBaruController extends Controller
 {
+    function __construct()
+    {
+        $this->middleware('permission:data-pasang-baru-list|data-pasang-baru-create|data-pasang-baru-edit|data-pasang-baru-delete', ['only' => ['index','show']]);
+        $this->middleware('permission:data-pasang-baru-create', ['only' => ['create','store']]);
+        $this->middleware('permission:data-pasang-baru-edit', ['only' => ['edit','update']]);
+        $this->middleware('permission:data-pasang-baru-delete', ['only' => ['destroy']]);
+    }
+    
     public function index()
     {
         $title = 'Data Pasang Baru';

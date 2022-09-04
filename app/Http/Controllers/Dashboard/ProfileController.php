@@ -10,11 +10,15 @@ use Illuminate\Support\Facades\Auth;
 use App\Models\User;
 use App\Models\Setting;
 use App\Models\Role;
-use App\Models\Karyawan;
-use Illuminate\Support\Facades\DB;
 
 class ProfileController extends Controller
 {
+    function __construct()
+    {
+         $this->middleware('permission:profile-edit', ['only' => ['index']]);
+         $this->middleware('permission:profile-edit', ['only' => ['edit','update']]);
+    }
+
     public function index()
     {
         $idUser = Auth::user()->id;
@@ -44,15 +48,12 @@ class ProfileController extends Controller
         }
         $data['name'] = $request->name;
 		$data['email'] = $request->email;
+        $data['short_name'] = $request->short_name;
+        $data['nik'] = $request->nik;
+        $data['phone'] = $request->phone;
+        $data['company_name'] = $request->company_name;
 		// $data['created_at'] = date('Y-m-d H:i:s');
 		$data['updated_at'] = date('Y-m-d H:i:s');
-
-        $karyawan['short_name'] = $request->short_name;
-        $karyawan['nik'] = $request->nik;
-        $karyawan['phone'] = $request->phone;
-        $karyawan['company_name'] = $request->company_name;
-        // $karyawan['created_at'] = date('Y-m-d H:i:s');
-        $karyawan['updated_at'] = date('Y-m-d H:i:s');
 
         $file = $request->file('photo');
         if($file){
@@ -61,10 +62,7 @@ class ProfileController extends Controller
             $data['photo'] = 'assets/' .$nama_file;
         }
 
-		DB::transaction(function () use ($data, $karyawan, $id) {
-            User::where('id', $id)->update($data);
-            Karyawan::where('user_id', $id)->update($karyawan);
-        });
+        User::where('id', $id)->update($data);
         Alert::success('Sukses','Profile berhasil diupdate');
 		return redirect()->back();
 	}

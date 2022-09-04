@@ -10,6 +10,13 @@ use App\Models\Setting;
 
 class SettingController extends Controller
 {
+    function __construct()
+    {
+        $this->middleware('permission:setting-create|setting-edit', ['only' => ['index','show']]);
+        $this->middleware('permission:setting-create', ['only' => ['create','store']]);
+        $this->middleware('permission:setting-edit', ['only' => ['edit','update']]);
+    }
+
     public function index()
     {
         $title = 'Pengaturan Aplikasi';

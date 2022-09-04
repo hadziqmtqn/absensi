@@ -18,10 +18,10 @@ class KaryawanController extends Controller
 {
     function __construct()
     {
-         $this->middleware('permission:karyawan-list|karyawan-create|karyawan-edit|karyawan-delete', ['only' => ['index','show']]);
-         $this->middleware('permission:karyawan-create', ['only' => ['create','store']]);
-         $this->middleware('permission:karyawan-edit', ['only' => ['edit','update']]);
-         $this->middleware('permission:karyawan-delete', ['only' => ['destroy']]);
+        $this->middleware('permission:karyawan-list|karyawan-create|karyawan-edit|karyawan-delete', ['only' => ['index','show']]);
+        $this->middleware('permission:karyawan-create', ['only' => ['create','store']]);
+        $this->middleware('permission:karyawan-edit', ['only' => ['edit','update']]);
+        $this->middleware('permission:karyawan-delete', ['only' => ['destroy']]);
     }
 
     public function index()

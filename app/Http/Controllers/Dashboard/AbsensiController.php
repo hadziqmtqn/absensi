@@ -16,6 +16,14 @@ use Carbon\Carbon;
 
 class AbsensiController extends Controller
 {
+    function __construct()
+    {
+        $this->middleware('permission:absensi-list|absensi-create|absensi-edit|absensi-delete', ['only' => ['index','show']]);
+        $this->middleware('permission:absensi-create', ['only' => ['create','store']]);
+        $this->middleware('permission:absensi-edit', ['only' => ['edit','update']]);
+        $this->middleware('permission:absensi-delete', ['only' => ['destroy']]);
+    }
+
     public function index()
     {
         if (Auth::user()->role_id == 1) {
