@@ -74,8 +74,8 @@
 @endsection
 
 @section('scripts')
-
-<script type="text/javascript">
+<script src="{{ asset('theme/template/js/dashboard/absensi.js') }}"></script>
+{{-- <script type="text/javascript">
     $(function () {
     var table = $('#laravel_datatable').DataTable({
         processing: true,
@@ -108,6 +108,6 @@
         table.ajax.reload(null,false)
     });
 });
-</script>
+</script> --}}
 @include('dashboard.absensi.validation')
 @endsection
