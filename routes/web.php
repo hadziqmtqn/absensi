@@ -48,13 +48,13 @@ Route::middleware(['auth',VerifikasiAkun::class])->group(function () {
     Route::delete('absensi/hapus/{id}',[AbsensiController::class, 'delete'])->name('absensi.hapus');
     // role
     Route::get('role', [RoleController::class, 'index'])->name('role.index');
-    Route::post('getjsonrole', [RoleController::class, 'getJsonRole'])->name('getjsonrole');
+    Route::get('getjsonrole', [RoleController::class, 'getJsonRole'])->name('getjsonrole');
     Route::get('role/{id}', [RoleController::class, 'detail'])->name('role.detail');
     Route::get('role/edit/{id}', [RoleController::class, 'edit'])->name('role.edit');
     Route::put('role/edit/{id}', [RoleController::class, 'update'])->name('role.update');
     // permission
     Route::get('permission', [PermissionController::class, 'index'])->name('permission.index');
-    Route::post('getjsonpermission', [PermissionController::class, 'getJsonPermission'])->name('getjsonpermission');
+    Route::get('getjsonpermission', [PermissionController::class, 'getJsonPermission'])->name('getjsonpermission');
     Route::post('permission/store', [PermissionController::class, 'store'])->name('permission.store');
     Route::get('permission/edit/{id}', [PermissionController::class, 'edit'])->name('permission.edit');
     Route::put('permission/edit/{id}', [PermissionController::class, 'update'])->name('permission.update');
@@ -64,8 +64,9 @@ Route::middleware(['auth',VerifikasiAkun::class])->group(function () {
     Route::put('setting/update/{id}', [SettingController::class, 'update'])->name('setting.update');
     // data karyawan
     Route::get('karyawan', [KaryawanController::class, 'index'])->name('karyawan.index');
-    Route::post('getjsonkaryawan', [KaryawanController::class, 'getJsonKaryawan'])->name('getjsonkaryawan');
+    Route::get('getjsonkaryawan', [KaryawanController::class, 'getJsonKaryawan'])->name('getjsonkaryawan');
     Route::get('karyawan/trashed', [KaryawanController::class, 'trashed'])->name('karyawan.trashed');
+    // Route::get('getjsonkaryawantrashed', [KaryawanController::class, 'getJsonKaryawanTrashed'])->name('getjsonkaryawantrashed');
     Route::post('getjsonkaryawantrashed', [KaryawanController::class, 'getJsonKaryawanTrashed'])->name('getjsonkaryawantrashed');
     Route::get('karyawan/{username}', [KaryawanController::class, 'detail'])->name('karyawan');
     Route::put('karyawan/update/{id}', [KaryawanController::class, 'update'])->name('karyawan.update');
@@ -77,7 +78,7 @@ Route::middleware(['auth',VerifikasiAkun::class])->group(function () {
     // data pasang baru
     Route::get('data-pasang-baru', [DataPasangBaruController::class, 'index'])->name('data-pasang-baru.index');
     Route::post('data-pasang-baru/store', [DataPasangBaruController::class, 'store'])->name('data-pasang-baru.store');
-    Route::post('getjsonpasangbaru', [DataPasangBaruController::class, 'getJsonPasangBaru'])->name('getjsonpasangbaru');
+    Route::get('getjsonpasangbaru', [DataPasangBaruController::class, 'getJsonPasangBaru'])->name('getjsonpasangbaru');
     Route::get('data-pasang-baru/{kode}', [DataPasangBaruController::class, 'detail'])->name('data-pasang-baru.detail');
     Route::get('data-pasang-baru/edit/{kode}', [DataPasangBaruController::class, 'edit'])->name('data-pasang-baru.edit');
     Route::put('data-pasang-baru/edit/{id}', [DataPasangBaruController::class, 'update'])->name('data-pasang-baru.update');
@@ -85,7 +86,7 @@ Route::middleware(['auth',VerifikasiAkun::class])->group(function () {
     // data job
     Route::get('data-job', [DataJobController::class, 'index'])->name('data-job.index');
     Route::post('data-job/store', [DataJobController::class, 'store'])->name('data-job.store');
-    Route::post('getjsondatajob', [DataJobController::class, 'getJsonDataJob'])->name('getjsondatajob');
+    Route::get('getjsondatajob', [DataJobController::class, 'getJsonDataJob'])->name('getjsondatajob');
     Route::get('data-job/{id}', [DataJobController::class, 'detail'])->name('data-job.detail');
     Route::get('data-job/edit/{id}', [DataJobController::class, 'edit'])->name('data-job.edit');
     Route::put('data-job/edit/{id}', [DataJobController::class, 'update'])->name('data-job.update');
