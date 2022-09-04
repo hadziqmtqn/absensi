@@ -139,8 +139,7 @@ class KaryawanController extends Controller
                 })
 
                 ->addColumn('action', function($row){
-					$btn = '<a href="karyawan/'.$row->username.'" class="btn btn-primary" style="padding: 7px 10px">Detail</a>';
-                    $btn = $btn.' <button type="button" href="'.$row->id.'/restore" class="btn btn-warning btn-restore" style="padding: 7px 10px">Restore</button>';
+					$btn = '<button type="button" href="'.$row->id.'/restore" class="btn btn-warning btn-restore" style="padding: 7px 10px">Restore</button>';
                     return $btn;
                 })
 
