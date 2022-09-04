@@ -6,14 +6,13 @@ use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use RealRashid\SweetAlert\Facades\Alert;
 use Yajra\Datatables\Datatables;
+use Illuminate\Support\Facades\DB;
 
 use App\Models\DataJob;
 use App\Models\Setting;
 use App\Models\DataPasangBaru;
 use App\Models\Karyawan;
 use Carbon\Carbon;
-use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\DB;
 
 class DataJobController extends Controller
 {
@@ -26,8 +25,8 @@ class DataJobController extends Controller
         ->orderBy('created_at','ASC')
         ->get();
 
-        $toDay = Carbon::now()->format('Y-m-d');
-        $listKaryawan = Karyawan::whereHas('absensi', function($e){
+        $listKaryawan = Karyawan::with('absensi')
+        ->whereHas('absensi', function($e){
             $hariIni = Carbon::now()->format('Y-m-d');
             $e->whereDate('created_at',$hariIni);
         }) // => karyawan yang sudah absensi
@@ -36,12 +35,16 @@ class DataJobController extends Controller
             $e->whereDate('created_at',$hariIni);
         }) // => karyawan yang tidak memiliki job
         ->orWhereHas('dataJob', function($e){
+            $hariIni = Carbon::now()->format('Y-m-d');
             $e->whereHas('dataPasangBaru', function($e){
                 $e->where('status','3');
-            });
+            })
+            ->whereDate('created_at',$hariIni);
         }) // => karyawan yang memiliki job berstatus sukses
         ->where('is_verifikasi',1)
         ->get();
+
+        // dd($listKaryawan);
 
         return view('dashboard.data_job.index', compact('title','appName','listPasangBaru','listKaryawan'));
     }

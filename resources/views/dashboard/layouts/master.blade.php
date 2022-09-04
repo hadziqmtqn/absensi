@@ -218,6 +218,27 @@
                             </div>
                         </div>
                     </div>
+                    {{-- modal restore --}}
+                    <div class="modal fade" id="modal-restore" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                        <div class="modal-dialog">
+                            <div class="modal-content">
+                                <div class="modal-header">
+                                    <h5 class="modal-title" id="exampleModalLabel">Peringatan</h5>
+                                </div>
+                                <div class="modal-body">
+                                    <h4 class="heading mt-4">Apakah Anda yakin ingin mengembalikan data ini?</h4>
+                                </div>
+                                <div class="modal-footer">
+                                    <form action="" method="post">
+                                        {{ csrf_field() }}
+                                        {{ method_field('post') }}
+                                        <button type="button" class="btn btn-inverse-secondary btn-fw" data-dismiss="modal">Batal</button>
+                                        <button type="submit" class="btn btn-warning">OK. Kembalikan</button>
+                                    </form>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
                 </div>
                 <!-- content-wrapper ends -->
                 <!-- partial:partials/_footer.html -->

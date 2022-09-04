@@ -44,6 +44,7 @@
                                         <th>Status</th>
                                         <th>Dibuat pada</th>
                                         <th>Diupdate pada</th>
+                                        <th>Dihapus pada</th>
                                     </tr>
                                 </thead>
                             </table>
@@ -67,7 +68,7 @@
             lengthMenu: [ [10, 25, 50, -1], [10, 25, 50, "All"] ],
             order: [[3,'asc']],
             ajax: {
-                url: "{{ route('getjsonkaryawan') }}",
+                url: "{{ route('getjsonkaryawantrashed') }}",
                 type: "POST",
                 headers: {
                     'X-CSRF-TOKEN': '{{ csrf_token() }}',
@@ -90,6 +91,7 @@
                 {data: 'status_verifikasi', name: 'status_verifikasi'},
                 {data: 'created_at', name: 'created_at'},
                 {data: 'updated_at', name: 'updated_at'},
+                {data: 'deleted_at', name: 'deleted_at'},
             ]
         });
     

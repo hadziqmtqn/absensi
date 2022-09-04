@@ -27,11 +27,7 @@
                 <div class="text-center">
                     <img src="@if(empty($profile->photo)) {{ asset('theme/template/images/user.png') }} @else {{ asset($profile->photo) }} @endif" style="width: 150px; height: 150px; object-fit: cover; border-radius: 50%" alt="people">
                     <p class="mt-3">
-                        @if ($profile->is_verifikasi == 1)
-                            <button type="button" class="btn btn-success btn-sm" data-toggle="modal" data-target="#verifikasi">Sudah diverifikasi</button>
-                        @else
-                            <button type="button" class="btn btn-danger btn-sm" data-toggle="modal" data-target="#verifikasi">Belum diverifikasi</button>
-                        @endif
+                        <button type="button" class="btn {{ $profile->is_verifikasi == 1 ? 'btn-success' : 'btn-danger' }} btn-sm" data-toggle="modal" data-target="#verifikasi">{{ $profile->is_verifikasi == 1 ? 'Sudah diverifikasi' : 'Belum diverifikasi' }}</button>
                     </p>
                 </div>
             </div>
@@ -133,11 +129,7 @@
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-inverse-secondary btn-fw" data-dismiss="modal">Batal</button>
-                    @if ($profile->is_verifikasi == 1)
-                        <a href="{{ route('karyawan',$profile->id.'/undo_verifikasi') }}" class="btn btn-success">OK. Yakin</a>
-                    @else
-                        <a href="{{ route('karyawan',$profile->id.'/verifikasi') }}" class="btn btn-danger">OK. Yakin</a>
-                    @endif
+                    <a href="{{ route('karyawan',$profile->id.'/verifikasi') }}" class="btn {{ $profile->is_verifikasi == 1 ? 'btn-success' : 'btn-danger' }}">OK. Yakin</a>
                 </div>
             </div>
         </div>

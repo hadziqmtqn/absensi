@@ -50,5 +50,13 @@
                 $('#modal-hapus').modal();
             });
         });
+        $(document).ready( function () {
+            $('body').on('click','.btn-restore',function(e){
+                e.preventDefault();
+                var url = $(this).attr('href');
+                $('#modal-restore').find('form').attr('action',url);
+                $('#modal-restore').modal();
+            });
+        });
     })
 </script>

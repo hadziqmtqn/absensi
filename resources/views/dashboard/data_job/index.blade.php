@@ -45,7 +45,7 @@
                                                 <select name="kode_pasang_baru" class="form-control">
                                                     <option value="">Pilih</option>
                                                     @foreach ($listPasangBaru as $pasang)
-                                                        <option value="{{ $pasang->id }}" {{ old('kode_pasang_baru') == $pasang->id ? 'selected' : '' }}>{{ $pasang->id }} - {{ $pasang->kode }} | Diinput Pada {{ $pasang->created_at }}</option>
+                                                        <option value="{{ $pasang->id }}" {{ old('kode_pasang_baru') == $pasang->id ? 'selected' : '' }}>{{ $pasang->kode }}</option>
                                                     @endforeach
                                                 </select>
                                             </div>
@@ -54,7 +54,7 @@
                                                 <select name="user_id" class="form-control">
                                                     <option value="">Pilih</option>
                                                     @foreach ($listKaryawan as $karyawan)
-                                                        <option value="{{ $karyawan->id }}" {{ old('user_id') == $karyawan->id ? 'selected' : '' }}>{{ $karyawan->name }} | Absen Pada Pukul {{ \Carbon\Carbon::parse($karyawan->absensi->created_at)->format('H:i') }}</option>
+                                                        <option value="{{ $karyawan->id }}" {{ old('user_id') == $karyawan->id ? 'selected' : '' }}>{{ $karyawan->name }}</option>
                                                     @endforeach
                                                 </select>
                                             </div>

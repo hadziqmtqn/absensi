@@ -53,13 +53,15 @@ Route::middleware(['auth',VerifikasiAkun::class])->group(function () {
         // data karyawan
         Route::get('karyawan', [KaryawanController::class, 'index'])->name('karyawan.index');
         Route::post('getjsonkaryawan', [KaryawanController::class, 'getJsonKaryawan'])->name('getjsonkaryawan');
+        Route::get('karyawan/trashed', [KaryawanController::class, 'trashed'])->name('karyawan.trashed');
+        Route::post('getjsonkaryawantrashed', [KaryawanController::class, 'getJsonKaryawanTrashed'])->name('getjsonkaryawantrashed');
         Route::get('karyawan/{username}', [KaryawanController::class, 'detail'])->name('karyawan');
         Route::put('karyawan/update/{id}', [KaryawanController::class, 'update'])->name('karyawan.update');
         Route::get('karyawan/{username}/katasandi', [KaryawanController::class, 'update_password'])->name('karyawan.katasandi');
         Route::put('karyawan/password/{id}', [KaryawanController::class, 'password'])->name('karyawan.password');
         Route::get('karyawan/{id}/verifikasi', [KaryawanController::class, 'verifikasi'])->name('karyawan.verifikasi');
-        Route::get('karyawan/{id}/undo_verifikasi', [KaryawanController::class, 'undo_verifikasi'])->name('karyawan.undo_verifikasi');
-        Route::delete('karyawan/hapus/{id}', [KaryawanController::class, 'delete'])->name('karyawan.hapus');
+        Route::delete('karyawan/{id}/destroy', [KaryawanController::class, 'destroy'])->name('karyawan.destroy');
+        Route::post('karyawan/{id}/restore', [KaryawanController::class, 'restore'])->name('karyawan.restore');
         // data pasang baru
         Route::get('data-pasang-baru', [DataPasangBaruController::class, 'index'])->name('data-pasang-baru.index');
         Route::post('data-pasang-baru/store', [DataPasangBaruController::class, 'store'])->name('data-pasang-baru.store');

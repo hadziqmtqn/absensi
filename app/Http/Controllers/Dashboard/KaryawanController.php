@@ -20,14 +20,17 @@ class KaryawanController extends Controller
     {
         $title = 'Data Karyawan';
         $appName = Setting::first();
+        $karyawanAll = Karyawan::where('role_id',2)->withTrashed()->count();
+        $karyawanActive = Karyawan::where('role_id',2)->count();
+        $karyawanTrashed = Karyawan::where('role_id',2)->onlyTrashed()->count();
 
-        return view('dashboard.karyawan.index', compact('title','appName'));
+        return view('dashboard.karyawan.index', compact('title','appName','karyawanAll','karyawanActive','karyawanTrashed'));
     }
 
     public function getJsonKaryawan(Request $request)
     {
         if ($request->ajax()) {
-			$data = Karyawan::select('*')->where('role_id',2);
+            $data = Karyawan::where('role_id',2);
             
             return Datatables::of($data)
                 ->addIndexColumn()
@@ -59,7 +62,85 @@ class KaryawanController extends Controller
 
                 ->addColumn('action', function($row){
 					$btn = '<a href="karyawan/'.$row->username.'" class="btn btn-primary" style="padding: 7px 10px">Detail</a>';
-                    $btn = $btn.' <button type="button" href="karyawan/hapus/'.$row->iduser.'" class="btn btn-danger btn-hapus" style="padding: 7px 10px">Delete</button>';
+                    $btn = $btn.' <button type="button" href="karyawan/'.$row->id.'/destroy" class="btn btn-danger btn-hapus" style="padding: 7px 10px">Delete</button>';
+                    return $btn;
+                })
+
+                ->addColumn('status_verifikasi', function($row){
+                    if($row->is_verifikasi){
+                        return '<span class="badge badge-success">Sudah Diverifikasi</span>';
+                    }else{
+                        return '<span class="badge badge-warning">Belum Diverifikasi</span>';
+                    }
+                })
+
+                ->addColumn('photo', function($row){
+                    if($row->photo){
+                        return '<img src="'.asset($row->photo).'" style="width: 30px; border-radius: 50%;" alt="image">';
+                    }else{
+                        return '<img src="'.asset('theme/template/images/user.png').'" style="width: 30px; border-radius: 50%;" alt="image">';
+                    }
+                })
+
+                ->rawColumns(['action','status_verifikasi','photo'])
+                ->addIndexColumn()
+                ->make(true);
+        }
+
+        return response()->json(true);
+    }
+
+    public function trashed()
+    {
+        $title = 'Data Karyawan Terhapus';
+        $appName = Setting::first();
+        $karyawanAll = Karyawan::where('role_id',2)->withTrashed()->count();
+        $karyawanActive = Karyawan::where('role_id',2)->count();
+        $karyawanTrashed = Karyawan::where('role_id',2)->onlyTrashed()->count();
+
+        return view('dashboard.karyawan.trash', compact('title','appName','karyawanAll','karyawanActive','karyawanTrashed'));
+    }
+
+    public function getJsonKaryawanTrashed(Request $request)
+    {
+        if ($request->ajax()) {
+            $data = Karyawan::where('role_id',2)->onlyTrashed();
+            
+            return Datatables::of($data)
+                ->addIndexColumn()
+                ->filter(function ($instance) use ($request) {
+					if ($request->get('is_verifikasi') == '0' || $request->get('is_verifikasi') == '1') {
+                        $instance->where('is_verifikasi', $request->get('is_verifikasi'));
+                    }
+
+                    if (!empty($request->get('search'))) {
+                            $instance->where(function($w) use($request){
+                            $search = $request->get('search');
+                            $w->orWhere('users.name', 'LIKE', "%$search%")
+							->orWhere('users.email', 'LIKE', "%$search%")
+							->orWhere('users.short_name', 'LIKE', "%$search%")
+							->orWhere('users.phone', 'LIKE', "%$search%")
+							->orWhere('users.nik', 'LIKE', "%$search%")
+							->orWhere('users.company_name', 'LIKE', "%$search%");
+                        });
+                    }
+                })
+
+                ->addColumn('created_at', function ($row) {
+                    return $row->created_at ? with(new Carbon($row->created_at))->isoFormat('DD MMMM YYYY') : '';
+                })
+
+                ->addColumn('updated_at', function ($row) {
+                    return $row->updated_at ? with(new Carbon($row->updated_at))->isoFormat('DD MMMM YYYY') : '';
+                })
+
+                ->addColumn('deleted_at', function ($row) {
+                    return $row->deleted_at ? with(new Carbon($row->deleted_at))->isoFormat('DD MMMM YYYY') : '';
+                })
+
+                ->addColumn('action', function($row){
+					$btn = '<a href="karyawan/'.$row->username.'" class="btn btn-primary" style="padding: 7px 10px">Detail</a>';
+                    $btn = $btn.' <button type="button" href="'.$row->id.'/restore" class="btn btn-warning btn-restore" style="padding: 7px 10px">Restore</button>';
                     return $btn;
                 })
 
@@ -169,11 +250,18 @@ class KaryawanController extends Controller
 
     public function verifikasi($id){
         try {
-            User::where('id',$id)->update([
-                'is_verifikasi' => 1
-            ]);
+            $user = Karyawan::findOrFail($id);
+            if($user->is_verifikasi == 1){
+                $user->update([
+                    'is_verifikasi' => 0,
+                ]);
+            }else{
+                $user->update([
+                    'is_verifikasi' => 1
+                ]);
+            }
 
-            Alert::success('Sukses','Karyawan ini berhasil diverifikasi');
+            Alert::success('Sukses','Status Verifikasi Karyawan Berhasil di Update');
         } catch (\Exception $e) {
             Alert::error('Error',$e->getMessage());
         }
@@ -181,28 +269,32 @@ class KaryawanController extends Controller
         return redirect()->back();
     }
 
-    public function undo_verifikasi($id){
+    public function destroy($id){
         try {
-            User::where('id',$id)->update([
-                'is_verifikasi' => 0
-            ]);
-
-            Alert::success('Sukses','Karyawan ini berhasil kembali belum diverifikasi');
-        } catch (\Exception $e) {
-            Alert::error('Error',$e->getMessage());
-        }
-
-        return redirect()->back();
-    }
-
-    public function delete($id){
-        try {
-            User::where('id',$id)->delete();
+            $user = Karyawan::findOrFail($id);
+            $user->delete();
 
             Alert::success('Sukses','Data Karyawan berhasil dihapus');
         } catch (\Exception $e) {
             Alert::error('Error',$e->getMessage());
         }
+        return redirect()->back();
+    }
+
+    public function restore($id){
+        try {
+            $user = Karyawan::withTrashed()->findOrFail($id);
+            if($user->trashed()){
+                $user->restore();
+                
+                Alert::success('Sukses','Data Karyawan berhasil di restore');
+            } else {
+                Alert::error('Opps','Data Karyawan tidak terhapus');
+            }
+        } catch (\Exception $e) {
+            Alert::error('Error',$e->getMessage());
+        }
+        
         return redirect()->back();
     }
 }
