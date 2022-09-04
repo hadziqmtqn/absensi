@@ -98,7 +98,7 @@ class RoleController extends Controller
     
         $role->syncPermissions($request->input('permission'));
 
-        Alert::success('Sukses','Profile berhasil diupdate');
+        Alert::success('Sukses','Role berhasil diupdate');
         return redirect()->route('role.index');
     }
 }

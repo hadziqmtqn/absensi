@@ -257,6 +257,7 @@
     <!-- container-scroller -->
     @include('dashboard.layouts.scripts')
     @yield('scripts')
+    @stack('scripts')
 </body>
 
 </html>

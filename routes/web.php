@@ -44,7 +44,7 @@ Route::middleware(['auth',VerifikasiAkun::class])->group(function () {
     // absensi
     Route::get('absensi', [AbsensiController::class, 'index'])->name('absensi.index');
     Route::get('absensi/add_absensi', [AbsensiController::class, 'add_absensi'])->name('absensi.add_absensi');
-    Route::post('getjsonabsensi', [AbsensiController::class, 'getJsonAbsensi'])->name('getjsonabsensi');
+    Route::get('getjsonabsensi', [AbsensiController::class, 'getJsonAbsensi'])->name('getjsonabsensi');
     Route::delete('absensi/hapus/{id}',[AbsensiController::class, 'delete'])->name('absensi.hapus');
     // role
     Route::get('role', [RoleController::class, 'index'])->name('role.index');
