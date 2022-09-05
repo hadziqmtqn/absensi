@@ -14,6 +14,7 @@ $(function () {
             },
             data: function (d) {
                 d.status = $('#filter-status').val(),
+                d.created_at = $('#filter-tanggal').val(),
                 d.search = $('input[type="search"]').val()
             }
         },
@@ -26,13 +27,13 @@ $(function () {
             {data: 'nama_pelanggan', name: 'nama_pelanggan'},
             {data: 'no_hp', name: 'no_hp'},
             {data: 'alamat', name: 'alamat'},
-            {data: 'acuan_lokasi', name: 'acuan_lokasi'},
             {data: 'created_at', name: 'created_at'},
         ]
     });
 
     $(".filter").on('change',function(){
         status = $("#filter-status").val(),
+        created_at = $("#filter-tanggal").val(),
         table.ajax.reload(null,false)
     });
 });

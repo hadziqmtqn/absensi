@@ -60,11 +60,11 @@ class DataJobController extends Controller
     public function getJsonDataJob(Request $request)
     {
         if ($request->ajax()) {
-			$data = DataJob::select('data_jobs.id as idjob','data_jobs.kode_pasang_baru','data_jobs.created_at','data_jobs.updated_at',
-            'data_pasang_barus.kode','data_pasang_barus.nama_pelanggan','data_pasang_barus.no_hp','data_pasang_barus.alamat',
-            'data_pasang_barus.acuan_lokasi','data_pasang_barus.status','users.name as karyawan')
+            $data = DataJob::select('data_jobs.id as idjob','data_jobs.user_id','data_jobs.created_at','users.name as karyawan',
+            'data_pasang_barus.kode','data_pasang_barus.inet','data_pasang_barus.nama_pelanggan','data_pasang_barus.no_hp','data_pasang_barus.alamat',
+            'data_pasang_barus.status')
+            ->join('users','data_jobs.user_id','users.id')
             ->join('data_pasang_barus','data_jobs.kode_pasang_baru','=','data_pasang_barus.id')
-            ->leftJoin('users','data_jobs.user_id','=','users.id')
             ->orderBy('data_jobs.created_at','DESC');
             
             return Datatables::of($data)
@@ -74,6 +74,10 @@ class DataJobController extends Controller
                         $instance->where('status', $request->get('status'));
                     }
 
+                    if ($request->get('created_at') != null) {
+                        $instance->whereDate('data_jobs.created_at', $request->created_at);
+                    }
+
                     if (!empty($request->get('search'))) {
                             $instance->where(function($w) use($request){
                             $search = $request->get('search');
@@ -81,7 +85,7 @@ class DataJobController extends Controller
 							->orWhere('data_pasang_barus.nama_pelanggan', 'LIKE', "%$search%")
 							->orWhere('data_pasang_barus.no_hp', 'LIKE', "%$search%")
 							->orWhere('data_pasang_barus.alamat', 'LIKE', "%$search%")
-							->orWhere('data_pasang_barus.acuan_lokasi', 'LIKE', "%$search%")
+							->orWhere('data_jobs.created_at', 'LIKE', "%$search%")
                             ->orWhere('users.name', 'LIKE', "%$search%");
                         });
                     }
