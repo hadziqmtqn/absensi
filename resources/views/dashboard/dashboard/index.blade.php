@@ -114,7 +114,9 @@
                             <h3 class="text-primary fs-30 font-weight-medium">34040</h3>
                         </div> 
                     </div>
-                    <canvas id="order-chart"></canvas>
+                    {{-- <canvas id="order-chart"></canvas> --}}
+                    {{-- <canvas id="job"></canvas> --}}
+                    <canvas id="myChart"></canvas>
                 </div>
             </div>
         </div>
@@ -645,4 +647,33 @@
             </div>
         </div>
     </div>
+@endsection
+
+@section('scripts')
+    <script src="{{ asset('theme/template/js/dashboard/jobs_ds.js') }}"></script>
+    <script type="text/javascript">
+        var labels =  <?php echo json_encode($months); ?>;
+        var users =  <?php echo json_encode($pasangBaru); ?>;
+
+        const data = {
+            labels: labels,
+            datasets: [{
+                label: 'Data User',
+                backgroundColor: '#4747A1',
+                borderColor: 'transparent',
+                data: users,
+            }]
+        };
+
+        const config = {
+            type: 'line',
+            data: data,
+            options: {}
+        };
+
+        const myChart = new Chart(
+            document.getElementById('myChart'),
+            config
+        );
+    </script>
 @endsection

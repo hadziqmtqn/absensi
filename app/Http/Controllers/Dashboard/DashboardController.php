@@ -9,8 +9,10 @@ use App\Models\Karyawan;
 use Illuminate\Http\Request;
 
 use App\Models\Setting;
+use App\Models\User;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
 use RealRashid\SweetAlert\Facades\Alert;
 
 class DashboardController extends Controller
@@ -20,8 +22,20 @@ class DashboardController extends Controller
         if(Auth::user()->role_id == 1){
             $title = 'Dashboard';
             $appName = Setting::first();
+            
+            $months = [];
+            for ($m=1; $m<=12; $m++) {
+                $months[] = date('F', mktime(0,0,0,$m, 1, date('Y')));
+            }
+
+            $pasangBaru = [];
+            foreach ($months as $key => $value) {
+                $pasangBaru[] = DataPasangBaru::where(DB::raw("DATE_FORMAT(created_at, '%M')"),$value)
+                ->whereYear('created_at', date('Y'))
+                ->count();
+            }
     
-            return view('dashboard.dashboard.index', compact('title','appName'));
+            return view('dashboard.dashboard.index', compact('title','appName','months','pasangBaru'));
         }else{
             $search = $request->search;
 
