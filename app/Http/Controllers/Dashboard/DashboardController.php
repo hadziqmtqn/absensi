@@ -15,6 +15,7 @@ use Carbon\Carbon;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use RealRashid\SweetAlert\Facades\Alert;
+use Stevebauman\Location\Facades\Location;
 
 class DashboardController extends Controller
 {
@@ -58,7 +59,13 @@ class DashboardController extends Controller
             $absensiToday = Absensi::whereDate('created_at', $today)->count();
             $totalKaryawan = User::where('role_id',2)->count();
 
-            return view('dashboard.dashboard.index', compact('title','appName','months','pasangBaru','dataJobPending','dataJobSuccess','today','pasangBaruToday','dataJobToday','absensiToday','totalKaryawan'));
+            $ip = $request->ip(); // Dynamic IP address
+            // $ip = '182.2.41.105'; /* Static IP address */
+            $currentUserInfo = Location::get($ip);
+
+            // dd($currentUserInfo);
+
+            return view('dashboard.dashboard.index', compact('title','appName','months','pasangBaru','dataJobPending','dataJobSuccess','today','pasangBaruToday','dataJobToday','absensiToday','totalKaryawan','currentUserInfo'));
         }else{
             $search = $request->search;
 
