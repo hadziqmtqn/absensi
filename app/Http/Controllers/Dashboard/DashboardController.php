@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Dashboard;
 
 use App\Http\Controllers\Controller;
+use App\Models\Absensi;
 use App\Models\DataJob;
 use App\Models\DataPasangBaru;
 use App\Models\Karyawan;
@@ -29,13 +30,35 @@ class DashboardController extends Controller
             }
 
             $pasangBaru = [];
+            $dataJobPending = [];
+            $dataJobSuccess = [];
             foreach ($months as $key => $value) {
                 $pasangBaru[] = DataPasangBaru::where(DB::raw("DATE_FORMAT(created_at, '%M')"),$value)
                 ->whereYear('created_at', date('Y'))
                 ->count();
+                // job pending
+                $dataJobPending[] = DataJob::where(DB::raw("DATE_FORMAT(created_at, '%M')"),$value)
+                ->whereHas('dataPasangBaru', function($e){
+                    $e->where('status','2');
+                })
+                ->whereYear('created_at', date('Y'))
+                ->count();
+                // job success
+                $dataJobSuccess[] = DataJob::where(DB::raw("DATE_FORMAT(created_at, '%M')"),$value)
+                ->whereHas('dataPasangBaru', function($e){
+                    $e->where('status','3');
+                })
+                ->whereYear('created_at', date('Y'))
+                ->count();
             }
-    
-            return view('dashboard.dashboard.index', compact('title','appName','months','pasangBaru'));
+
+            $today = Carbon::now()->format('Y-m-d');
+            $pasangBaruToday = DataPasangBaru::whereDate('created_at', $today)->count();
+            $dataJobToday = DataJob::whereDate('created_at', $today)->count();
+            $absensiToday = Absensi::whereDate('created_at', $today)->count();
+            $totalKaryawan = User::where('role_id',2)->count();
+
+            return view('dashboard.dashboard.index', compact('title','appName','months','pasangBaru','dataJobPending','dataJobSuccess','today','pasangBaruToday','dataJobToday','absensiToday','totalKaryawan'));
         }else{
             $search = $request->search;
 
