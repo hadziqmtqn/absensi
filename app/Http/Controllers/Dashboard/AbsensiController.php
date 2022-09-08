@@ -10,6 +10,8 @@ use Illuminate\Support\Facades\DB;
 use Yajra\Datatables\Datatables;
 
 use App\Models\Absensi;
+use App\Models\DataJob;
+use App\Models\DataPasangBaru;
 use App\Models\Setting;
 use App\Models\Karyawan;
 use Carbon\Carbon;
@@ -50,24 +52,44 @@ class AbsensiController extends Controller
             $hariIni = Carbon::now()->format('Y-m-d');
             
             $cekAbsensi = Absensi::where('user_id',Auth::user()->id)->where('waktu_absen',$hariIni)->whereBetween(DB::raw('TIME(created_at)'), array($awalAbsensi, $akhirAbsensi))->count();
-            // dd($cekAbsensi);
+            
             return view('dashboard.absensi.karyawan', compact('title','appName','cekAbsensi','awalAbsensi','akhirAbsensi','jamSekarang','hariIni'));
         }
     }
-
+    
     public function add_absensi(){
         try {
             $karyawan = Auth::user()->id;
+            $cekPasangBaru = DataPasangBaru::whereDoesntHave('data_job')->count();
 
-            Absensi::where('user_id',$karyawan)->insert([
-                'user_id' => $karyawan,
-                'waktu_absen' => date('Y-m-d'),
-                'created_at' => date('Y-m-d H:i:s'),
-                'updated_at' => date('Y-m-d H:i:s'),
-            ]);
+            $absensi['user_id'] = $karyawan;
+            $absensi['waktu_absen'] = date('Y-m-d');
+            $absensi['created_at'] = date('Y-m-d H:i:s');
+            $absensi['updated_at'] = date('Y-m-d H:i:s');
+
+            if($cekPasangBaru < 1){
+                Absensi::insert($absensi);
+            }else{
+                $pasangBaru = DataPasangBaru::select('id')->whereDoesntHave('data_job')->first();
+        
+                DB::beginTransaction();
+                
+                Absensi::insert($absensi);
+                
+                $dataJob['user_id'] = $karyawan;
+                $dataJob['kode_pasang_baru'] = $pasangBaru->id;
+                $dataJob['created_at'] = date('Y-m-d H:i:s');
+                $dataJob['updated_at'] = date('Y-m-d H:i:s');
+    
+                DataJob::insert($dataJob);
+    
+                DB::commit();    
+            }
 
             Alert::success('Sukses','Terima kasih, sudah mengisi absensi hari ini');
         } catch (\Exception $e) {
+            DB::rollback();
+
             Alert::error('Error',$e->getMessage());
         }
 
@@ -76,17 +98,44 @@ class AbsensiController extends Controller
 
     public function store(Request $request)
 	{
-		$request->validate([
-			'user_id' => 'required',
-		]);
+        try {
+            $cekPasangBaru = DataPasangBaru::whereDoesntHave('data_job')->count();
+    
+            $request->validate([
+                'user_id' => 'required',
+            ]);
+    
+            $data['user_id'] = $request->user_id;
+            $data['waktu_absen'] = date('Y-m-d');
+            $data['created_at'] = date('Y-m-d H:i:s');
+            $data['updated_at'] = date('Y-m-d H:i:s');
+            
+            if($cekPasangBaru < 1){
+                Absensi::insert($data);
+            }else{
+                $pasangBaru = DataPasangBaru::select('id')->whereDoesntHave('data_job')->first();
+        
+                DB::beginTransaction();
+                
+                Absensi::insert($data);
+                
+                $dataJob['user_id'] = $request->user_id;
+                $dataJob['kode_pasang_baru'] = $pasangBaru->id;
+                $dataJob['created_at'] = date('Y-m-d H:i:s');
+                $dataJob['updated_at'] = date('Y-m-d H:i:s');
+    
+                DataJob::insert($dataJob);
+    
+                DB::commit(); 
+            }
 
-        $data['user_id'] = $request->user_id;
-        $data['waktu_absen'] = date('Y-m-d');
-		$data['created_at'] = date('Y-m-d H:i:s');
-		$data['updated_at'] = date('Y-m-d H:i:s');
+            Alert::success('Sukses','Data Absensi berhasil disimpan');
+        } catch (\Throwable $e) {
+            DB::rollback();
 
-		Absensi::insert($data);
-        Alert::success('Sukses','Data Absensi berhasil disimpan');
+            Alert::error('Error',$e->getMessage());
+        }
+
 		return redirect()->back();
 	}
 
