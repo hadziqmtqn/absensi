@@ -22,8 +22,8 @@
                         <div class="auth-form-light text-left py-5 px-4 px-sm-5">
                             <div class="brand-logo">
                                 <img src="@if(!empty($appName->logo)) {{ asset($appName->logo) }} @endif" alt="@if(!empty($appName->application_name)) {{ $appName->application_name }} @endif">
-                                <h4>{{ $appName->description }}</h4>
                             </div>
+                            <h4>{{ $appName->description }}</h4>
                             <h6 class="font-weight-light">Sign in to continue.</h6>
                             <form class="pt-3" method="POST" action="{{ route('login') }}">
                                 @csrf

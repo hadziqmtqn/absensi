@@ -75,6 +75,12 @@ class DashboardController extends Controller
             $karyawan = Karyawan::where('id',Auth::user()->id)->firstOrFail();
 
             $hariIni = Carbon::now()->format('Y-m-d');
+            $waktuAbsensi = Setting::select('awal_absensi','akhir_absensi')->first();
+            $awalAbsensi = $waktuAbsensi->awal_absensi;
+            $akhirAbsensi = $waktuAbsensi->akhir_absensi;
+            $jamSekarang = Carbon::now()->format('H:i:s');
+            
+            $cekAbsensi = Absensi::where('user_id',Auth::user()->id)->where('waktu_absen',$hariIni)->whereBetween(DB::raw('TIME(created_at)'), array($awalAbsensi, $akhirAbsensi))->count();
 
             if($request->search){
                 $listJobs = DataJob::where('user_id',$karyawan->id)
@@ -95,7 +101,7 @@ class DashboardController extends Controller
                 ->get();
             }
 
-            return view('dashboard.dashboard.karyawan', compact('title','appName','subTitle','listJobs','search'));
+            return view('dashboard.dashboard.karyawan', compact('title','appName','subTitle','listJobs','search','cekAbsensi','awalAbsensi','akhirAbsensi','jamSekarang','hariIni'));
         }
     }
 

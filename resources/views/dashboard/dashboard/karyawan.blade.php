@@ -33,6 +33,33 @@
         <div class="col-md-12 grid-margin stretch-card">
             <div class="card">
                 <div class="card-body">
+                    <h3 style="text-align: center; margin-bottom: 25px">Klik Tombol dibawah Ini untuk Melakukan Absensi</h3>
+                    @include('dashboard.layouts.session')
+                    @if ($jamSekarang > $awalAbsensi && $jamSekarang < $akhirAbsensi && $cekAbsensi < 1)
+                    <div class="text-center">
+                        <a href="{{ route('absensi.add_absensi') }}" class="btn btn-inverse-primary btn-rounded" style="padding: 30px; border-radius: 50%">
+                            <i class="ti-power-off" style="font-size: 70pt"></i>
+                        </a>
+                    </div>
+                    @elseif($jamSekarang > $awalAbsensi && $jamSekarang < $akhirAbsensi && $cekAbsensi > 0)
+                    <div class="text-center">
+                        <button class="btn btn-inverse-danger btn-rounded absensi" style="padding: 30px; border-radius: 50%">
+                            <i class="ti-power-off" style="font-size: 70pt"></i>
+                        </button>
+                    </div>
+                    @else
+                    <div class="text-center">
+                        <button class="btn btn-inverse-danger btn-rounded absensiout" style="padding: 30px; border-radius: 50%">
+                            <i class="ti-power-off" style="font-size: 70pt"></i>
+                        </button>
+                    </div>
+                    @endif
+                </div>
+            </div>
+        </div>
+        <div class="col-md-12 grid-margin stretch-card">
+            <div class="card">
+                <div class="card-body">
                     <p class="card-title">{{ $subTitle }}</p>
                     <table class="display expandable-table nowrap" id="myTable" style="width:100%">
                         <thead>
@@ -196,5 +223,5 @@
 @endsection
 
 @section('scripts')
-<script src="{{ asset('theme/template/js/dashboard/ds-karyawan.js') }}"></script>
+<script src="{{ asset('theme/template/js/dashboard/ds_karyawan.js') }}"></script>
 @endsection

@@ -11,4 +11,10 @@ $(function () {
         // $('#modal-view').find('form').attr('action',url);
         $('#modal-status-'+id).modal();
     });
+    $('.absensi').click(function(){
+        swal("Opps!", "Anda sudah mengisi absensi hari ini!", "warning");
+    });
+    $('.absensiout').click(function(){
+        swal("Opps!", "Sekarang bukan waktu absensi!", "warning");
+    });
 })
