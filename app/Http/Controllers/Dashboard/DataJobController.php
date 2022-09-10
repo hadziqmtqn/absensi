@@ -33,14 +33,37 @@ class DataJobController extends Controller
         ->whereDoesntHave('data_job')
         ->orderBy('created_at','ASC')
         ->get();
-        $teknisiCadangan = TeknisiCadangan::count();
+        $teknisiCadangan = TeknisiCadangan::whereDate('created_at', Carbon::now())->count();
         $teknisiNonJob = Karyawan::whereHas('absensi', function($e){
             $e->whereDate('created_at', Carbon::now());
         })
         ->whereDoesntHave('dataJob')
         ->count();
 
-        return view('dashboard.data_job.index', compact('title','appName','listPasangBaru','teknisiCadangan','teknisiNonJob'));
+        $listKaryawan = Karyawan::with('absensi')
+        ->whereHas('absensi', function($e){
+            $hariIni = Carbon::now()->format('Y-m-d');
+            $e->whereDate('created_at',$hariIni);
+        }) // => karyawan yang sudah absensi
+        ->whereDoesntHave('dataJob', function($e){
+            $hariIni = Carbon::now()->format('Y-m-d');
+            $e->whereDate('created_at',$hariIni);
+        }) // => karyawan yang tidak memiliki job
+        // ->orWhereHas('dataJob', function($e){
+        //     $hariIni = Carbon::now()->format('Y-m-d');
+        //     $e->whereHas('dataPasangBaru', function($e){
+        //         $e->where('status','3');
+        //     })
+        //     ->whereDate('created_at',$hariIni);
+        // }) // => karyawan yang memiliki job berstatus sukses
+        ->orWhereHas('teknisiCadangan', function($e){
+            $hariIni = Carbon::now()->format('Y-m-d');
+            $e->whereDate('created_at',$hariIni);
+        })
+        ->where('is_verifikasi',1)
+        ->get();
+
+        return view('dashboard.data_job.index', compact('title','appName','listPasangBaru','teknisiCadangan','teknisiNonJob','listKaryawan'));
     }
 
     public function getJsonDataJob(Request $request)
@@ -114,18 +137,35 @@ class DataJobController extends Controller
 
     public function store(Request $request)
 	{
-		$request->validate([
-			'user_id' => 'required',
-            'kode_pasang_baru' => 'required',
-		]);
+        try {
+            $request->validate([
+                'user_id' => 'required',
+                'kode_pasang_baru' => 'required',
+            ]);
+    
+            $data['user_id'] = $request->user_id;
+            $data['kode_pasang_baru'] = $request->kode_pasang_baru;
+            $data['created_at'] = date('Y-m-d H:i:s');
+            $data['updated_at'] = date('Y-m-d H:i:s');
+    
+            
+            DB::beginTransaction();
+            
+            DataJob::insert($data);
 
-        $data['user_id'] = $request->user_id;
-		$data['kode_pasang_baru'] = $request->kode_pasang_baru;
-		$data['created_at'] = date('Y-m-d H:i:s');
-		$data['updated_at'] = date('Y-m-d H:i:s');
+            $cekTeknisi = TeknisiCadangan::where('user_id',$request->user_id)->first();
+            if($request->user_id = $cekTeknisi->user_id){
+                TeknisiCadangan::where('user_id',$request->user_id)->delete();
+            }
+            
+            DB::commit();
 
-		DataJob::insert($data);
-        Alert::success('Sukses','Data Job Baru berhasil disimpan');
+            Alert::success('Sukses','Data Job Baru berhasil disimpan');
+        } catch (\Throwable $e) {
+            DB::rollback();
+
+            Alert::error('Error',$e->getMessage());
+        }
 		return redirect()->back();
 	}
 
@@ -201,11 +241,10 @@ class DataJobController extends Controller
                     });
                 })
                 ->where('id',$data->user_id)
-                // ->orWhereHas('dataJob', function($e){
-                //     $e->whereHas('dataPasangBaru', function($e){
-                //         $e->where('status','3');
-                //     });
-                // })
+                ->orWhereHas('teknisiCadangan', function($e){
+                    $hariIni = Carbon::now()->format('Y-m-d');
+                    $e->whereDate('created_at',$hariIni);
+                })
                 ->where('is_verifikasi',1)
                 ->get();
 
@@ -223,11 +262,10 @@ class DataJobController extends Controller
                     });
                 })
                 ->where('id',$data->user_id)
-                // ->orWhereHas('dataJob', function($e){
-                //     $e->whereHas('dataPasangBaru', function($e){
-                //         $e->where('status','3');
-                //     });
-                // })
+                ->orWhereHas('teknisiCadangan', function($e){
+                    $hariIni = Carbon::now()->format('Y-m-d');
+                    $e->whereDate('created_at',$hariIni);
+                })
                 ->where('is_verifikasi',1)
                 ->get();
 

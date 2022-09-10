@@ -30,7 +30,8 @@ class TeknisiCadanganController extends Controller
     {
         if ($request->ajax()) {
             $data = TeknisiCadangan::select('teknisi_cadangans.user_id','teknisi_cadangans.created_at','users.name')
-            ->join('users','teknisi_cadangans.user_id','users.id');
+            ->join('users','teknisi_cadangans.user_id','users.id')
+            ->whereDate('teknisi_cadangans.created_at', Carbon::now());
             
             return Datatables::of($data)
                 ->addIndexColumn()
