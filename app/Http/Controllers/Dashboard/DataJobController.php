@@ -278,11 +278,21 @@ class DataJobController extends Controller
 	{
         try {
             $job = DataJob::find($id);
-            TeknisiCadangan::insert([
-                'user_id' => $job->user_id,
-                'created_at' => date('Y-m-d H:i:s'),
-                'updated_at' => date('Y-m-d H:i:s'),
-            ]);
+            $cekTeknisiCadangan = Karyawan::whereHas('dataJob', function($e){
+                $e->whereHas('dataPasangBaru', function($e){
+                    $e->where('status','3');
+                });
+            })
+            ->where('id',$job->user_id)
+            ->count();
+
+            if($cekTeknisiCadangan > 0){
+                TeknisiCadangan::insert([
+                    'user_id' => $job->user_id,
+                    'created_at' => date('Y-m-d H:i:s'),
+                    'updated_at' => date('Y-m-d H:i:s'),
+                ]);
+            }
 
             $request->validate([
                 'user_id' => 'required',
