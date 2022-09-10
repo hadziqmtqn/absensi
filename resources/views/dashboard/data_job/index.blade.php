@@ -36,6 +36,9 @@
                 <div class="card-body">
                     <h4 class="card-title">{{ $title }}</h4>
                     @include('dashboard.layouts.session')
+                    <p class="card-description">
+                        <a href="{{ route('teknisi-cadangan.index') }}">Teknisi Cadangan ({{ $teknisiCadangan }})</a> | <a href="{{ route('teknisi-non-job.index') }}">Teknisi Non Job ({{ $teknisiNonJob }})</a>
+                    </p>
                     <table id="laravel_datatable" class="display expandable-table nowrap" style="width:100%">
                         <thead>
                             <tr>

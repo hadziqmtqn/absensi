@@ -13,6 +13,7 @@ use App\Http\Controllers\Dashboard\DataPasangBaruController;
 use App\Http\Controllers\Dashboard\DataJobController;
 use App\Http\Controllers\Dashboard\PermissionController;
 use App\Http\Controllers\Dashboard\RoleController;
+use App\Http\Controllers\Dashboard\TeknisiCadanganController;
 
 /*
 |--------------------------------------------------------------------------
@@ -78,6 +79,9 @@ Route::middleware(['auth',VerifikasiAkun::class])->group(function () {
     Route::get('karyawan/{id}/verifikasi', [KaryawanController::class, 'verifikasi'])->name('karyawan.verifikasi');
     Route::delete('karyawan/{id}/destroy', [KaryawanController::class, 'destroy'])->name('karyawan.destroy');
     Route::post('karyawan/{id}/restore', [KaryawanController::class, 'restore'])->name('karyawan.restore');
+    // teknisi cadangan
+    Route::get('teknisi-cadangan', [TeknisiCadanganController::class, 'index'])->name('teknisi-cadangan.index');
+    Route::get('getjsonteknisicadangan', [TeknisiCadanganController::class, 'getJsonTeknisiCadangan'])->name('getjsonteknisicadangan');
     // data pasang baru
     Route::get('data-pasang-baru', [DataPasangBaruController::class, 'index'])->name('data-pasang-baru.index');
     Route::post('data-pasang-baru/store', [DataPasangBaruController::class, 'store'])->name('data-pasang-baru.store');
@@ -94,6 +98,9 @@ Route::middleware(['auth',VerifikasiAkun::class])->group(function () {
     Route::get('data-job/edit/{id}', [DataJobController::class, 'edit'])->name('data-job.edit');
     Route::put('data-job/edit/{id}', [DataJobController::class, 'update'])->name('data-job.update');
     Route::delete('data-job/hapus/{id}', [DataJobController::class, 'delete'])->name('data-job.hapus');
+    // teknisi non job
+    Route::get('teknisi-non-job', [DataJobController::class, 'teknisiNonJob'])->name('teknisi-non-job.index');
+    Route::get('getjsonteknisinonjob', [DataJobController::class, 'getJsonTeknisiNonJob'])->name('getjsonteknisinonjob');
     // absen
     Route::post('absensi/store', [AbsensiController::class, 'store'])->name('absensi.store');
 

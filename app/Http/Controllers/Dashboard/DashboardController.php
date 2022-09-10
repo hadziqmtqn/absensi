@@ -10,6 +10,7 @@ use App\Models\Karyawan;
 use Illuminate\Http\Request;
 
 use App\Models\Setting;
+use App\Models\TeknisiCadangan;
 use App\Models\User;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\Auth;
@@ -143,15 +144,11 @@ class DashboardController extends Controller
                 'status' => '3',
             ]);            
             
-            $karyawan = Auth::user()->id;
-            $pasangBaru = DataPasangBaru::select('id')->whereDoesntHave('data_job')->first();
+            $data['user_id'] = Auth::user()->id;
+            $data['created_at'] = date('Y-m-d H:i:s');
+            $data['updated_at'] = date('Y-m-d H:i:s');
 
-            $dataJob['user_id'] = $karyawan;
-            $dataJob['kode_pasang_baru'] = $pasangBaru->id;
-            $dataJob['created_at'] = date('Y-m-d H:i:s');
-            $dataJob['updated_at'] = date('Y-m-d H:i:s');
-
-            DataJob::insert($dataJob);
+            TeknisiCadangan::insert($data);
 
             DB::commit();
 

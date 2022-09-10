@@ -14,7 +14,7 @@
         </a>
     </li>
 
-    <li class="nav-item {{ ($title == 'Data Job' OR $title == 'Detail Job' OR $title == 'Edit Data Job' OR $title == 'Detail Data Job') ? 'active' : '' }}">
+    <li class="nav-item {{ ($title == 'Data Job' OR $title == 'Detail Job' OR $title == 'Edit Data Job' OR $title == 'Detail Data Job' OR $title == 'Teknisi Cadangan' OR $title == 'Teknisi Non Job') ? 'active' : '' }}">
         <a class="nav-link" href="{{ route('data-job.index') }}">
             <i class="mdi mdi-buffer menu-icon"></i>
             <span class="menu-title">Data Job</span>
@@ -34,7 +34,7 @@
             <span class="menu-title">Data Karyawan</span>
         </a>
     </li>
-    
+
     <li class="nav-item {{ ($title == 'Pengaturan Aplikasi' ? 'active' : '') }}">
         <a class="nav-link" href="{{ route('setting.index') }}">
             <i class="mdi mdi-settings menu-icon"></i>
