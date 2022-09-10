@@ -24,7 +24,11 @@
                 <div class="card-body">
                     <h4 class="card-title">{{ $title }}</h4>
                     <div class="mb-3">
+                        @if($jamSekarang > $awalAbsensi && $jamSekarang < $akhirAbsensi)
                         <button class="btn btn-primary" data-toggle="modal" data-target="#data_job">Tambah Baru</button>
+                        @else
+                        <button class="btn btn-primary absensiout">Tambah Baru</button>
+                        @endif
                     </div>
                     <!-- Modal -->
                     <div class="modal fade" id="data_job" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
@@ -76,4 +80,11 @@
 @section('scripts')
 <script src="{{ asset('theme/template/js/dashboard/absensi.js') }}"></script>
 @include('dashboard.absensi.validation')
+<script>
+    $(function () {
+        $('.absensiout').click(function(){
+            swal("Opps!", "Sekarang bukan waktu absensi!", "warning");
+        });
+    })
+</script>
 @endsection

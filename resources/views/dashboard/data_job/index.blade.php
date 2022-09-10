@@ -34,11 +34,16 @@
         <div class="col-md-12 grid-margin stretch-card">
             <div class="card">
                 <div class="card-body">
-                    <h4 class="card-title">{{ $title }}</h4>
-                    @include('dashboard.layouts.session')
-                    <div class="mb-3">
-                        <button class="btn btn-primary" data-toggle="modal" data-target="#data_job">Tambah Baru</button>
+                    <div class="d-flex justify-content-between">
+                        <h4 class="card-title">{{ $title }}</h4>
+                        <button type="button" class="btn btn-primary btn-sm" data-toggle="modal" data-target="#data_job">
+                            <i class="ti-plus"></i>
+                        </button>
                     </div>
+                    @include('dashboard.layouts.session')
+                    <p class="card-description">
+                        <a href="{{ route('teknisi-cadangan.index') }}">Teknisi Cadangan ({{ $teknisiCadangan }})</a> | <a href="{{ route('teknisi-non-job.index') }}">Teknisi Non Job ({{ $teknisiNonJob }})</a>
+                    </p>
                     <!-- Modal -->
                     <div class="modal fade" id="data_job" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
                         <div class="modal-dialog" role="document">

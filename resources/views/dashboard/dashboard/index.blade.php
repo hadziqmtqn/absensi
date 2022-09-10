@@ -16,7 +16,7 @@
         <div class="col-md-6 grid-margin stretch-card">
             <div class="card tale-bg">
                 <div class="card-people mt-auto">
-                    <img src="{{ asset('theme/template/images/dashboard/people.svg') }}" alt="people">
+                    <img src="{{ asset('theme/template/images/net.png') }}" alt="people">
                     <div class="weather-info">
                         <div class="d-flex">
                             <div>

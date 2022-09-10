@@ -28,33 +28,24 @@ class AbsensiController extends Controller
 
     public function index()
     {
-        if (Auth::user()->role_id == 1) {
-            $title = 'Absensi Karyawan';
-            $appName = Setting::first();
-            $listKaryawan = Karyawan::where('role_id',2)->select('id','name')
-            ->withCount('absensi')
-            ->whereDoesnthave('absensi', function($e){
-                $hariIni = Carbon::now()->format('Y-m-d');
-                $e->where('waktu_absen', $hariIni);
-            })
-            ->where('is_verifikasi',1)
-            ->orderBy('name','ASC')
-            ->get();
-
-            return view('dashboard.absensi.index', compact('title','appName','listKaryawan'));
-        } else {
-            $title = 'Absensi Karyawan';
-            $appName = Setting::first();
-            $waktuAbsensi = Setting::select('awal_absensi','akhir_absensi')->first();
-            $awalAbsensi = $waktuAbsensi->awal_absensi;
-            $akhirAbsensi = $waktuAbsensi->akhir_absensi;
-            $jamSekarang = Carbon::now()->format('H:i:s');
+        $title = 'Absensi Karyawan';
+        $appName = Setting::first();
+        $listKaryawan = Karyawan::where('role_id',2)->select('id','name')
+        ->withCount('absensi')
+        ->whereDoesnthave('absensi', function($e){
             $hariIni = Carbon::now()->format('Y-m-d');
-            
-            $cekAbsensi = Absensi::where('user_id',Auth::user()->id)->where('waktu_absen',$hariIni)->whereBetween(DB::raw('TIME(created_at)'), array($awalAbsensi, $akhirAbsensi))->count();
-            
-            return view('dashboard.absensi.karyawan', compact('title','appName','cekAbsensi','awalAbsensi','akhirAbsensi','jamSekarang','hariIni'));
-        }
+            $e->where('waktu_absen', $hariIni);
+        })
+        ->where('is_verifikasi',1)
+        ->orderBy('name','ASC')
+        ->get();
+
+        $waktuAbsensi = Setting::select('awal_absensi','akhir_absensi')->first();
+        $awalAbsensi = $waktuAbsensi->awal_absensi;
+        $akhirAbsensi = $waktuAbsensi->akhir_absensi;
+        $jamSekarang = Carbon::now()->format('H:i:s');
+        
+        return view('dashboard.absensi.index', compact('title','appName','listKaryawan','awalAbsensi','akhirAbsensi','jamSekarang'));
     }
     
     public function add_absensi(){

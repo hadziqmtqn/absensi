@@ -22,4 +22,9 @@ class Karyawan extends Model
     {
         return $this->hasOne(DataJob::class, 'user_id');
     }
+
+    public function teknisiCadangan()
+    {
+        return $this->hasOne(TeknisiCadangan::class, 'user_id');
+    }
 }

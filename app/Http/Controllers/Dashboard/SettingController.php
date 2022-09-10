@@ -31,6 +31,7 @@ class SettingController extends Controller
 	{
 		$request->validate([
 			'application_name' => 'required',
+            'description',
             'email' => 'email|required',
             'no_hp',
             'logo' => 'file|mimes:jpg,jpeg,png,svg|max:1024',
@@ -39,6 +40,7 @@ class SettingController extends Controller
 		]);
 
         $data['application_name'] = $request->application_name;
+        $data['description'] = $request->description;
 		$data['email'] = $request->email;
 		$data['no_hp'] = $request->no_hp;
 		$data['awal_absensi'] = $request->awal_absensi;
@@ -62,6 +64,7 @@ class SettingController extends Controller
 	{
 		$request->validate([
 			'application_name' => 'required',
+            'description',
             'email' => 'email|required',
             'no_hp',
             'logo' => 'file|mimes:jpg,jpeg,png,svg|max:1024',
@@ -70,6 +73,7 @@ class SettingController extends Controller
 		]);
 
         $data['application_name'] = $request->application_name;
+        $data['description'] = $request->description;
 		$data['email'] = $request->email;
 		$data['no_hp'] = $request->no_hp;
 		$data['awal_absensi'] = $request->awal_absensi;

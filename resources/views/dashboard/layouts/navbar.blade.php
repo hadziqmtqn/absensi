@@ -6,7 +6,7 @@
     <button class="navbar-toggler navbar-toggler align-self-center" type="button" data-toggle="minimize">
         <span class="icon-menu"></span>
     </button>
-    <ul class="navbar-nav mr-lg-2">
+    {{-- <ul class="navbar-nav mr-lg-2">
         <li class="nav-item nav-search d-none d-lg-block">
             <div class="input-group">
                 <div class="input-group-prepend hover-cursor" id="navbar-search-icon">
@@ -17,12 +17,12 @@
                 <input type="text" class="form-control" id="navbar-search-input" placeholder="Search now" aria-label="search" aria-describedby="search">
             </div>
         </li>
-    </ul>
+    </ul> --}}
     <ul class="navbar-nav navbar-nav-right">
         <li class="nav-item dropdown">
             <a class="nav-link count-indicator dropdown-toggle" id="notificationDropdown" href="#" data-toggle="dropdown">
-                <i class="icon-bell mx-0"></i>
-                <span class="count"></span>
+                {{-- <i class="icon-bell mx-0"></i>
+                <span class="count"></span> --}}
             </a>
             <div class="dropdown-menu dropdown-menu-right navbar-dropdown preview-list" aria-labelledby="notificationDropdown">
                 <p class="mb-0 font-weight-normal float-left dropdown-header">Notifications</p>
@@ -74,9 +74,9 @@
                 </form>
             </div>
         </li>
-        <li class="nav-item nav-settings d-none d-lg-flex">
+        {{-- <li class="nav-item nav-settings d-none d-lg-flex">
             <a class="nav-link" href="#"><i class="icon-ellipsis"></i></a>
-        </li>
+        </li> --}}
     </ul>
     <button class="navbar-toggler navbar-toggler-right d-lg-none align-self-center" type="button" data-toggle="offcanvas">
         <span class="icon-menu"></span>

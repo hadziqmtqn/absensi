@@ -43,7 +43,8 @@ class PermissionTableSeeder extends Seeder
             'karyawan-create',
             'karyawan-edit',
             'karyawan-delete',
-            'profile-edit'
+            'profile-edit',
+            'teknisi-cadangan-list'
         ];
        
         foreach ($permissions as $permission) {

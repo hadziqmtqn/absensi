@@ -1,6 +1,6 @@
 @extends('dashboard.layouts.master')
 @section('title')
-    {{ $title }} - {{ $data->kode }}
+    {{ $title }} {{ $data->dataPasangBaru->kode }}
 @endsection
 @section('content')
 <div class="row">

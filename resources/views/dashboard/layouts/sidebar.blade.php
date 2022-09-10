@@ -14,13 +14,12 @@
         </a>
     </li>
 
-    <li class="nav-item {{ ($title == 'Data Job' OR $title == 'Detail Job' OR $title == 'Edit Data Job' OR $title == 'Detail Data Job') ? 'active' : '' }}">
+    <li class="nav-item {{ ($title == 'Data Job' OR $title == 'Detail Job' OR $title == 'Edit Data Job' OR $title == 'Detail Data Job' OR $title == 'Teknisi Cadangan' OR $title == 'Teknisi Non Job') ? 'active' : '' }}">
         <a class="nav-link" href="{{ route('data-job.index') }}">
             <i class="mdi mdi-buffer menu-icon"></i>
             <span class="menu-title">Data Job</span>
         </a>
     </li>
-    @endif
 
     <li class="nav-item {{ ($title == 'Absensi Karyawan') ? 'active' : '' }}">
         <a class="nav-link" href="{{ route('absensi.index') }}">
@@ -28,14 +27,14 @@
             <span class="menu-title">Absensi</span>
         </a>
     </li>
-
-    @if (\Auth::user()->role_id == 1)
+    
     <li class="nav-item {{ ($title == 'Data Karyawan' OR $title == 'Detail Karyawan' OR $title == 'Update Password Karyawan' OR $title == 'Data Karyawan Terhapus') ? 'active' : '' }}">
         <a class="nav-link" href="{{ route('karyawan.index') }}">
             <i class="mdi mdi-account-multiple menu-icon"></i>
             <span class="menu-title">Data Karyawan</span>
         </a>
     </li>
+
     <li class="nav-item {{ ($title == 'Pengaturan Aplikasi' ? 'active' : '') }}">
         <a class="nav-link" href="{{ route('setting.index') }}">
             <i class="mdi mdi-settings menu-icon"></i>
