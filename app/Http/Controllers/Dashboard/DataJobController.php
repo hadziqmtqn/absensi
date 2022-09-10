@@ -48,14 +48,7 @@ class DataJobController extends Controller
         ->whereDoesntHave('dataJob', function($e){
             $hariIni = Carbon::now()->format('Y-m-d');
             $e->whereDate('created_at',$hariIni);
-        }) // => karyawan yang tidak memiliki job
-        // ->orWhereHas('dataJob', function($e){
-        //     $hariIni = Carbon::now()->format('Y-m-d');
-        //     $e->whereHas('dataPasangBaru', function($e){
-        //         $e->where('status','3');
-        //     })
-        //     ->whereDate('created_at',$hariIni);
-        // }) // => karyawan yang memiliki job berstatus sukses
+        })
         ->orWhereHas('teknisiCadangan', function($e){
             $hariIni = Carbon::now()->format('Y-m-d');
             $e->whereDate('created_at',$hariIni);
@@ -302,11 +295,18 @@ class DataJobController extends Controller
             $pasangbaru['status'] = $request->status;
             
             DB::transaction(function () use ($data, $pasangbaru, $id, $request) {
-                DataJob::where('id', $id)->update($data);
-                $idJob = DataJob::findOrFail($id);
-                DataPasangBaru::where('id', $idJob->kode_pasang_baru)->update($pasangbaru);
-                TeknisiCadangan::where('user_id',$request->user_id)->delete();
+                DataJob::where('id', $id)
+                ->update($data);
 
+                $idJob = DataJob::findOrFail($id);
+
+                DataPasangBaru::where('id', $idJob->kode_pasang_baru)
+                ->update($pasangbaru);
+                
+                TeknisiCadangan::where('user_id',$request->user_id)
+                ->whereDate('created_at', Carbon::now())
+                ->delete();
+                
                 if($request->status == 3){
                     TeknisiCadangan::insert([
                         'user_id' => $request->user_id,
@@ -314,9 +314,11 @@ class DataJobController extends Controller
                         'updated_at' => date('Y-m-d H:i:s'),
                     ]);
                 }
+
             });
 
             DB::commit();
+
             Alert::success('Sukses','Data Job Baru berhasil diupdate');
         } catch (\Throwable $e) {
             DB::rollBack();
