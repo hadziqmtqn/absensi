@@ -89,6 +89,7 @@ class DashboardController extends Controller
                 'data_pasang_barus.alamat','data_pasang_barus.acuan_lokasi','data_pasang_barus.status','data_pasang_barus.inet','data_pasang_barus.foto')
                 ->join('data_pasang_barus','data_jobs.kode_pasang_baru','=','data_pasang_barus.id')
                 ->where('data_jobs.created_at','like','%'.$search.'%')
+                ->orderBy('data_jobs.created_at','DESC')
                 ->get();
             }else{
                 $listJobs = DataJob::where('user_id',$karyawan->id)
@@ -98,6 +99,7 @@ class DashboardController extends Controller
                 ->join('data_pasang_barus','data_jobs.kode_pasang_baru','=','data_pasang_barus.id')
                 ->whereDate('data_jobs.created_at',$hariIni)
                 ->where('data_jobs.created_at','like','%'.$search.'%')
+                ->orderBy('data_jobs.created_at','DESC')
                 ->get();
             }
 
@@ -135,12 +137,28 @@ class DashboardController extends Controller
 
     public function success($id){
         try {
+            DB::beginTransaction();
+
             DataPasangBaru::where('id',$id)->update([
                 'status' => '3',
-            ]);
+            ]);            
+            
+            $karyawan = Auth::user()->id;
+            $pasangBaru = DataPasangBaru::select('id')->whereDoesntHave('data_job')->first();
+
+            $dataJob['user_id'] = $karyawan;
+            $dataJob['kode_pasang_baru'] = $pasangBaru->id;
+            $dataJob['created_at'] = date('Y-m-d H:i:s');
+            $dataJob['updated_at'] = date('Y-m-d H:i:s');
+
+            DataJob::insert($dataJob);
+
+            DB::commit();
 
             Alert::success('Sukses','Status Job Success');
         } catch (\Exception $e) {
+            DB::rollback();
+
             Alert::error('Error',$e->getMessage());
         }
 

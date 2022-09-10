@@ -33,28 +33,7 @@ class DataJobController extends Controller
         ->orderBy('created_at','ASC')
         ->get();
 
-        $listKaryawan = Karyawan::with('absensi')
-        ->whereHas('absensi', function($e){
-            $hariIni = Carbon::now()->format('Y-m-d');
-            $e->whereDate('created_at',$hariIni);
-        }) // => karyawan yang sudah absensi
-        ->whereDoesntHave('dataJob', function($e){
-            $hariIni = Carbon::now()->format('Y-m-d');
-            $e->whereDate('created_at',$hariIni);
-        }) // => karyawan yang tidak memiliki job
-        ->orWhereHas('dataJob', function($e){
-            $hariIni = Carbon::now()->format('Y-m-d');
-            $e->whereHas('dataPasangBaru', function($e){
-                $e->where('status','3');
-            })
-            ->whereDate('created_at',$hariIni);
-        }) // => karyawan yang memiliki job berstatus sukses
-        ->where('is_verifikasi',1)
-        ->get();
-
-        // dd($listKaryawan);
-
-        return view('dashboard.data_job.index', compact('title','appName','listPasangBaru','listKaryawan'));
+        return view('dashboard.data_job.index', compact('title','appName','listPasangBaru'));
     }
 
     public function getJsonDataJob(Request $request)
