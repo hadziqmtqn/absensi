@@ -16,7 +16,8 @@ class SettingSeeder extends Seeder
     public function run()
     {
         Setting::create([
-            'application_name' => 'Absensi App',
+            'application_name' => 'SIATAC',
+            'description' => 'Sistem Informasi Absensi',
             'email' => 'absensi@g.com',
             'logo' => 'theme/template/images/logo.svg',
             'awal_absensi' => '08:00:00',

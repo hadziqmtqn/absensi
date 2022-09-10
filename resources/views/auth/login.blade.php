@@ -22,8 +22,8 @@
                         <div class="auth-form-light text-left py-5 px-4 px-sm-5">
                             <div class="brand-logo">
                                 <img src="@if(!empty($appName->logo)) {{ asset($appName->logo) }} @endif" alt="@if(!empty($appName->application_name)) {{ $appName->application_name }} @endif">
+                                <h4>{{ $appName->description }}</h4>
                             </div>
-                            <h4>Hello! let's get started</h4>
                             <h6 class="font-weight-light">Sign in to continue.</h6>
                             <form class="pt-3" method="POST" action="{{ route('login') }}">
                                 @csrf
@@ -49,8 +49,9 @@
                                 <div class="my-2 d-flex justify-content-between align-items-center">
                                     <div class="form-check">
                                         <label class="form-check-label text-muted">
-                                        <input type="checkbox" name="remember" id="remember" {{ old('remember') ? 'checked' : '' }} class="form-check-input">
+                                        <input type="checkbox" name="remember" class="form-check-input {{ old('remember') ? 'checked' : '' }}">
                                         Keep me signed in
+                                        <i class="input-helper"></i>
                                         </label>
                                     </div>
                                 </div>
