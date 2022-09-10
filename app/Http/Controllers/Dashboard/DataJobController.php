@@ -144,12 +144,8 @@ class DataJobController extends Controller
             
             DB::beginTransaction();
             
+            TeknisiCadangan::where('user_id',$request->user_id)->delete();
             DataJob::insert($data);
-
-            $cekTeknisi = TeknisiCadangan::where('user_id',$request->user_id)->first();
-            if($request->user_id = $cekTeknisi->user_id){
-                TeknisiCadangan::where('user_id',$request->user_id)->delete();
-            }
             
             DB::commit();
 
@@ -281,6 +277,13 @@ class DataJobController extends Controller
     public function update(Request $request,$id)
 	{
         try {
+            $job = DataJob::find($id);
+            TeknisiCadangan::insert([
+                'user_id' => $job->user_id,
+                'created_at' => date('Y-m-d H:i:s'),
+                'updated_at' => date('Y-m-d H:i:s'),
+            ]);
+
             $request->validate([
                 'user_id' => 'required',
                 'kode_pasang_baru' => 'required',
@@ -299,20 +302,20 @@ class DataJobController extends Controller
                 ->update($data);
 
                 $idJob = DataJob::findOrFail($id);
-
+                
                 DataPasangBaru::where('id', $idJob->kode_pasang_baru)
                 ->update($pasangbaru);
                 
-                TeknisiCadangan::where('user_id',$request->user_id)
-                ->whereDate('created_at', Carbon::now())
-                ->delete();
-                
                 if($request->status == 3){
+                    TeknisiCadangan::where('user_id',$request->user_id)->delete();
                     TeknisiCadangan::insert([
                         'user_id' => $request->user_id,
                         'created_at' => date('Y-m-d H:i:s'),
                         'updated_at' => date('Y-m-d H:i:s'),
                     ]);
+                }
+                elseif($request->user_id){
+                    TeknisiCadangan::where('user_id',$request->user_id)->delete();
                 }
 
             });
