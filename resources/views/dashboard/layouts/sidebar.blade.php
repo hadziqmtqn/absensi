@@ -21,7 +21,7 @@
         </a>
     </li>
 
-    <li class="nav-item {{ ($title == 'Absensi Karyawan') ? 'active' : '' }}">
+    <li class="nav-item {{ ($title == 'Absensi Karyawan' OR $title == 'Edit Absensi Karyawan') ? 'active' : '' }}">
         <a class="nav-link" href="{{ route('absensi.index') }}">
             <i class="mdi mdi-calendar-clock menu-icon"></i>
             <span class="menu-title">Absensi</span>

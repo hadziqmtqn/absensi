@@ -35,6 +35,7 @@ class DataJobController extends Controller
         ->get();
         $teknisiCadangan = TeknisiCadangan::whereDate('created_at', Carbon::now())->count();
         $teknisiNonJob = Karyawan::whereHas('absensi', function($e){
+            $e->where('status','1');
             $e->whereDate('created_at', Carbon::now());
         })
         ->whereDoesntHave('dataJob')
@@ -317,6 +318,10 @@ class DataJobController extends Controller
                 ->update($pasangbaru);
                 
                 if($request->status == 3){
+                    $cekNonJob = Karyawan::whereHas('absensi')
+                    ->whereDoesntHave('dataJob')
+                    ->count();
+
                     TeknisiCadangan::where('user_id',$request->user_id)->delete();
                     TeknisiCadangan::insert([
                         'user_id' => $request->user_id,

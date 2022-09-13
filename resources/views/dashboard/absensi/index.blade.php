@@ -66,8 +66,9 @@
                             <tr>
                                 <th>#</th>
                                 <th>Nama Lengkap</th>
-                                <th>Absen Pada</th>
+                                <th>Absensi Pada</th>
                                 <th>Status</th>
+                                <th>Aksi</th>
                             </tr>
                         </thead>
                     </table>
@@ -78,7 +79,7 @@
 @endsection
 
 @section('scripts')
-<script src="{{ asset('theme/template/js/dashboard/absensi.js') }}"></script>
+<script src="{{ asset('theme/template/js/dashboard/new_absensi.js') }}"></script>
 @include('dashboard.absensi.validation')
 <script>
     $(function () {

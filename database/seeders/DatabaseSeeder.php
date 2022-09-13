@@ -18,10 +18,10 @@ class DatabaseSeeder extends Seeder
             AdminSeeder::class,
             SettingSeeder::class,
         ]);
-        \App\Models\DataPasangBaru::factory(20)->create();
+        \App\Models\DataPasangBaru::factory(5)->create();
         // \App\Models\User::factory(20)->create();
 
-        $users = \App\Models\User::factory(20)->create();
+        $users = \App\Models\User::factory(5)->create();
         foreach($users as $user){
             $user->assignRole('2');
         }
