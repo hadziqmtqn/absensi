@@ -287,7 +287,7 @@ class DataJobController extends Controller
             ->where('id',$job->user_id)
             ->count();
 
-            if($cekTeknisiCadangan > 0){
+            if($job->user_id != $request->user_id && $cekTeknisiCadangan > 0){
                 TeknisiCadangan::insert([
                     'user_id' => $job->user_id,
                     'created_at' => date('Y-m-d H:i:s'),
@@ -318,16 +318,57 @@ class DataJobController extends Controller
                 ->update($pasangbaru);
                 
                 if($request->status == 3){
-                    $cekNonJob = Karyawan::whereHas('absensi')
+                    /*
+                    jika semua teknisi yang sudah absensi memiliki job,
+                    maka teknisi yang memiliki job sukses langsung ditambah job baru
+
+                    jika ada teknisi yang sudah absensi dan belum memiliki job,
+                    maka teknisi yang memiliki job sukses diarahkan ke teknisi cadangan
+                    dan jika ada job baru diambil oleh teknisi yang belum memiliki job sama sekali
+
+                    jika semua job sudah dimiliki oleh teknisi,
+                    maka teknisi yang meiliki job sukses diarahkan ke teknisi cadangan
+                    */
+                    
+                    $cekNonJob = Karyawan::whereHas('absensi', function($e){
+                        $e->whereDate('created_at', date('Y-m-d'));
+                    })
                     ->whereDoesntHave('dataJob')
                     ->count();
 
-                    TeknisiCadangan::where('user_id',$request->user_id)->delete();
-                    TeknisiCadangan::insert([
-                        'user_id' => $request->user_id,
-                        'created_at' => date('Y-m-d H:i:s'),
-                        'updated_at' => date('Y-m-d H:i:s'),
-                    ]);
+                    $cekPasangBaru = DataPasangBaru::select('id')
+                    ->whereDoesntHave('data_job')
+                    ->count();
+
+                    if($cekNonJob < 1 && $cekPasangBaru > 0){
+                        // if($cekPasangBaru > 0){
+                        //     TeknisiCadangan::where('user_id',$request->user_id)->delete();
+                        //     TeknisiCadangan::insert([
+                        //         'user_id' => $request->user_id,
+                        //         'created_at' => date('Y-m-d H:i:s'),
+                        //         'updated_at' => date('Y-m-d H:i:s'),
+                        //     ]);
+                        // }else{
+                        // }
+                        $pasangBaru = DataPasangBaru::select('id')
+                        ->whereDoesntHave('data_job')
+                        ->first();
+       
+                        $dataJob['user_id'] = $request->user_id;
+                        $dataJob['kode_pasang_baru'] = $pasangBaru->id;
+                        $dataJob['created_at'] = date('Y-m-d H:i:s');
+                        $dataJob['updated_at'] = date('Y-m-d H:i:s');
+            
+                        DataJob::insert($dataJob);
+                    }else{
+                        TeknisiCadangan::where('user_id',$request->user_id)->delete();
+                        TeknisiCadangan::insert([
+                            'user_id' => $request->user_id,
+                            'created_at' => date('Y-m-d H:i:s'),
+                            'updated_at' => date('Y-m-d H:i:s'),
+                        ]);
+                    }
+
                 }
                 elseif($request->user_id){
                     TeknisiCadangan::where('user_id',$request->user_id)->delete();

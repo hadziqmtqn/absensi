@@ -165,8 +165,10 @@ class AbsensiController extends Controller
                 })
 
                 ->addColumn('action', function($row){
-                    $btn = '<a href="absensi/edit/'.$row->id.'" class="btn btn-warning" style="padding: 7px 10px">Edit</a>';
-                    return $btn;
+                    if($row->created_at->format('Y-m-d') == Carbon::now()->format('Y-m-d')){
+                        $btn = '<a href="absensi/edit/'.$row->id.'" class="btn btn-warning" style="padding: 7px 10px">Edit</a>';
+                        return $btn;
+                    }
                 })
 
                 ->rawColumns(['status','action'])

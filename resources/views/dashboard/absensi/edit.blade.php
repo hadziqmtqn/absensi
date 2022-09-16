@@ -29,7 +29,9 @@
                             </div>
                         </div>
                     </div>
-                    <button type="submit" class="btn btn-primary">Submit</button>
+                    @if ($data->created_at->format('Y-m-d') == \Carbon\Carbon::now()->format('Y-m-d'))
+                        <button type="submit" class="btn btn-primary">Submit</button>
+                    @endif
                 </form>
             </div>
         </div>
