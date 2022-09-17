@@ -12,6 +12,7 @@ use Illuminate\Support\Str;
 use App\Models\Setting;
 use App\Models\DataPasangBaru;
 use App\Models\Karyawan;
+use App\Models\TeknisiCadangan;
 use App\Models\User;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\DB;
@@ -111,7 +112,18 @@ class DataPasangBaruController extends Controller
             ->whereHas('absensi', function($e){
                 $e->whereDate('created_at', Carbon::now());
             })
-            ->whereDoesntHave('dataJob')
+            ->whereDoesntHave('dataJob', function($e){
+                $e->whereDate('created_at', Carbon::now());
+            })
+            ->count();
+
+            $cekTeknisiCadangan = Karyawan::where('role_id',2)
+            ->whereHas('absensi', function($e){
+                $e->whereDate('created_at', Carbon::now());
+            })
+            ->whereHas('teknisiCadangan', function($e){
+                $e->whereDate('created_at', Carbon::now());
+            })
             ->count();
 
             $request->validate([
@@ -139,15 +151,16 @@ class DataPasangBaruController extends Controller
                 $data['foto'] = 'assets/' .$nama_file;
             }
 
-            if($cekAbsensi < 1){
-                DataPasangBaru::insert($data);
-            }else{
+            if($cekAbsensi > 0){
                 $karyawan = Karyawan::where('role_id',2)
                 ->whereHas('absensi', function($e){
+                    $e->where('status','1');
                     $e->whereDate('created_at', Carbon::now());
                 })
-                ->whereDoesntHave('dataJob')
-                ->first();               
+                ->whereDoesntHave('dataJob', function($e){
+                    $e->whereDate('created_at', Carbon::now());
+                })
+                ->first();
                 
                 $dataJob['user_id'] = $karyawan->id;
                 $dataJob['created_at'] = date('Y-m-d H:i:s');
@@ -161,6 +174,33 @@ class DataPasangBaruController extends Controller
                 });
                 
                 DB::commit();
+            }elseif($cekAbsensi < 1 && $cekTeknisiCadangan > 0){
+                $karyawan = Karyawan::where('role_id',2)
+                ->whereHas('absensi', function($e){
+                    $e->where('status','1');
+                    $e->whereDate('created_at', Carbon::now());
+                })
+                ->whereHas('teknisiCadangan', function($e){
+                    $e->whereDate('created_at', Carbon::now());
+                })
+                ->first();
+                
+                $dataJob['user_id'] = $karyawan->id;
+                $dataJob['created_at'] = date('Y-m-d H:i:s');
+                $dataJob['updated_at'] = date('Y-m-d H:i:s');
+
+                DB::transaction(function () use ($data, $dataJob, $karyawan) {
+                    $pasangBaru = DataPasangBaru::insertGetId($data);
+                    
+                    $dataJob['kode_pasang_baru'] = $pasangBaru;
+                    DataJob::insert($dataJob);
+
+                    TeknisiCadangan::where('user_id',$karyawan->id)->delete();
+                });
+                
+                DB::commit();
+            }else{
+                DataPasangBaru::insert($data);
             }
             
             Alert::success('Sukses','Data Pasang Baru berhasil disimpan');

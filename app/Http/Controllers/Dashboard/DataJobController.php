@@ -38,7 +38,9 @@ class DataJobController extends Controller
             $e->where('status','1');
             $e->whereDate('created_at', Carbon::now());
         })
-        ->whereDoesntHave('dataJob')
+        ->whereDoesntHave('dataJob', function($e){
+            $e->whereDate('created_at', Carbon::now());
+        })
         ->count();
 
         $listKaryawan = Karyawan::with('absensi')
@@ -411,8 +413,13 @@ class DataJobController extends Controller
         if ($request->ajax()) {
             $data = Karyawan::select('users.name','absensis.created_at')
             ->join('absensis','users.id','=','absensis.user_id')
-            ->whereDate('absensis.created_at', Carbon::now())
-            ->whereDoesntHave('dataJob');
+            ->whereHas('absensi', function($e){
+                $e->where('status', '1');
+                $e->whereDate('created_at', Carbon::now());
+            })
+            ->whereDoesntHave('dataJob', function($e){
+                $e->whereDate('created_at', Carbon::now());
+            });
             
             return Datatables::of($data)
                 ->addIndexColumn()

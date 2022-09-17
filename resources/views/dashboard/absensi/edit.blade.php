@@ -8,6 +8,11 @@
         <div class="card">
             <div class="card-body">
                 <h4 class="card-title">{{ $title }}</h4>
+                @if ($cekJob > 0 && ($data->created_at->format('Y-m-d') == \Carbon\Carbon::now()->format('Y-m-d')))
+                <div class="alert alert-danger" role="alert">
+                    Teknisi ini sudah memiliki job pada hari ini, absensi tidak dapat diedit!
+                </div>
+                @endif
                 <form class="forms-sample" method="POST" action="{{ route('absensi.update', $data->id) }}" enctype="multipart/form-data">
                     @csrf
                     {{ method_field('PUT') }}
@@ -29,7 +34,7 @@
                             </div>
                         </div>
                     </div>
-                    @if ($data->created_at->format('Y-m-d') == \Carbon\Carbon::now()->format('Y-m-d'))
+                    @if ($cekJob < 1 && ($data->created_at->format('Y-m-d') == \Carbon\Carbon::now()->format('Y-m-d')))
                         <button type="submit" class="btn btn-primary">Submit</button>
                     @endif
                 </form>

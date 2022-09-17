@@ -195,8 +195,10 @@ class AbsensiController extends Controller
         $title = 'Edit Absensi Karyawan';
         $appName = Setting::first();
         $data = Absensi::with('user')->findOrFail($id);
+        $cekJob = DataJob::where('user_id',$data->user_id)
+        ->count();
         
-        return view('dashboard.absensi.edit', compact('title','appName','data'));
+        return view('dashboard.absensi.edit', compact('title','appName','data','cekJob'));
     }
 
     public function update(Request $request, $id)
