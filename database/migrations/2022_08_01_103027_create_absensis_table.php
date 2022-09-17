@@ -17,6 +17,7 @@ class CreateAbsensisTable extends Migration
             $table->id();
             $table->bigInteger('user_id')->unsigned();
             $table->date('waktu_absen');
+            $table->enum('status', ['1','2'])->nullable()->default('1');
             $table->timestamps();
 
             $table->foreign('user_id')->references('id')->on('users')->onDelete('cascade');

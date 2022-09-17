@@ -157,14 +157,21 @@ class AbsensiController extends Controller
                 })
 
                 ->addColumn('status', function ($row) {
-                    if($row->waktu_absen){
+                    if($row->status == 1){
                         return '<span class="badge badge-success">Sudah Absensi</span>';
-                    }else{
-                        return '<span class="badge badge-warning">Belum Absensi</span>';
+                    }elseif($row->status == 2){
+                        return '<span class="badge badge-warning">Berhalangan</span>';
                     }
                 })
 
-                ->rawColumns(['status'])
+                ->addColumn('action', function($row){
+                    if($row->created_at->format('Y-m-d') == Carbon::now()->format('Y-m-d')){
+                        $btn = '<a href="absensi/edit/'.$row->id.'" class="btn btn-warning" style="padding: 7px 10px">Edit</a>';
+                        return $btn;
+                    }
+                })
+
+                ->rawColumns(['status','action'])
                 ->addIndexColumn()
                 ->make(true);
         }
@@ -182,4 +189,36 @@ class AbsensiController extends Controller
         }
         return redirect()->back();
     }
+
+    public function edit($id)
+    {
+        $title = 'Edit Absensi Karyawan';
+        $appName = Setting::first();
+        $data = Absensi::with('user')->findOrFail($id);
+        $cekJob = DataJob::where('user_id',$data->user_id)
+        ->count();
+        
+        return view('dashboard.absensi.edit', compact('title','appName','data','cekJob'));
+    }
+
+    public function update(Request $request, $id)
+	{
+        try {
+            $request->validate([
+                'status' => 'required',
+            ]);
+    
+            $data['status'] = $request->status;
+            // $data['created_at'] = date('Y-m-d H:i:s');
+            $data['updated_at'] = date('Y-m-d H:i:s');
+            
+            Absensi::where('id',$id)->update($data);
+
+            Alert::success('Sukses','Data Absensi berhasil diupdate');
+        } catch (\Throwable $e) {
+            Alert::error('Error',$e->getMessage());
+        }
+
+		return redirect()->route('absensi.index');
+	}
 }
