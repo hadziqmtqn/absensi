@@ -343,15 +343,6 @@ class DataJobController extends Controller
                     ->count();
 
                     if($cekNonJob < 1 && $cekPasangBaru > 0){
-                        // if($cekPasangBaru > 0){
-                        //     TeknisiCadangan::where('user_id',$request->user_id)->delete();
-                        //     TeknisiCadangan::insert([
-                        //         'user_id' => $request->user_id,
-                        //         'created_at' => date('Y-m-d H:i:s'),
-                        //         'updated_at' => date('Y-m-d H:i:s'),
-                        //     ]);
-                        // }else{
-                        // }
                         $pasangBaru = DataPasangBaru::select('id')
                         ->whereDoesntHave('data_job')
                         ->first();

@@ -138,20 +138,44 @@ class DashboardController extends Controller
 
     public function success($id){
         try {
+            $iduser = Auth::user()->id;
+            $cekNonJob = Karyawan::whereHas('absensi', function($e){
+                $e->whereDate('created_at', date('Y-m-d'));
+            })
+            ->whereDoesntHave('dataJob')
+            ->count();
+            
+            $cekPasangBaru = DataPasangBaru::select('id')
+            ->whereDoesntHave('data_job')
+            ->count();
+            
             DB::beginTransaction();
 
             DataPasangBaru::where('id',$id)->update([
                 'status' => '3',
-            ]);            
-            
-            $data['user_id'] = Auth::user()->id;
-            $data['created_at'] = date('Y-m-d H:i:s');
-            $data['updated_at'] = date('Y-m-d H:i:s');
+            ]);           
 
-            TeknisiCadangan::insert($data);
+            if($cekNonJob < 1 && $cekPasangBaru > 0){
+                $pasangBaru = DataPasangBaru::select('id')
+                ->whereDoesntHave('data_job')
+                ->first();
+
+                $dataJob['user_id'] = $iduser;
+                $dataJob['kode_pasang_baru'] = $pasangBaru->id;
+                $dataJob['created_at'] = date('Y-m-d H:i:s');
+                $dataJob['updated_at'] = date('Y-m-d H:i:s');
+    
+                DataJob::insert($dataJob);
+            }else{
+                $data['user_id'] = $iduser;
+                $data['created_at'] = date('Y-m-d H:i:s');
+                $data['updated_at'] = date('Y-m-d H:i:s');
+
+                TeknisiCadangan::insert($data);
+            }
 
             DB::commit();
-
+            
             Alert::success('Sukses','Status Job Success');
         } catch (\Exception $e) {
             DB::rollback();
