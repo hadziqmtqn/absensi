@@ -17,9 +17,9 @@ class DatabaseSeeder extends Seeder
             PermissionTableSeeder::class,
             AdminSeeder::class,
             SettingSeeder::class,
+            WhatsappApiSeeder::class,
         ]);
         \App\Models\DataPasangBaru::factory(5)->create();
-        // \App\Models\User::factory(20)->create();
 
         $users = \App\Models\User::factory(5)->create();
         foreach($users as $user){

@@ -35,11 +35,25 @@
         </a>
     </li>
 
-    <li class="nav-item {{ ($title == 'Pengaturan Aplikasi' ? 'active' : '') }}">
+    {{-- <li class="nav-item {{ ($title == 'Pengaturan Aplikasi' ? 'active' : '') }}">
         <a class="nav-link" href="{{ route('setting.index') }}">
             <i class="mdi mdi-settings menu-icon"></i>
             <span class="menu-title">Pengaturan Aplikasi</span>
         </a>
+    </li> --}}
+
+    <li class="nav-item {{ ($title == 'Pengaturan Aplikasi' OR $title == 'Whatsapp API') ? 'active' : '' }}">
+        <a class="nav-link collapsed" data-toggle="collapse" href="#setting" aria-expanded="false" aria-controls="setting">
+            <i class="mdi mdi-settings menu-icon"></i>
+            <span class="menu-title">Setting</span>
+            <i class="menu-arrow"></i>
+        </a>
+        <div class="collapse {{ ($title == 'Pengaturan Aplikasi' OR $title == 'Whatsapp API') ? 'show' : '' }}" id="setting" style="">
+            <ul class="nav flex-column sub-menu">
+                <li class="nav-item"> <a class="nav-link" href="{{ route('setting.index') }}"> Pengaturan Aplikasi</a></li>
+                <li class="nav-item"> <a class="nav-link" href="{{ route('whatsapp-api.index') }}"> Whatsapp API</a></li>
+            </ul>
+        </div>
     </li>
 
     <li class="nav-item {{ ($title == 'Data Role' OR $title == 'Detail Role' OR $title == 'Edit Role') ? 'active' : '' }}">

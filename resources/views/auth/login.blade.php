@@ -25,6 +25,7 @@
                             </div>
                             <h4>{{ $appName->description }}</h4>
                             <h6 class="font-weight-light">Sign in to continue.</h6>
+                            @include('dashboard.layouts.session')
                             <form class="pt-3" method="POST" action="{{ route('login') }}">
                                 @csrf
                                 <div class="form-group">

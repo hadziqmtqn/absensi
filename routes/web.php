@@ -14,6 +14,7 @@ use App\Http\Controllers\Dashboard\DataJobController;
 use App\Http\Controllers\Dashboard\PermissionController;
 use App\Http\Controllers\Dashboard\RoleController;
 use App\Http\Controllers\Dashboard\TeknisiCadanganController;
+use App\Http\Controllers\Dashboard\WhatsappApiController;
 
 /*
 |--------------------------------------------------------------------------
@@ -105,6 +106,10 @@ Route::middleware(['auth',VerifikasiAkun::class])->group(function () {
     Route::get('getjsonteknisinonjob', [DataJobController::class, 'getJsonTeknisiNonJob'])->name('getjsonteknisinonjob');
     // absen
     Route::post('absensi/store', [AbsensiController::class, 'store'])->name('absensi.store');
+    // whatsapp api
+    Route::get('whatsapp-api', [WhatsappApiController::class, 'index'])->name('whatsapp-api.index');
+    Route::post('whatsapp-api/store', [WhatsappApiController::class, 'store'])->name('whatsapp-api.store');
+    Route::put('whatsapp-api/update/{id}', [WhatsappApiController::class, 'update'])->name('whatsapp-api.update');
 
     Route::get('forbidden', function() {
         return view('dashboard.layouts.forbidden');
