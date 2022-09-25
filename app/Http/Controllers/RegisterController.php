@@ -47,7 +47,7 @@ class RegisterController extends Controller
         $user->assignRole('2');
         
         $this->whatsapp($user->id);
-        return redirect('login')->with(['success' => 'Sukses! Silahkan Login menggunakan Nomor HP/Email dan Kata Sandi']);
+        return redirect()->route('login')->with(['success' => 'Sukses! Silahkan Login menggunakan Nomor HP/Email dan Kata Sandi']);
     }
 
     public function whatsapp($registrasi){
@@ -56,12 +56,21 @@ class RegisterController extends Controller
         $whatsappApi = DB::table('whatsapp_apis')->first();
 
         // konfigurasi notifikasi wa untuk admin
-        $adminMessage = "Hei. Admin *".$aplikasi->application_name."* ada pendaftar karyawan baru atas nama: \n\n";
+        $adminMessage = "Hei. Admin *".$aplikasi->application_name."* ada registrasi absensi karyawan baru atas nama: \n\n";
+        $adminMessage .= "*Nama* : ".$newUser->name."\n";
+        $adminMessage .= "*No. HP* : ".$newUser->phone."\n";
+        $adminMessage .= "*Dari PT.* : ".$newUser->company_name."\n";
+        $adminMessage .= "*Tanggal Registrasi* : ".date('d M Y', strtotime($newUser->created_at))."\n\n";
         $adminMessage .= "Terima kasih";
 
         // konfigurasi notifikasi wa untuk karyawan
-        $userMessage = "Kami admin *".$aplikasi->application_name."* menginformasikan bahwa pendaftaran absensi atas nama: \n\n";
-		$userMessage .= "Panitia PPDB ".$aplikasi->application_name."\n";
+        $userMessage = "Selamat, registrasi absensi karyawan atas nama: \n\n";
+        $userMessage .= "*Nama* : ".$newUser->name."\n";
+        $userMessage .= "*No. HP* : ".$newUser->phone."\n";
+        $userMessage .= "*Dari PT.* : ".$newUser->company_name."\n";
+        $userMessage .= "*Tanggal Registrasi* : ".date('d M Y', strtotime($newUser->created_at))."\n\n";
+        $userMessage .= "berhasil disimpan, silahkan tunggu konfirmasi verifikasi data dari kami.\n\n";
+		$userMessage .= "Tim Dev ".$aplikasi->application_name;
 
         $curl = curl_init();
         $token = $whatsappApi->api_keys;

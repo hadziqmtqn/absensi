@@ -14,11 +14,6 @@
                     <form class="pt-3" method="POST" action="{{ route('registration.store') }}" id="register">
                         @csrf
                         <div id="register">
-                            {{-- <div class="form-group">
-                                <select name="roles" class="form-control">
-                                    <option value="2">Karyawan</option>
-                                </select>
-                            </div> --}}
                             <div class="form-group">
                                 <input type="text" class="form-control form-control-lg" value="{{ old('name') }}" name="name" placeholder="Nama Lengkap">
                             </div>

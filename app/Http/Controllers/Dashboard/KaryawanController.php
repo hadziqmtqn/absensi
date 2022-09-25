@@ -13,6 +13,7 @@ use App\Models\User;
 use App\Models\Setting;
 use App\Models\Karyawan;
 use App\Models\Role;
+use Illuminate\Support\Facades\DB;
 
 class KaryawanController extends Controller
 {
@@ -262,10 +263,14 @@ class KaryawanController extends Controller
                 $user->update([
                     'is_verifikasi' => 0,
                 ]);
+
+                $this->whatsapp($user->id);
             }else{
                 $user->update([
                     'is_verifikasi' => 1
                 ]);
+
+                $this->whatsapp($user->id);
             }
 
             Alert::success('Sukses','Status Verifikasi Karyawan Berhasil di Update');
@@ -274,6 +279,51 @@ class KaryawanController extends Controller
         }
 
         return redirect()->back();
+    }
+
+    public function whatsapp($id){
+        $aplikasi = Setting::first();
+        $karyawan = Karyawan::find($id);
+        $whatsappApi = DB::table('whatsapp_apis')->first();
+
+        if($karyawan->is_verifikasi == 1){
+            $userMessage = "Selamat ".$karyawan->name.", akun Anda berhasil *DIVERIFIKASI*, silahkan login menggunakan Email/No. HP dan Kata Sandi yang telah didaftarkan.\n\n\n";
+            $userMessage .= "Tim Dev ".$aplikasi->application_name;
+        }else{
+            $userMessage = "Mohon maaf ".$karyawan->name.", akun Anda kami nonaktifkan. Info lebih lanjut hubungi Admin. Terima kasih\n\n\n";
+            $userMessage .= "Tim Dev ".$aplikasi->application_name;
+        }
+
+        $curl = curl_init();
+        $token = $whatsappApi->api_keys;
+
+        $payload = [
+            "data" => [
+                [
+                    'phone' => $karyawan->phone,
+                    'message' => $userMessage,
+                ],
+            ]
+        ];
+
+        curl_setopt($curl, CURLOPT_HTTPHEADER,
+            array(
+                "Authorization: $token",
+                "Content-Type: application/json"
+            )
+        );
+        curl_setopt($curl, CURLOPT_CUSTOMREQUEST, "POST");
+        curl_setopt($curl, CURLOPT_RETURNTRANSFER, true);
+        curl_setopt($curl, CURLOPT_POSTFIELDS, json_encode($payload) );
+        curl_setopt($curl, CURLOPT_URL, $whatsappApi->domain."/api/v2/send-message");
+        curl_setopt($curl, CURLOPT_SSL_VERIFYHOST, 0);
+        curl_setopt($curl, CURLOPT_SSL_VERIFYPEER, 0);
+        $result = curl_exec($curl);
+        curl_close($curl);
+
+        // echo "<pre>";
+        // print_r($result);
+        return $result;
     }
 
     public function destroy($id){
