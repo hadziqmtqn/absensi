@@ -1,26 +1,29 @@
 <script>
-    if ($("#setting").length > 0) {
-        $("#setting").validate({
+    if ($("#validasi").length > 0) {
+        $("#validasi").validate({
             rules: {
-                application_name: {
+                domain: {
                     required: true,
                 },
-                email: {
+                api_keys: {
+                    required: true,
+                },
+                no_hp_penerima: {
                     required: true,
                 },
             },
             messages: {
-                application_name: {
-                    required: "Nama Aplikasi Wajib diisi",
+                domain: {
+                    required: "Domain Wajib diisi",
                 },
-                email: {
-                    required: "Email Wajib diisi",
-                    email: "Email Harus Valid",
+                api_keys: {
+                    required: "Api Keys Wajib diisi",
                 },
-                no_hp: {
-                    number: "No. HP Harus Berupa Angka",
-                    minlength: "No. HP Harus Lebih dari 11 Digit",
-                    maxlength: "No. HP Harus Kurang dari 13 Digit",
+                no_hp_penerima: {
+                    required: "No. HP Penerima Wajib diisi",
+                    number: "No. HP Penerima Harus Berupa Angka",
+                    minlength: "No. HP Penerima Harus Lebih dari 11 Digit",
+                    maxlength: "No. HP Penerima Harus Kurang dari 13 Digit",
                 },
             },
         })

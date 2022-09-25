@@ -22,7 +22,7 @@ class SettingController extends Controller
         $title = 'Pengaturan Aplikasi';
         $cekSetting = Setting::count();
         $data = Setting::first();
-        $appName = setting::first();
+        $appName = Setting::first();
 
         return view('dashboard.setting.index', compact('title','cekSetting','data','appName'));
     }
