@@ -10,6 +10,13 @@ use RealRashid\SweetAlert\Facades\Alert;
 
 class WhatsappApiController extends Controller
 {
+    function __construct()
+    {
+        $this->middleware('permission:whatsapp-api-create|whatsapp-api-edit', ['only' => ['index','show']]);
+        $this->middleware('permission:whatsapp-api-create', ['only' => ['create','store']]);
+        $this->middleware('permission:whatsapp-api-edit', ['only' => ['edit','update']]);
+    }
+
     public function index()
     {
         $title = 'Whatsapp API';
