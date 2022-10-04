@@ -18,12 +18,11 @@ class RegisterController extends Controller
 
         return view('register', compact('title','appName'));
     }
-
+    
     public function store(Request $request){
         $this->validate($request,[
             'name' => 'required|min:5',
             'short_name' => 'required',
-            'nik',
             'phone' => 'required|unique:users',
             'company_name',
             'email' => 'email|unique:users',
@@ -35,7 +34,6 @@ class RegisterController extends Controller
         $data['name'] = $request->input('name');
         $data['username'] = rand();
         $data['short_name'] = $request->input('short_name');
-        $data['nik'] = $request->input('nik');
         $data['phone'] = $request->input('phone');
         $data['company_name'] = $request->input('company_name');
         $data['email'] = $request->input('email');
