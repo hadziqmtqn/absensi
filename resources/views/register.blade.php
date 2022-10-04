@@ -21,9 +21,6 @@
                                 <input type="text" class="form-control form-control-lg" value="{{ old('short_name') }}" name="short_name" placeholder="Nama Panggilan">
                             </div>
                             <div class="form-group">
-                                <input type="number" class="form-control form-control-lg" value="{{ old('nik') }}" name="nik" placeholder="Nomor Induk Kependudukan">
-                            </div>
-                            <div class="form-group">
                                 <input type="number" class="form-control form-control-lg" value="{{ old('phone') }}" name="phone" placeholder="No. Telp/HP">
                             </div>
                             <div class="form-group">
