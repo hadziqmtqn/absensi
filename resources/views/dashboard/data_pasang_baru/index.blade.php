@@ -79,6 +79,10 @@
                 @csrf
                 <div class="modal-body" id="pasang_baru">
                     <div class="form-group">
+                        <label for="">Kode</label>
+                        <input type="text" class="form-control" name="kode" value="{{ old('kode') }}" placeholder="SC-xxxxxxxxx">
+                    </div>
+                    <div class="form-group">
                         <label for="">Inet</label>
                         <input type="number" class="form-control" name="inet" value="{{ old('inet') }}" placeholder="No. Internet">
                     </div>

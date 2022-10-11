@@ -57,19 +57,25 @@ class PermissionController extends Controller
         return response()->json(true);
     }
 
-    public function store(Request $request){
-        $this->validate($request,[
-            'name' => 'required',
-        ]);
-
-        $data['name'] = $request->name;
-        $data['guard_name'] = 'web';
-        $data['created_at'] = date('Y-m-d H:i:s');
-        $data['updated_at'] = date('Y-m-d H:i:s');
+    public function store(Request $request)
+    {
+        try {
+            $this->validate($request,[
+                'name' => 'required',
+            ]);
+    
+            $data['name'] = $request->name;
+            $data['guard_name'] = 'web';
+            $data['created_at'] = date('Y-m-d H:i:s');
+            $data['updated_at'] = date('Y-m-d H:i:s');
+            
+            Permission::insert($data);
+    
+            Alert::success('Sukses','Permission Berhasil ditambah');
+        } catch (\Throwable $th) {
+            Alert::error('Error',$th->getMessage());
+        }
         
-        Permission::insert($data);
-
-        Alert::success('Sukses','Permission Berhasil ditambah');
         return redirect()->back();
     }
 
@@ -84,17 +90,24 @@ class PermissionController extends Controller
 
     public function update(Request $request, $id)
     {
-        $this->validate($request, [
-            'name' => 'required',
-        ]);
-    
-        $data['name'] = $request->name;
-        // $data['created_at'] = date('Y-m-d H:i:s');
-        $data['updated_at'] = date('Y-m-d H:i:s');
+        try {
+            $this->validate($request, [
+                'name' => 'required',
+            ]);
         
-        Permission::where('id',$id)->update($data);
+            $data['name'] = $request->name;
+            // $data['created_at'] = date('Y-m-d H:i:s');
+            $data['updated_at'] = date('Y-m-d H:i:s');
+            
+            Permission::where('id',$id)->update($data);
+    
+            Alert::success('Sukses','Permission berhasil diupdate');
+            
+            return redirect()->route('permission.index');
+        } catch (\Throwable $th) {
+            Alert::error('Error',$th->getMessage());
 
-        Alert::success('Sukses','Permission berhasil diupdate');
-        return redirect()->route('permission.index');
+            return redirect()->back();
+        }
     }
 }

@@ -1,4 +1,4 @@
-@extends('dashboard.layouts.master')
+div@extends('dashboard.layouts.master')
 @section('title')
     {{ $title }} - {{ $data->kode }}
 @endsection
@@ -31,7 +31,7 @@
                     <div id="pasang_baru">
                         <div class="form-group">
                             <label for="">Kode Job</label>
-                            <input type="text" class="form-control" value="{{ $data->kode }}" placeholder="Kode Job" readonly>
+                            <input type="text" class="form-control" name="kode" value="{{ $data->kode }}" placeholder="SC-xxxxxxxxx">
                         </div>
                         <div class="form-group">
                             <label for="">Inet</label>

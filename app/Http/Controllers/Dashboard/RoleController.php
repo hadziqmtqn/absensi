@@ -87,18 +87,25 @@ class RoleController extends Controller
 
     public function update(Request $request, $id)
     {
-        $this->validate($request, [
-            'name' => 'required',
-            'permission',
-        ]);
+        try {
+            $this->validate($request, [
+                'name' => 'required',
+                'permission',
+            ]);
+        
+            $role = Role::find($id);
+            $role->name = $request->input('name');
+            $role->save();
+        
+            $role->syncPermissions($request->input('permission'));
     
-        $role = Role::find($id);
-        $role->name = $request->input('name');
-        $role->save();
-    
-        $role->syncPermissions($request->input('permission'));
+            Alert::success('Sukses','Role berhasil diupdate');
+            
+            return redirect()->route('role.index');
+        } catch (\Throwable $th) {
+            Alert::error('Error',$th->getMessage());
 
-        Alert::success('Sukses','Role berhasil diupdate');
-        return redirect()->route('role.index');
+            return redirect()->back();
+        }
     }
 }
