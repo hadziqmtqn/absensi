@@ -1,4 +1,4 @@
-div@extends('dashboard.layouts.master')
+@extends('dashboard.layouts.master')
 @section('title')
     {{ $title }} - {{ $data->kode }}
 @endsection

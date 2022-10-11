@@ -250,16 +250,17 @@ class DataPasangBaruController extends Controller
 
     public function update(Request $request, $id)
 	{
-		$request->validate([
-            'inet' => 'required|unique:data_pasang_barus'. $id . ',id',
-            'kode' => 'required|unique:data_pasang_barus'. $id . ',id',
-            'nama_pelanggan' => 'required',
-            'no_hp' => 'required',
-            'alamat' => 'required',
-            'acuan_lokasi' => 'required',
-            'foto' => 'file|mimes:jpg,jpeg,png|max:1024'
-		]);
         try {
+            $request->validate([
+                'inet' => 'required',
+                'kode' => 'required',
+                'nama_pelanggan' => 'required',
+                'no_hp' => 'required',
+                'alamat' => 'required',
+                'acuan_lokasi' => 'required',
+                'foto' => 'file|mimes:jpg,jpeg,png|max:1024'
+            ]);
+            
             $data['inet'] = $request->inet;
             $data['kode'] = $request->kode;
             $data['nama_pelanggan'] = $request->nama_pelanggan;
