@@ -189,38 +189,43 @@ class KaryawanController extends Controller
 
     public function update(Request $request, $id)
 	{
-		$request->validate([
-            'role_id',
-			'name' => 'required',
-            'short_name',
-            'nik',
-            'phone',
-            'company_name',
-            'photo' => 'file|mimes:jpg,jpeg,png,svg|max:1024',
-            'email' => 'email|required',
-		]);
-
-        if(Auth::user()->role_id == 1){
-            $data['role_id'] = $request->role_id;
+        try {
+            $request->validate([
+                'role_id',
+                'name' => 'required',
+                'short_name',
+                'nik',
+                'phone',
+                'company_name',
+                'photo' => 'file|mimes:jpg,jpeg,png,svg|max:1024',
+                'email' => 'email|required',
+            ]);
+    
+            if(Auth::user()->role_id == 1){
+                $data['role_id'] = $request->role_id;
+            }
+            $data['name'] = $request->name;
+            $data['email'] = $request->email;
+            $data['short_name'] = $request->short_name;
+            $data['nik'] = $request->nik;
+            $data['phone'] = $request->phone;
+            $data['company_name'] = $request->company_name;
+            // $data['created_at'] = date('Y-m-d H:i:s');
+            $data['updated_at'] = date('Y-m-d H:i:s');
+    
+            $file = $request->file('photo');
+            if($file){
+                $nama_file = rand().'-'. $file->getClientOriginalName();
+                $file->move('assets',$nama_file);
+                $data['photo'] = 'assets/' .$nama_file;
+            }
+    
+            User::where('id', $id)->update($data);
+            Alert::success('Sukses','Profile berhasil diupdate');
+        } catch (\Throwable $th) {
+            Alert::error('Error', $th->getMessage());
         }
-        $data['name'] = $request->name;
-		$data['email'] = $request->email;
-        $data['short_name'] = $request->short_name;
-        $data['nik'] = $request->nik;
-        $data['phone'] = $request->phone;
-        $data['company_name'] = $request->company_name;
-        // $data['created_at'] = date('Y-m-d H:i:s');
-        $data['updated_at'] = date('Y-m-d H:i:s');
-
-        $file = $request->file('photo');
-        if($file){
-            $nama_file = rand().'-'. $file->getClientOriginalName();
-            $file->move('assets',$nama_file);
-            $data['photo'] = 'assets/' .$nama_file;
-        }
-
-        User::where('id', $id)->update($data);
-        Alert::success('Sukses','Profile berhasil diupdate');
+        
 		return redirect()->back();
 	}
 

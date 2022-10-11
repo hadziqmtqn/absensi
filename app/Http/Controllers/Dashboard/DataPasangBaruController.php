@@ -127,7 +127,8 @@ class DataPasangBaruController extends Controller
             ->count();
 
             $request->validate([
-                'inet' => 'required',
+                'inet' => 'required|unique:data_pasang_barus',
+                'kode' => 'required|unique:data_pasang_barus',
                 'nama_pelanggan' => 'required',
                 'no_hp' => 'required',
                 'alamat' => 'required',
@@ -136,7 +137,7 @@ class DataPasangBaruController extends Controller
             ]);
     
             $data['inet'] = $request->inet;
-            $data['kode'] = 'SC-'.rand();
+            $data['kode'] = $request->kode;
             $data['nama_pelanggan'] = $request->nama_pelanggan;
             $data['no_hp'] = $request->no_hp;
             $data['alamat'] = $request->alamat;
@@ -249,33 +250,42 @@ class DataPasangBaruController extends Controller
 
     public function update(Request $request, $id)
 	{
-		$request->validate([
-            'inet' => 'required',
-            'nama_pelanggan' => 'required',
-            'no_hp' => 'required',
-            'alamat' => 'required',
-            'acuan_lokasi' => 'required',
-            'foto' => 'file|mimes:jpg,jpeg,png|max:1024'
-		]);
-
-		$data['inet'] = $request->inet;
-		$data['nama_pelanggan'] = $request->nama_pelanggan;
-		$data['no_hp'] = $request->no_hp;
-		$data['alamat'] = $request->alamat;
-		$data['acuan_lokasi'] = $request->acuan_lokasi;
-		// $data['created_at'] = date('Y-m-d H:i:s');
-		$data['updated_at'] = date('Y-m-d H:i:s');
-
-        $file = $request->file('foto');
-        if($file){
-            $nama_file = rand().'-'. $file->getClientOriginalName();
-            $file->move('assets',$nama_file);
-            $data['foto'] = 'assets/' .$nama_file;
+        try {
+            $request->validate([
+                'inet' => 'required',
+                'kode' => 'required',
+                'nama_pelanggan' => 'required',
+                'no_hp' => 'required',
+                'alamat' => 'required',
+                'acuan_lokasi' => 'required',
+                'foto' => 'file|mimes:jpg,jpeg,png|max:1024'
+            ]);
+            
+            $data['inet'] = $request->inet;
+            $data['kode'] = $request->kode;
+            $data['nama_pelanggan'] = $request->nama_pelanggan;
+            $data['no_hp'] = $request->no_hp;
+            $data['alamat'] = $request->alamat;
+            $data['acuan_lokasi'] = $request->acuan_lokasi;
+            // $data['created_at'] = date('Y-m-d H:i:s');
+            $data['updated_at'] = date('Y-m-d H:i:s');
+    
+            $file = $request->file('foto');
+            if($file){
+                $nama_file = rand().'-'. $file->getClientOriginalName();
+                $file->move('assets',$nama_file);
+                $data['foto'] = 'assets/' .$nama_file;
+            }
+    
+            DataPasangBaru::where('id',$id)->update($data);
+            Alert::success('Sukses','Data Pasang Baru berhasil diupdate');
+            
+            return redirect()->route('data-pasang-baru.index');
+        } catch (\Throwable $th) {
+            Alert::error('Error',$th->getMessage());
+            
+            return redirect()->back();
         }
-
-		DataPasangBaru::where('id',$id)->update($data);
-        Alert::success('Sukses','Data Pasang Baru berhasil diupdate');
-		return redirect()->back();
 	}
 
     public function delete($id){

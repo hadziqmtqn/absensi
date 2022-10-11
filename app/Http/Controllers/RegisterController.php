@@ -19,33 +19,41 @@ class RegisterController extends Controller
         return view('register', compact('title','appName'));
     }
     
-    public function store(Request $request){
-        $this->validate($request,[
-            'name' => 'required|min:5',
-            'short_name' => 'required',
-            'phone' => 'required|unique:users',
-            'company_name',
-            'email' => 'email|unique:users',
-            'password' => 'required|min:8',
-            'confirm_password' => 'required|same:password',
-        ]);
+    public function store(Request $request)
+    {
+        try {
+            $this->validate($request,[
+                'name' => 'required|min:5',
+                'short_name' => 'required',
+                'phone' => 'required|unique:users',
+                'company_name',
+                'email' => 'email|unique:users',
+                'password' => 'required|min:8',
+                'confirm_password' => 'required|same:password',
+            ]);
+    
+            $data['role_id'] = 2;
+            $data['name'] = $request->input('name');
+            $data['username'] = rand();
+            $data['short_name'] = $request->input('short_name');
+            $data['phone'] = $request->input('phone');
+            $data['company_name'] = $request->input('company_name');
+            $data['email'] = $request->input('email');
+            $data['password'] = bcrypt($request->input('password'));
+            $data['created_at'] = date('Y-m-d H:i:s');
+            $data['updated_at'] = date('Y-m-d H:i:s');
+    
+            $user = User::create($data);
+            $user->assignRole('2');
+            
+            $this->whatsapp($user->id);
+            
+            return redirect()->route('login')->with(['success' => 'Sukses! Silahkan Login menggunakan Nomor HP/Email dan Kata Sandi']);
+        } catch (\Throwable $th) {
+            Alert::error('Error',$th->getMessage());
 
-        $data['role_id'] = 2;
-        $data['name'] = $request->input('name');
-        $data['username'] = rand();
-        $data['short_name'] = $request->input('short_name');
-        $data['phone'] = $request->input('phone');
-        $data['company_name'] = $request->input('company_name');
-        $data['email'] = $request->input('email');
-        $data['password'] = bcrypt($request->input('password'));
-        $data['created_at'] = date('Y-m-d H:i:s');
-        $data['updated_at'] = date('Y-m-d H:i:s');
-
-        $user = User::create($data);
-        $user->assignRole('2');
-        
-        $this->whatsapp($user->id);
-        return redirect()->route('login')->with(['success' => 'Sukses! Silahkan Login menggunakan Nomor HP/Email dan Kata Sandi']);
+            return redirect()->back();
+        }
     }
 
     public function whatsapp($registrasi){
