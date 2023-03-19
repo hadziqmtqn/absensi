@@ -33,7 +33,7 @@ class RoleController extends Controller
     {
         if ($request->ajax()) {
             $data = Role::select('*');
-            
+
             return Datatables::of($data)
                 ->addIndexColumn()
                 ->filter(function ($instance) use ($request) {
@@ -48,7 +48,7 @@ class RoleController extends Controller
                 ->addColumn('action', function($row){
 					$btn = '<a href="role/'.$row->id.'" class="btn btn-primary" style="padding: 7px 10px">Detail</a>';
                     $btn = $btn.' <a href="role/edit/'.$row->id.'" class="btn btn-warning" style="padding: 7px 10px">Edit</a>';
-                    $btn = $btn.' <button type="button" href="role/'.$row->id.'/destroy" class="btn btn-danger btn-hapus" style="padding: 7px 10px">Delete</button>';
+
                     return $btn;
                 })
 
@@ -68,7 +68,7 @@ class RoleController extends Controller
         $rolePermissions = Permission::join('role_has_permissions','role_has_permissions.permission_id','=','permissions.id')
         ->where('role_has_permissions.role_id',$id)
         ->get();
-    
+
         return view('dashboard.role.detail',compact('title','appName','data','rolePermissions'));
     }
 
@@ -81,7 +81,7 @@ class RoleController extends Controller
         $rolePermissions = DB::table('role_has_permissions')->where('role_has_permissions.role_id',$id)
         ->pluck('role_has_permissions.permission_id','role_has_permissions.permission_id')
         ->all();
-    
+
         return view('dashboard.role.edit',compact('title','appName','role','permission','rolePermissions'));
     }
 
@@ -92,15 +92,15 @@ class RoleController extends Controller
                 'name' => 'required',
                 'permission',
             ]);
-        
+
             $role = Role::find($id);
             $role->name = $request->input('name');
             $role->save();
-        
+
             $role->syncPermissions($request->input('permission'));
-    
+
             Alert::success('Sukses','Role berhasil diupdate');
-            
+
             return redirect()->route('role.index');
         } catch (\Throwable $th) {
             Alert::error('Error',$th->getMessage());

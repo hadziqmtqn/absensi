@@ -2,6 +2,8 @@
 
 namespace Database\Seeders;
 
+use App\Models\DataPasangBaru;
+use App\Models\User;
 use Illuminate\Database\Seeder;
 
 class DatabaseSeeder extends Seeder
@@ -19,9 +21,9 @@ class DatabaseSeeder extends Seeder
             SettingSeeder::class,
             WhatsappApiSeeder::class,
         ]);
-        \App\Models\DataPasangBaru::factory(5)->create();
+        DataPasangBaru::factory(5)->create();
 
-        $users = \App\Models\User::factory(5)->create();
+        $users = User::factory(5)->create();
         foreach($users as $user){
             $user->assignRole('2');
         }

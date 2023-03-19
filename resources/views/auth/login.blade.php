@@ -47,18 +47,6 @@
                                 <div class="mt-3">
                                     <button type="submit" class="btn btn-block btn-primary btn-lg font-weight-medium auth-form-btn">SIGN IN</button>
                                 </div>
-                                <div class="my-2 d-flex justify-content-between align-items-center">
-                                    <div class="form-check">
-                                        <label class="form-check-label text-muted">
-                                        <input type="checkbox" name="remember" class="form-check-input {{ old('remember') ? 'checked' : '' }}">
-                                        Keep me signed in
-                                        <i class="input-helper"></i>
-                                        </label>
-                                    </div>
-                                </div>
-                                <div class="text-center mt-4 font-weight-light">
-                                    Don't have an account? <a href="{{ route('registration') }}" class="text-primary">Create</a>
-                                </div>
                             </form>
                         </div>
                     </div>
