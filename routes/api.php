@@ -17,9 +17,9 @@ use Illuminate\Support\Facades\Route;
 */
 
 Route::middleware('log.route.api')->group(function (){
-    Route::post('get-login', [AuthController::class, 'getLogin'])->name('get-login');
+    Route::post('get-login', [AuthController::class, 'getLogin']);
     // auth
-    Route::middleware('auth:sanctum')->group(function () {
+    Route::middleware('api.key')->group(function () {
         Route::get('user', [UserController::class, 'index']);
     });
 });
