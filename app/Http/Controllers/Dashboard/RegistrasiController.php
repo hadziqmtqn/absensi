@@ -55,11 +55,11 @@ class RegistrasiController extends Controller
                 'is_verifikasi' => '1'
             ];
 
-            DB::transaction(function () use ($data){
+            DB::transaction(function () use ($data, $request){
                 $user = User::create($data);
                 $user->assignRole('2');
 
-                $this->whatsapp($user->id);
+                $this->whatsapp($user->id, $request);
             });
 
             Alert::success('Success','Registrasi Absen Karyawan Berhasil Tersimpan');
@@ -72,26 +72,20 @@ class RegistrasiController extends Controller
         return redirect()->back();
     }
 
-    public function whatsapp($registrasi){
+    public function whatsapp($registrasi, $request){
         $aplikasi = Setting::first();
         $newUser = User::find($registrasi);
         $whatsappApi = DB::table('whatsapp_apis')->first();
 
-        // konfigurasi notifikasi wa untuk admin
-        $adminMessage = "Hei. Admin *".$aplikasi->application_name."* ada registrasi absensi karyawan baru atas nama: \n\n";
-        $adminMessage .= "*Nama* : ".$newUser->name."\n";
-        $adminMessage .= "*No. HP* : ".$newUser->phone."\n";
-        $adminMessage .= "*Dari PT.* : ".$newUser->company_name."\n";
-        $adminMessage .= "*Tanggal Registrasi* : ".date('d M Y', strtotime($newUser->created_at))."\n\n";
-        $adminMessage .= "Terima kasih";
-
         // konfigurasi notifikasi wa untuk karyawan
-        $userMessage = "Selamat, registrasi absensi karyawan atas nama: \n\n";
+        $userMessage = "Berikut ini akun Aplikasi Absensi Karyawan atas nama: \n\n";
         $userMessage .= "*Nama* : ".$newUser->name."\n";
         $userMessage .= "*No. HP* : ".$newUser->phone."\n";
         $userMessage .= "*Dari PT.* : ".$newUser->company_name."\n";
+        $userMessage .= "*Email* : ".$newUser->email."\n";
+        $userMessage .= "*Password* : " . $request->password ."\n";
         $userMessage .= "*Tanggal Registrasi* : ".date('d M Y', strtotime($newUser->created_at))."\n\n";
-        $userMessage .= "berhasil disimpan, silahkan tunggu konfirmasi verifikasi data dari kami.\n\n";
+        $userMessage .= "_Harap simpan data akun ini dengan baik dan aman!_\n\n";
         $userMessage .= "Tim Dev ".$aplikasi->application_name;
 
         $curl = curl_init();
@@ -102,10 +96,6 @@ class RegistrasiController extends Controller
                 [
                     'phone' => $newUser->phone,
                     'message' => $userMessage,
-                ],
-                [
-                    'phone' => $whatsappApi->no_hp_penerima,
-                    'message' => $adminMessage,
                 ],
             ]
         ];
