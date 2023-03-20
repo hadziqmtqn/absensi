@@ -46,7 +46,7 @@ class AuthController extends Controller
         return DTO::ResponseDTO('Register Succesfully', $token, null, $user, Response::HTTP_OK);
     }
 
-    public function getLogin(Request $request)
+    public function login(Request $request)
     {
         $validator = Validator::make($request->all(), [
             'email' => ['required', 'string', 'email', 'max:255'],

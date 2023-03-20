@@ -3,9 +3,11 @@
 namespace App\Http\Controllers\Auth;
 
 use App\Http\Controllers\Controller;
+use App\Models\OnlineApi;
 use App\Models\Setting;
 use App\Models\User;
 use App\Providers\RouteServiceProvider;
+use GuzzleHttp\Client;
 use Illuminate\Foundation\Auth\AuthenticatesUsers;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -55,6 +57,9 @@ class LoginController extends Controller
 
     public function login(Request $request)
     {
+        $client = New Client();
+        $onlineApi = OnlineApi::first();
+
         $this->validate($request, [
             'email' => 'required|string',
             'password' => 'required|string',
@@ -72,14 +77,28 @@ class LoginController extends Controller
                 }else{
                     Auth::logout();
 
-                    return redirect()->route('login')->with('error','Mohon Maaf, akun Anda belum diverifikasi');
+                    return redirect()->route('login.index')->with('error','Mohon Maaf, akun Anda belum diverifikasi');
                 }
             }
 
             $user = User::where('email', $request['email'])->firstOrFail();
             $user->createToken('auth_token', ['*'], now()->addRealHours(8))->plainTextToken;
 
-            return redirect()->intended('home');
+            try {
+                $client->request('POST', $onlineApi->website . '/api/login', [
+                    'json' => $credentials
+                ]);
+
+                return redirect()->intended('home');
+            } catch (\Throwable $th) {
+                Auth::logout();
+                Log::error($th->getMessage());
+                
+                Alert::error('Oops!', 'Data Error');
+
+                return redirect()->route('login.index');;
+            }
+
         }
 
         return redirect()->back()->with(['error' => 'No. HP/Email/Kata Sandi salah!']);

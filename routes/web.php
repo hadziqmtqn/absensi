@@ -29,7 +29,7 @@ use App\Http\Controllers\Dashboard\WhatsappApiController;
 */
 
 Route::get('/', function () {
-    return redirect()->route('login');
+    return redirect()->route('login.index');
 });
 
 Route::middleware('guest')->group(function (){
@@ -47,9 +47,6 @@ Route::middleware(['auth',VerifikasiAkun::class])->group(function () {
     Route::get('in-progress/{id}', [DashboardController::class, 'inProgress'])->name('in-progress');
     Route::get('pending/{id}', [DashboardController::class, 'pending'])->name('pending');
     Route::get('success/{id}', [DashboardController::class, 'success'])->name('success');
-    // register karyawan
-    Route::get('registrasi', [RegistrasiController::class, 'index'])->name('registrasi.index');
-    Route::post('registrasi', [RegistrasiController::class, 'store'])->name('registrasi.store');
     // profile
     Route::get('profile', [ProfileController::class, 'index'])->name('profile.index');
     Route::put('profile/update/{id}', [ProfileController::class, 'update'])->name('profile.update');
@@ -121,9 +118,21 @@ Route::middleware(['auth',VerifikasiAkun::class])->group(function () {
     Route::post('whatsapp-api/store', [WhatsappApiController::class, 'store'])->name('whatsapp-api.store');
     Route::put('whatsapp-api/update/{id}', [WhatsappApiController::class, 'update'])->name('whatsapp-api.update');
 
+    Route::middleware('api.key')->group(function(){
+        // register karyawan
+        Route::prefix('registrasi')->group(function(){
+            Route::get('/', [RegistrasiController::class, 'index'])->name('registrasi.index');
+            Route::post('/store', [RegistrasiController::class, 'store'])->name('registrasi.store');
+        });
+    });
+
     Route::get('forbidden', function() {
         return view('dashboard.layouts.forbidden');
     })->name('forbidden');
+    
+    Route::get('home', function() {
+       return redirect('dashboard');
+    });
 });
 
 Route::get('account_not_verified', function() {
@@ -133,9 +142,6 @@ Route::get('account_not_verified', function() {
 //Auth::routes();
 
 // Route::get('/home', [HomeController::class, 'index'])->name('home');
-//Route::get('home', function() {
-//    return redirect('dashboard');
-//});
 //Route::get('register', function() {
 //    return redirect('login');
 //});

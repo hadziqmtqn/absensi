@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\API;
 
 use App\Http\Controllers\Controller;
+use App\Models\OnlineApi;
 use GuzzleHttp\Client;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
@@ -13,7 +14,8 @@ class UserController extends Controller
     public function index()
     {
         $client = new Client();
-        $response = $client->get('http://localhost:8001/api/list-user');
+        $onlineApi = OnlineApi::first();
+        $response = $client->get($onlineApi->website . '/api/list-user');
 
         $users = json_decode($response->getBody()->getContents());
 
