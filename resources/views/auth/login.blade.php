@@ -1,10 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
 
-@php
-    $appName = \App\Models\Setting::first();
-@endphp
-
 <head>
     <!-- Required meta tags -->
     <meta charset="utf-8">
@@ -14,6 +10,7 @@
 </head>
 
 <body>
+@include('sweetalert::alert')
     <div class="container-scroller">
         <div class="container-fluid page-body-wrapper full-page-wrapper">
             <div class="content-wrapper d-flex align-items-center auth px-0">
@@ -25,12 +22,11 @@
                             </div>
                             <h4>{{ $appName->description }}</h4>
                             <h6 class="font-weight-light">Sign in to continue.</h6>
-                            @include('dashboard.layouts.session')
-                            <form class="pt-3" method="POST" action="{{ route('login') }}">
+                            <form class="pt-3" method="POST" action="{{ route('login.get-login') }}">
                                 @csrf
                                 <div class="form-group">
-                                    <input type="text" class="form-control form-control-lg @error('phone') is-invalid @enderror" id="exampleInputEmail1" name="phone" placeholder="No. Telp/Email" value="{{ old('phone') }}">
-                                    @error('phone')
+                                    <input type="email" class="form-control form-control-lg @error('email') is-invalid @enderror" id="exampleInputEmail1" name="email" placeholder="Email" value="{{ old('email') }}">
+                                    @error('email')
                                         <span class="invalid-feedback" role="alert">
                                             <strong>{{ $message }}</strong>
                                         </span>

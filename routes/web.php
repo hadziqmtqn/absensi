@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\Auth\LoginController;
 use App\Http\Controllers\Dashboard\RegistrasiController;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\Auth;
@@ -28,10 +29,20 @@ use App\Http\Controllers\Dashboard\WhatsappApiController;
 */
 
 Route::get('/', function () {
-    return redirect('login');
+    return redirect()->route('login');
+});
+
+Route::middleware('guest')->group(function (){
+    Route::get('login', [LoginController::class, 'index'])->name('login.index');
+    Route::post('get-login', [LoginController::class, 'login'])->name('login.get-login');
+    Route::get('register', function (){
+        return redirect()->route('login');
+    });
 });
 
 Route::middleware(['auth',VerifikasiAkun::class])->group(function () {
+    // auth
+    Route::post('logout', [LoginController::class, 'logout'])->name('logout');
     Route::get('dashboard', [DashboardController::class, 'index'])->name('dashboard.index');
     Route::get('in-progress/{id}', [DashboardController::class, 'inProgress'])->name('in-progress');
     Route::get('pending/{id}', [DashboardController::class, 'pending'])->name('pending');
@@ -119,12 +130,12 @@ Route::get('account_not_verified', function() {
     return view('verifikasi');
 })->name('account_not_verified');
 
-Auth::routes();
+//Auth::routes();
 
 // Route::get('/home', [HomeController::class, 'index'])->name('home');
-Route::get('home', function() {
-    return redirect('dashboard');
-});
-Route::get('register', function() {
-    return redirect('login');
-});
+//Route::get('home', function() {
+//    return redirect('dashboard');
+//});
+//Route::get('register', function() {
+//    return redirect('login');
+//});
