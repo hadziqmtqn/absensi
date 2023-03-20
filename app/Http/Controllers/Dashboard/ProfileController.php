@@ -15,8 +15,8 @@ class ProfileController extends Controller
 {
     function __construct()
     {
-         $this->middleware('permission:profile-edit', ['only' => ['index']]);
-         $this->middleware('permission:profile-edit', ['only' => ['edit','update']]);
+         $this->middleware('permission:profile-list', ['only' => ['index','update']]);
+         $this->middleware('permission:profile-password', ['only' => ['update_password','password']]);
     }
 
     public function index()
@@ -43,7 +43,7 @@ class ProfileController extends Controller
                 'photo' => 'file|mimes:jpg,jpeg,png,svg|max:1024',
                 'email' => 'email|required',
             ]);
-    
+
             if(Auth::user()->role_id == 1){
                 $data['role_id'] = $request->role_id;
             }
@@ -55,20 +55,20 @@ class ProfileController extends Controller
             $data['company_name'] = $request->company_name;
             // $data['created_at'] = date('Y-m-d H:i:s');
             $data['updated_at'] = date('Y-m-d H:i:s');
-    
+
             $file = $request->file('photo');
             if($file){
                 $nama_file = rand().'-'. $file->getClientOriginalName();
                 $file->move('assets',$nama_file);
                 $data['photo'] = 'assets/' .$nama_file;
             }
-    
+
             User::where('id', $id)->update($data);
             Alert::success('Sukses','Profile berhasil diupdate');
         } catch (\Throwable $th) {
             Alert::error('Error',$th->getMessage());
         }
-        
+
 		return redirect()->back();
 	}
 

@@ -80,6 +80,7 @@ Route::middleware(['auth',VerifikasiAkun::class])->group(function () {
     Route::get('karyawan/{id}/verifikasi', [KaryawanController::class, 'verifikasi'])->name('karyawan.verifikasi');
     Route::delete('karyawan/{id}/destroy', [KaryawanController::class, 'destroy'])->name('karyawan.destroy');
     Route::post('karyawan/{id}/restore', [KaryawanController::class, 'restore'])->name('karyawan.restore');
+    Route::delete('karyawan/{id}/delete-permanen', [KaryawanController::class, 'deletePermanen'])->name('karyawan.delete-permanen');
     // teknisi cadangan
     Route::get('teknisi-cadangan', [TeknisiCadanganController::class, 'index'])->name('teknisi-cadangan.index');
     Route::get('getjsonteknisicadangan', [TeknisiCadanganController::class, 'getJsonTeknisiCadangan'])->name('getjsonteknisicadangan');

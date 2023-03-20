@@ -19,10 +19,10 @@ class KaryawanController extends Controller
 {
     function __construct()
     {
-        $this->middleware('permission:karyawan-list|karyawan-create|karyawan-edit|karyawan-delete', ['only' => ['index','show']]);
+        $this->middleware('permission:karyawan-list', ['only' => ['index','show']]);
         $this->middleware('permission:karyawan-create', ['only' => ['create','store']]);
         $this->middleware('permission:karyawan-edit', ['only' => ['edit','update']]);
-        $this->middleware('permission:karyawan-delete', ['only' => ['destroy']]);
+        $this->middleware('permission:karyawan-delete', ['only' => ['destroy','deletePermanen']]);
     }
 
     public function index()
@@ -40,7 +40,7 @@ class KaryawanController extends Controller
     {
         if ($request->ajax()) {
             $data = Karyawan::where('role_id',2);
-            
+
             return Datatables::of($data)
                 ->addIndexColumn()
                 ->filter(function ($instance) use ($request) {
@@ -114,7 +114,7 @@ class KaryawanController extends Controller
     {
         if ($request->ajax()) {
             $data = Karyawan::where('role_id',2)->onlyTrashed();
-            
+
             return Datatables::of($data)
                 ->addIndexColumn()
                 ->filter(function ($instance) use ($request) {
@@ -149,6 +149,7 @@ class KaryawanController extends Controller
 
                 ->addColumn('action', function($row){
 					$btn = '<button type="button" href="'.$row->id.'/restore" class="btn btn-warning btn-restore" style="padding: 7px 10px">Restore</button>';
+                    $btn = $btn.' <button type="button" href="/karyawan/'.$row->id.'/delete-permanen" class="btn btn-danger btn-hapus" style="padding: 7px 10px">Delete</button>';
                     return $btn;
                 })
 
@@ -200,7 +201,7 @@ class KaryawanController extends Controller
                 'photo' => 'file|mimes:jpg,jpeg,png,svg|max:1024',
                 'email' => 'email|required',
             ]);
-    
+
             if(Auth::user()->role_id == 1){
                 $data['role_id'] = $request->role_id;
             }
@@ -212,20 +213,20 @@ class KaryawanController extends Controller
             $data['company_name'] = $request->company_name;
             // $data['created_at'] = date('Y-m-d H:i:s');
             $data['updated_at'] = date('Y-m-d H:i:s');
-    
+
             $file = $request->file('photo');
             if($file){
                 $nama_file = rand().'-'. $file->getClientOriginalName();
                 $file->move('assets',$nama_file);
                 $data['photo'] = 'assets/' .$nama_file;
             }
-    
+
             User::where('id', $id)->update($data);
             Alert::success('Sukses','Profile berhasil diupdate');
         } catch (\Throwable $th) {
             Alert::error('Error', $th->getMessage());
         }
-        
+
 		return redirect()->back();
 	}
 
@@ -343,12 +344,25 @@ class KaryawanController extends Controller
         return redirect()->back();
     }
 
+    public function deletePermanen($id){
+        try {
+            $user = Karyawan::onlyTrashed()
+                ->findOrFail($id);
+            $user->forceDelete();
+
+            Alert::success('Sukses','Data Karyawan berhasil dihapus permanen');
+        } catch (\Exception $e) {
+            Alert::error('Error',$e->getMessage());
+        }
+        return redirect()->back();
+    }
+
     public function restore($id){
         try {
             $user = Karyawan::withTrashed()->findOrFail($id);
             if($user->trashed()){
                 $user->restore();
-                
+
                 Alert::success('Sukses','Data Karyawan berhasil di restore');
             } else {
                 Alert::error('Opps','Data Karyawan tidak terhapus');
@@ -356,7 +370,7 @@ class KaryawanController extends Controller
         } catch (\Exception $e) {
             Alert::error('Error',$e->getMessage());
         }
-        
+
         return redirect()->back();
     }
 }
