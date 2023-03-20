@@ -72,7 +72,7 @@
                                 <th>No. HP</th>
                                 <th>Alamat Pasang Baru</th>
                                 <th>Tanggal</th>
-                            </tr>  
+                            </tr>
                         </thead>
                         <tbody>
                             @foreach ($listJobs as $e => $job)
@@ -80,22 +80,14 @@
                                     <td>{{ $e+1 }}</td>
                                     <td class="font-weight-medium">
                                         <button type="button" class="btn btn-info btn-sm btn_job" data-modal="{{ $job->id }}" style="padding: 7px 10px">Detail</button>
-                                        @if($job->status == 0)
-                                        <button type="button" class="btn btn-dark btn-sm btn_status" data-modal="{{ $job->id }}" style="padding: 7px 10px">Waiting</button>
-                                        @elseif($job->status == 1)
-                                        <button type="button" class="btn btn-primary btn-sm btn_status" data-modal="{{ $job->id }}" style="padding: 7px 10px">In Progress</button>
-                                        @elseif($job->status == 2)
-                                        <button type="button" class="btn btn-warning btn-sm btn_status" data-modal="{{ $job->id }}" style="padding: 7px 10px">Pending</button>
-                                        @else
-                                        <button type="button" class="btn btn-success btn-sm btn_status" data-modal="{{ $job->id }}" style="padding: 7px 10px">Success</button>
-                                        @endif
+                                        <button type="button" class="btn {{ $job->status == 0 ? 'btn-dark' : ($job->status == 1 ? 'btn-primary' : ($job->status == 2 ? 'btn-warning' : 'btn-success')) }} btn-sm btn_status" data-modal="{{ $job->id }}" style="padding: 7px 10px">{{ $job->status == 0 ? 'Waiting' : ($job->status == 1 ? 'In Progress' : ($job->status == 2 ? 'Pending' : 'Success')) }}</button>
                                     </td>
                                     <td class="font-weight-bold">{{ $job->kode }}</td>
                                     <td>{{ $job->inet }}</td>
                                     <td>{{ $job->nama_pelanggan }}</td>
                                     <td>{{ $job->no_hp }}</td>
                                     <td>{{ $job->alamat }}</td>
-                                    <td>{{ \Carbon\Carbon::parse($job->create_job)->isoFormat('DD MMMM YYYY') }}</td>
+                                    <td>{{ Carbon\Carbon::parse($job->create_job)->isoFormat('DD MMMM YYYY') }}</td>
                                 </tr>
                                 <!-- Modal detail -->
                                 <div class="modal fade" id="modal-job-{{ $job->id }}" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
@@ -203,7 +195,6 @@
                                                 <div class="template-demo d-flex justify-content-between flex-nowrap">
                                                     <a href="{{ route('in-progress',$job->id) }}" class="btn btn-primary btn-icon-text"><i class="ti-target btn-icon-prepend"></i> In Progress</a>
                                                     <a href="{{ route('pending',$job->id) }}" class="btn btn-warning btn-icon-text"><i class="ti-alert btn-icon-prepend"></i> Pending</a>
-                                                    <a href="{{ route('success',$job->id) }}" class="btn btn-success btn-icon-text"><i class="ti-face-smile btn-icon-prepend"></i> Success</a>
                                                 </div>
                                             </div>
                                             <div class="modal-footer">
