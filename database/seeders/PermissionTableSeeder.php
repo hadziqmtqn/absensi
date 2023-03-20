@@ -43,12 +43,14 @@ class PermissionTableSeeder extends Seeder
             'karyawan-create',
             'karyawan-edit',
             'karyawan-delete',
-            'profile-edit',
+            'profile-list',
+            'profile-password',
             'teknisi-cadangan-list',
             'whatsapp-api-create',
-            'whatsapp-api-edit'
+            'whatsapp-api-edit',
+            'registrasi-create'
         ];
-       
+
         foreach ($permissions as $permission) {
             Permission::create(['name' => $permission]);
         }

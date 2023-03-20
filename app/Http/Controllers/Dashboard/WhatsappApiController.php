@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Models\Setting;
 use App\Models\WhatsappApi;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Validator;
 use RealRashid\SweetAlert\Facades\Alert;
 
 class WhatsappApiController extends Controller
@@ -30,19 +31,23 @@ class WhatsappApiController extends Controller
     public function store(Request $request)
 	{
         try {
-            $request->validate([
+            $validator = Validator::make($request->all(),[
                 'domain' => 'required',
                 'api_keys' => 'required',
                 'no_hp_penerima' => 'required',
             ]);
-    
-            $data['domain'] = $request->domain;
-            $data['api_keys'] = $request->api_keys;
-            $data['no_hp_penerima'] = $request->no_hp_penerima;
-            $data['created_at'] = date('Y-m-d H:i:s');
-            $data['updated_at'] = date('Y-m-d H:i:s');
-    
-            WhatsappApi::insert($data);
+
+            if ($validator->fails()) {
+                return back()->withErrors($validator)->withInput();
+            }
+
+            $data = [
+                'domain' => $request->domain,
+                'api_keys' => $request->api_keys,
+                'no_hp_penerima' => $request->no_hp_penerima,
+            ];
+
+            WhatsappApi::create($data);
 
             Alert::success('Sukses','Whatsapp API berhasil disimpan');
         } catch (\Throwable $th) {
@@ -54,18 +59,22 @@ class WhatsappApiController extends Controller
     public function update(Request $request, $id)
 	{
         try {
-            $request->validate([
+            $validator = Validator::make($request->all(),[
                 'domain' => 'required',
                 'api_keys' => 'required',
                 'no_hp_penerima' => 'required',
             ]);
-    
-            $data['domain'] = $request->domain;
-            $data['api_keys'] = $request->api_keys;
-            $data['no_hp_penerima'] = $request->no_hp_penerima;
-            // $data['created_at'] = date('Y-m-d H:i:s');
-            $data['updated_at'] = date('Y-m-d H:i:s');
-    
+
+            if ($validator->fails()) {
+                return back()->withErrors($validator)->withInput();
+            }
+
+            $data = [
+                'domain' => $request->domain,
+                'api_keys' => $request->api_keys,
+                'no_hp_penerima' => $request->no_hp_penerima,
+            ];
+
             WhatsappApi::where('id',$id)->update($data);
 
             Alert::success('Sukses','Whatsapp API berhasil disimpan');

@@ -25,7 +25,7 @@ class DashboardController extends Controller
         if(Auth::user()->role_id == 1){
             $title = 'Dashboard';
             $appName = Setting::first();
-            
+
             $months = [];
             for ($m=1; $m<=12; $m++) {
                 $months[] = date('F', mktime(0,0,0,$m, 1, date('Y')));
@@ -80,7 +80,7 @@ class DashboardController extends Controller
             $awalAbsensi = $waktuAbsensi->awal_absensi;
             $akhirAbsensi = $waktuAbsensi->akhir_absensi;
             $jamSekarang = Carbon::now()->format('H:i:s');
-            
+
             $cekAbsensi = Absensi::where('user_id',Auth::user()->id)->where('waktu_absen',$hariIni)->whereBetween(DB::raw('TIME(created_at)'), array($awalAbsensi, $akhirAbsensi))->count();
 
             if($request->search){
@@ -144,38 +144,38 @@ class DashboardController extends Controller
             })
             ->whereDoesntHave('dataJob')
             ->count();
-            
+
             $cekPasangBaru = DataPasangBaru::select('id')
             ->whereDoesntHave('data_job')
             ->count();
-            
+
             DB::beginTransaction();
 
             DataPasangBaru::where('id',$id)->update([
                 'status' => '3',
-            ]);           
+            ]);
 
             if($cekNonJob < 1 && $cekPasangBaru > 0){
                 $pasangBaru = DataPasangBaru::select('id')
                 ->whereDoesntHave('data_job')
                 ->first();
 
-                $dataJob['user_id'] = $iduser;
-                $dataJob['kode_pasang_baru'] = $pasangBaru->id;
-                $dataJob['created_at'] = date('Y-m-d H:i:s');
-                $dataJob['updated_at'] = date('Y-m-d H:i:s');
-    
-                DataJob::insert($dataJob);
-            }else{
-                $data['user_id'] = $iduser;
-                $data['created_at'] = date('Y-m-d H:i:s');
-                $data['updated_at'] = date('Y-m-d H:i:s');
+                $dataJob = [
+                    'user_id' => $iduser,
+                    'kode_pasang_baru' => $pasangBaru->id,
+                ];
 
-                TeknisiCadangan::insert($data);
+                DataJob::create($dataJob);
+            }else{
+                $data = [
+                    'user_id' => $iduser
+                ];
+
+                TeknisiCadangan::create($data);
             }
 
             DB::commit();
-            
+
             Alert::success('Sukses','Status Job Success');
         } catch (\Exception $e) {
             DB::rollback();

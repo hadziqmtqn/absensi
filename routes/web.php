@@ -1,10 +1,10 @@
 <?php
 
+use App\Http\Controllers\Dashboard\RegistrasiController;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\Auth;
 use App\Http\Controllers\Dashboard\DashboardController;
 use App\Http\Controllers\Dashboard\SettingController;
-use App\Http\Controllers\RegisterController;
 use App\Http\Controllers\Dashboard\ProfileController;
 use App\Http\Middleware\VerifikasiAkun;
 use App\Http\Controllers\Dashboard\KaryawanController;
@@ -31,16 +31,14 @@ Route::get('/', function () {
     return redirect('login');
 });
 
-Route::middleware(['guest'])->group(function () {
-    Route::get('registration', [RegisterController::class, 'index'])->name('registration');
-    Route::post('registration', [RegisterController::class, 'store'])->name('registration.store');
-});
-
 Route::middleware(['auth',VerifikasiAkun::class])->group(function () {
     Route::get('dashboard', [DashboardController::class, 'index'])->name('dashboard.index');
     Route::get('in-progress/{id}', [DashboardController::class, 'inProgress'])->name('in-progress');
     Route::get('pending/{id}', [DashboardController::class, 'pending'])->name('pending');
     Route::get('success/{id}', [DashboardController::class, 'success'])->name('success');
+    // register karyawan
+    Route::get('registrasi', [RegistrasiController::class, 'index'])->name('registrasi.index');
+    Route::post('registrasi', [RegistrasiController::class, 'store'])->name('registrasi.store');
     // profile
     Route::get('profile', [ProfileController::class, 'index'])->name('profile.index');
     Route::put('profile/update/{id}', [ProfileController::class, 'update'])->name('profile.update');
@@ -82,6 +80,7 @@ Route::middleware(['auth',VerifikasiAkun::class])->group(function () {
     Route::get('karyawan/{id}/verifikasi', [KaryawanController::class, 'verifikasi'])->name('karyawan.verifikasi');
     Route::delete('karyawan/{id}/destroy', [KaryawanController::class, 'destroy'])->name('karyawan.destroy');
     Route::post('karyawan/{id}/restore', [KaryawanController::class, 'restore'])->name('karyawan.restore');
+    Route::delete('karyawan/{id}/delete-permanen', [KaryawanController::class, 'deletePermanen'])->name('karyawan.delete-permanen');
     // teknisi cadangan
     Route::get('teknisi-cadangan', [TeknisiCadanganController::class, 'index'])->name('teknisi-cadangan.index');
     Route::get('getjsonteknisicadangan', [TeknisiCadanganController::class, 'getJsonTeknisiCadangan'])->name('getjsonteknisicadangan');
@@ -127,5 +126,5 @@ Route::get('home', function() {
     return redirect('dashboard');
 });
 Route::get('register', function() {
-    return redirect('registration');
+    return redirect('login');
 });

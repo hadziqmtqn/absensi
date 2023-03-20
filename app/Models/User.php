@@ -28,6 +28,7 @@ class User extends Authenticatable
         'username',
         'nik',
         'company_name',
+        'is_verifikasi'
     ];
 
     /**

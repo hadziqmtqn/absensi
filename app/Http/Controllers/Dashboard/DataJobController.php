@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Dashboard;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Validator;
 use RealRashid\SweetAlert\Facades\Alert;
 use Yajra\Datatables\Datatables;
 use Illuminate\Support\Facades\DB;
@@ -71,7 +72,7 @@ class DataJobController extends Controller
             ->join('users','data_jobs.user_id','users.id')
             ->join('data_pasang_barus','data_jobs.kode_pasang_baru','=','data_pasang_barus.id')
             ->orderBy('data_jobs.created_at','DESC');
-            
+
             return Datatables::of($data)
                 ->addIndexColumn()
                 ->filter(function ($instance) use ($request) {
@@ -134,22 +135,25 @@ class DataJobController extends Controller
     public function store(Request $request)
 	{
         try {
-            $request->validate([
+            $validator = Validator::make($request->all(),[
                 'user_id' => 'required',
                 'kode_pasang_baru' => 'required',
             ]);
-    
-            $data['user_id'] = $request->user_id;
-            $data['kode_pasang_baru'] = $request->kode_pasang_baru;
-            $data['created_at'] = date('Y-m-d H:i:s');
-            $data['updated_at'] = date('Y-m-d H:i:s');
-    
-            
+
+            if ($validator->fails()) {
+                return back()->withErrors($validator)->withInput();
+            }
+
+            $data = [
+                'user_id' => $request->user_id,
+                'kode_pasang_baru' => $request->kode_pasang_baru,
+            ];
+
             DB::beginTransaction();
-            
+
             TeknisiCadangan::where('user_id',$request->user_id)->delete();
-            DataJob::insert($data);
-            
+            DataJob::create($data);
+
             DB::commit();
 
             Alert::success('Sukses','Data Job Baru berhasil disimpan');
@@ -198,7 +202,7 @@ class DataJobController extends Controller
         ->get();
         // cek status pasang baru
         $cekStatusPasangBaru = DataPasangBaru::where('id',$data->kode_pasang_baru)->select('id','status')->first();
-        
+
         switch ($cekStatusPasangBaru) {
             case $cekStatusPasangBaru->status == 0:
                 $listKaryawan = Karyawan::whereHas('absensi', function($e){
@@ -220,7 +224,7 @@ class DataJobController extends Controller
                 ->get();
 
                 break;
-            
+
             case $cekStatusPasangBaru->status == 1:
                 $listKaryawan = Karyawan::whereHas('absensi', function($e){
                     $hariIni = Carbon::now()->format('Y-m-d');
@@ -262,7 +266,7 @@ class DataJobController extends Controller
                 ->get();
 
                 break;
-                
+
             case $cekStatusPasangBaru->status == 3:
                 $listKaryawan = Karyawan::whereHas('absensi', function($e){
                     $hariIni = Carbon::now()->format('Y-m-d');
@@ -290,35 +294,39 @@ class DataJobController extends Controller
             ->count();
 
             if($job->user_id != $request->user_id && $cekTeknisiCadangan > 0){
-                TeknisiCadangan::insert([
+                TeknisiCadangan::create([
                     'user_id' => $job->user_id,
-                    'created_at' => date('Y-m-d H:i:s'),
-                    'updated_at' => date('Y-m-d H:i:s'),
                 ]);
             }
 
-            $request->validate([
+            $validator = Validator::make($request->all(),[
                 'user_id' => 'required',
                 'kode_pasang_baru' => 'required',
                 'status',
             ]);
-            
-            $data['user_id'] = $request->user_id;
-            $data['kode_pasang_baru'] = $request->kode_pasang_baru;
-            // $data['created_at'] = date('Y-m-d H:i:s');
-            $data['updated_at'] = date('Y-m-d H:i:s');
-            
-            $pasangbaru['status'] = $request->status;
-            
+
+            if ($validator->fails()) {
+                return back()->withErrors($validator)->withInput();
+            }
+
+            $data = [
+                'user_id' => $request->user_id,
+                'kode_pasang_baru' => $request->kode_pasang_baru,
+            ];
+
+            $pasangbaru = [
+                'status' => $request->status
+            ];
+
             DB::transaction(function () use ($data, $pasangbaru, $id, $request) {
                 DataJob::where('id', $id)
                 ->update($data);
 
                 $idJob = DataJob::findOrFail($id);
-                
+
                 DataPasangBaru::where('id', $idJob->kode_pasang_baru)
                 ->update($pasangbaru);
-                
+
                 if($request->status == 3){
                     /*
                     jika semua teknisi yang sudah absensi memiliki job,
@@ -331,7 +339,7 @@ class DataJobController extends Controller
                     jika semua job sudah dimiliki oleh teknisi,
                     maka teknisi yang meiliki job sukses diarahkan ke teknisi cadangan
                     */
-                    
+
                     $cekNonJob = Karyawan::whereHas('absensi', function($e){
                         $e->whereDate('created_at', date('Y-m-d'));
                     })
@@ -346,19 +354,17 @@ class DataJobController extends Controller
                         $pasangBaru = DataPasangBaru::select('id')
                         ->whereDoesntHave('data_job')
                         ->first();
-       
-                        $dataJob['user_id'] = $request->user_id;
-                        $dataJob['kode_pasang_baru'] = $pasangBaru->id;
-                        $dataJob['created_at'] = date('Y-m-d H:i:s');
-                        $dataJob['updated_at'] = date('Y-m-d H:i:s');
-            
-                        DataJob::insert($dataJob);
+
+                        $dataJob = [
+                            'user_id' => $request->user_id,
+                            'kode_pasang_baru' => $pasangBaru->id,
+                        ];
+
+                        DataJob::create($dataJob);
                     }else{
                         TeknisiCadangan::where('user_id',$request->user_id)->delete();
-                        TeknisiCadangan::insert([
+                        TeknisiCadangan::create([
                             'user_id' => $request->user_id,
-                            'created_at' => date('Y-m-d H:i:s'),
-                            'updated_at' => date('Y-m-d H:i:s'),
                         ]);
                     }
 
@@ -411,7 +417,7 @@ class DataJobController extends Controller
             ->whereDoesntHave('dataJob', function($e){
                 $e->whereDate('created_at', Carbon::now());
             });
-            
+
             return Datatables::of($data)
                 ->addIndexColumn()
                 ->filter(function ($instance) use ($request) {
