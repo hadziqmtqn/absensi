@@ -17,8 +17,11 @@ use Illuminate\Support\Facades\Route;
 */
 
 Route::middleware('log.route.api')->group(function (){
+    // default login
     Route::get('login', [AuthController::class, 'home'])->name('login');
     Route::post('login', [AuthController::class, 'login']);
+    Route::post('login-api', [ApiKeyController::class, 'apiKeyLogin']);
+    // get check api key
     Route::get('get-api-key', [ApiKeyController::class, 'index'])->name('get-api-key');
     Route::post('user/store', [UserController::class, 'store'])->name('user.store');
 
