@@ -64,9 +64,15 @@ class RegistrasiController extends Controller
                 $user = User::create($data);
 
                 $createUserApi = [
-                    'name' => $request->name,
-                    'email' => $request->email,
+                    'role_id' => $user->role_id,
+                    'name' => $user->name,
+                    'username' => $user->username,
+                    'short_name' => $user->short_name,
+                    'phone' => $user->phone,
+                    'company_name' => $user->company_name,
+                    'email' => $user->email,
                     'password' => bcrypt($request->input('password')),
+                    'is_verifikasi' => $user->is_verifikasi
                 ];
 
                 $client->request('POST', $onlineApi->website . '/api/user/store', [
