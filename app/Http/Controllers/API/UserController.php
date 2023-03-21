@@ -4,9 +4,7 @@ namespace App\Http\Controllers\API;
 
 use App\Helpers\DTO;
 use App\Http\Controllers\Controller;
-use App\Models\OnlineApi;
 use App\Models\User;
-use GuzzleHttp\Client;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Log;
@@ -15,17 +13,6 @@ use Symfony\Component\HttpFoundation\Response;
 
 class UserController extends Controller
 {
-    public function index()
-    {
-        $client = new Client();
-        $onlineApi = OnlineApi::first();
-        $response = $client->get($onlineApi->website . '/api/list-user');
-
-        $users = json_decode($response->getBody()->getContents());
-
-        return $users;
-    }
-
     public function store(Request $request)
     {
         $validator = Validator::make($request->all(), [

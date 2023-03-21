@@ -20,7 +20,6 @@ class DatabaseSeeder extends Seeder
             AdminSeeder::class,
             SettingSeeder::class,
             WhatsappApiSeeder::class,
-            OnlineApiSeeder::class,
             ApiKeySeeder::class
         ]);
         DataPasangBaru::factory(5)->create();
