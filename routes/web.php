@@ -12,6 +12,7 @@ use App\Http\Controllers\Dashboard\KaryawanController;
 use App\Http\Controllers\Dashboard\AbsensiController;
 use App\Http\Controllers\Dashboard\DataPasangBaruController;
 use App\Http\Controllers\Dashboard\DataJobController;
+use App\Http\Controllers\Dashboard\OnlineApiController;
 use App\Http\Controllers\Dashboard\PermissionController;
 use App\Http\Controllers\Dashboard\RoleController;
 use App\Http\Controllers\Dashboard\TeknisiCadanganController;
@@ -133,15 +134,13 @@ Route::middleware(['auth',VerifikasiAkun::class])->group(function () {
     Route::get('home', function() {
        return redirect('dashboard');
     });
+
+    Route::prefix('online-api')->group(function(){
+        Route::get('/', [OnlineApiController::class, 'index'])->name('online-api.index');
+        Route::put('/{id}/update', [OnlineApiController::class, 'update'])->name('online-api.update');
+    });
 });
 
 Route::get('account_not_verified', function() {
     return view('verifikasi');
 })->name('account_not_verified');
-
-//Auth::routes();
-
-// Route::get('/home', [HomeController::class, 'index'])->name('home');
-//Route::get('register', function() {
-//    return redirect('login');
-//});

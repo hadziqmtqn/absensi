@@ -42,16 +42,17 @@
         </div>
     </li>
 
-    <li class="nav-item {{ $title == 'Pengaturan Aplikasi' || $title == 'Whatsapp API' ? 'active' : '' }}">
+    <li class="nav-item {{ $title == 'Pengaturan Aplikasi' || $title == 'Whatsapp API' || $title == 'Online API' ? 'active' : '' }}">
         <a class="nav-link collapsed" data-toggle="collapse" href="#setting" aria-expanded="false" aria-controls="setting">
             <i class="mdi mdi-settings menu-icon"></i>
             <span class="menu-title">Setting</span>
             <i class="menu-arrow"></i>
         </a>
-        <div class="collapse {{ $title == 'Pengaturan Aplikasi' || $title == 'Whatsapp API' ? 'show' : '' }}" id="setting" style="">
+        <div class="collapse {{ $title == 'Pengaturan Aplikasi' || $title == 'Whatsapp API' || $title == 'Online API' ? 'show' : '' }}" id="setting" style="">
             <ul class="nav flex-column sub-menu">
                 <li class="nav-item"> <a class="nav-link" href="{{ route('setting.index') }}"> Pengaturan Aplikasi</a></li>
                 <li class="nav-item"> <a class="nav-link" href="{{ route('whatsapp-api.index') }}"> Whatsapp API</a></li>
+                <li class="nav-item"> <a class="nav-link" href="{{ route('online-api.index') }}"> Online API</a></li>
             </ul>
         </div>
     </li>

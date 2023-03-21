@@ -11,6 +11,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Validator;
+use Illuminate\Support\Str;
 use RealRashid\SweetAlert\Facades\Alert;
 
 class RegistrasiController extends Controller
@@ -51,7 +52,7 @@ class RegistrasiController extends Controller
             $data = [
                 'role_id' => 2,
                 'name' => $request->input('name'),
-                'username' => rand(),
+                'username' => Str::slug($request->name),
                 'short_name' => $request->input('short_name'),
                 'phone' => $request->input('phone'),
                 'company_name' => $request->input('company_name'),
