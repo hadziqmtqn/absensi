@@ -48,7 +48,8 @@ class PermissionTableSeeder extends Seeder
             'teknisi-cadangan-list',
             'whatsapp-api-create',
             'whatsapp-api-edit',
-            'registrasi-create'
+            'registrasi-create',
+            'api-key-list'
         ];
 
         foreach ($permissions as $permission) {

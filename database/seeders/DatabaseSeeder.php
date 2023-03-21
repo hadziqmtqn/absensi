@@ -22,11 +22,11 @@ class DatabaseSeeder extends Seeder
             WhatsappApiSeeder::class,
             ApiKeySeeder::class
         ]);
-        DataPasangBaru::factory(5)->create();
+        // DataPasangBaru::factory(5)->create();
 
-        $users = User::factory(5)->create();
-        foreach($users as $user){
-            $user->assignRole('2');
-        }
+        // $users = User::factory(5)->create();
+        // foreach($users as $user){
+        //     $user->assignRole('2');
+        // }
     }
 }

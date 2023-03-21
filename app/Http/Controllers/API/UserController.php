@@ -9,6 +9,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Validator;
+use Illuminate\Support\Str;
 use Symfony\Component\HttpFoundation\Response;
 
 class UserController extends Controller
@@ -31,6 +32,7 @@ class UserController extends Controller
         try {
             $data = [
                 'name' => $request->name,
+                'username' => Str::slug($request->name),
                 'short_name' => $request->short_name,
                 'phone' => $request->phone,
                 'company_name' => $request->company_name,

@@ -1,15 +1,14 @@
 <?php
 
 use App\Http\Controllers\Auth\LoginController;
-use App\Http\Controllers\Dashboard\RegistrasiController;
 use Illuminate\Support\Facades\Route;
-use Illuminate\Support\Facades\Auth;
 use App\Http\Controllers\Dashboard\DashboardController;
 use App\Http\Controllers\Dashboard\SettingController;
 use App\Http\Controllers\Dashboard\ProfileController;
 use App\Http\Middleware\VerifikasiAkun;
 use App\Http\Controllers\Dashboard\KaryawanController;
 use App\Http\Controllers\Dashboard\AbsensiController;
+use App\Http\Controllers\Dashboard\ApiKeyController;
 use App\Http\Controllers\Dashboard\DataPasangBaruController;
 use App\Http\Controllers\Dashboard\DataJobController;
 use App\Http\Controllers\Dashboard\PermissionController;
@@ -118,12 +117,11 @@ Route::middleware(['auth',VerifikasiAkun::class])->group(function () {
     Route::post('whatsapp-api/store', [WhatsappApiController::class, 'store'])->name('whatsapp-api.store');
     Route::put('whatsapp-api/update/{id}', [WhatsappApiController::class, 'update'])->name('whatsapp-api.update');
 
-    Route::middleware('api.key')->group(function(){
-        // register karyawan
-        Route::prefix('registrasi')->group(function(){
-            Route::get('/', [RegistrasiController::class, 'index'])->name('registrasi.index');
-            Route::post('/store', [RegistrasiController::class, 'store'])->name('registrasi.store');
-        });
+    // api key
+
+    Route::prefix('api-key')->group(function(){
+        Route::get('/', [ApiKeyController::class, 'index'])->name('api-key.index');
+        Route::put('/{id}/update', [ApiKeyController::class, 'update'])->name('api-key.update');
     });
 
     Route::get('forbidden', function() {
