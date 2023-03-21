@@ -3,10 +3,8 @@
 namespace App\Http\Controllers\Dashboard;
 
 use App\Http\Controllers\Controller;
-use App\Models\OnlineApi;
 use App\Models\Setting;
 use App\Models\User;
-use GuzzleHttp\Client;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
@@ -30,9 +28,6 @@ class RegistrasiController extends Controller
 
     public function store(Request $request)
     {
-        $client = new Client();
-        $onlineApi = OnlineApi::first();
-
         try {
             $validator = Validator::make($request->all(),[
                 'name' => 'required|min:5',
@@ -60,18 +55,8 @@ class RegistrasiController extends Controller
                 'is_verifikasi' => '1'
             ];
 
-            DB::transaction(function () use ($data, $request, $onlineApi, $client){
+            DB::transaction(function () use ($data, $request){
                 $user = User::create($data);
-
-                $createUserApi = [
-                    'name' => $request->name,
-                    'email' => $request->email,
-                    'password' => bcrypt($request->input('password')),
-                ];
-
-                $client->request('POST', $onlineApi->website . '/api/user/store', [
-                    'json' => $createUserApi
-                ]);
 
                 $user->assignRole('2');
 

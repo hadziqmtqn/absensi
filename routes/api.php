@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\API\ApiKeyController;
 use App\Http\Controllers\API\AuthController;
 use App\Http\Controllers\API\UserController;
 use Illuminate\Http\Request;
@@ -20,9 +21,15 @@ Route::middleware('log.route.api')->group(function (){
     Route::get('login', [AuthController::class, 'home'])->name('login');
     Route::post('login', [AuthController::class, 'login']);
     // auth
-    Route::middleware('api.key')->group(function () {
-        Route::get('user', [UserController::class, 'index']);
+    // Route::middleware('api.key')->group(function () {
+    //     Route::get('user', [UserController::class, 'index']);
 
-        Route::post('logout', [AuthController::class, 'logout']);
+    //     Route::post('logout', [AuthController::class, 'logout']);
+    // });
+
+    Route::prefix('/user')->group(function(){
+        Route::post('/store', [UserController::class, 'store'])->name('user.store');
     });
+
+    Route::get('/get-api-key', [ApiKeyController::class, 'index'])->name('get-api-key');
 });

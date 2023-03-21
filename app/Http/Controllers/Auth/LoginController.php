@@ -3,18 +3,14 @@
 namespace App\Http\Controllers\Auth;
 
 use App\Http\Controllers\Controller;
-use App\Models\OnlineApi;
 use App\Models\Setting;
 use App\Models\User;
 use App\Providers\RouteServiceProvider;
-use GuzzleHttp\Client;
 use Illuminate\Foundation\Auth\AuthenticatesUsers;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Log;
 use RealRashid\SweetAlert\Facades\Alert;
-use Session;
-use Hash;
 
 class LoginController extends Controller
 {
@@ -57,9 +53,6 @@ class LoginController extends Controller
 
     public function login(Request $request)
     {
-        $client = New Client();
-        $onlineApi = OnlineApi::first();
-
         $this->validate($request, [
             'email' => 'required|string',
             'password' => 'required|string',
@@ -83,21 +76,6 @@ class LoginController extends Controller
 
             $user = User::where('email', $request['email'])->firstOrFail();
             $user->createToken('auth_token', ['*'], now()->addRealHours(8))->plainTextToken;
-
-            try {
-                $client->request('POST', $onlineApi->website . '/api/login', [
-                    'json' => $credentials
-                ]);
-
-                return redirect()->intended('home');
-            } catch (\Throwable $th) {
-                Auth::logout();
-                Log::error($th->getMessage());
-                
-                Alert::error('Oops!', 'Data Error');
-
-                return redirect()->route('login.index');;
-            }
 
         }
 
