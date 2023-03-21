@@ -4,6 +4,7 @@ namespace App\Http\Controllers\API;
 
 use App\Helpers\DTO;
 use App\Http\Controllers\Controller;
+use App\Models\PersonalAccessToken;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -15,6 +16,18 @@ use Symfony\Component\HttpFoundation\Response;
 
 class AuthController extends Controller
 {
+    public function home()
+    {
+        try {
+            PersonalAccessToken::where('expires_at', '<', now())->delete();
+        } catch (\Throwable $th) {
+            Log::error($th->getMessage());
+            return DTO::ResponseDTO('Token Error', null, 'Token Error', null, Response::HTTP_INTERNAL_SERVER_ERROR);
+        }
+
+        return DTO::ResponseDTO('Need Login', null, 'Token Expired', null, Response::HTTP_UNAUTHORIZED);
+    }
+
     public function register(Request $request)
     {
         $validator = Validator::make($request->all(), [
