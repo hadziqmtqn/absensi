@@ -339,7 +339,7 @@ class KaryawanController extends Controller
     {
         $client = new Client();
         $onlineApi = OnlineApi::first();
-        
+
         $user = Karyawan::findOrFail($id);
 
         try {
@@ -358,29 +358,47 @@ class KaryawanController extends Controller
         return redirect()->back();
     }
 
-    public function deletePermanen($id){
-        try {
-            $user = Karyawan::onlyTrashed()
-                ->findOrFail($id);
-            $user->forceDelete();
+    public function deletePermanen($id)
+    {
+        $client = new Client();
+        $onlineApi = OnlineApi::first();
 
-            Alert::success('Sukses','Data Karyawan berhasil dihapus permanen');
+        $user = Karyawan::onlyTrashed()
+            ->findOrFail($id);
+
+        try {
+            DB::transaction(function() use ($client, $onlineApi, $user){
+                $user->forceDelete();
+                
+                $client->request('DELETE', $onlineApi->website . '/api/user/' . $user->idapi . '/delete-permanen');
+                
+                Alert::success('Sukses','Data Karyawan berhasil dihapus permanen');
+            });
         } catch (\Exception $e) {
             Alert::error('Error',$e->getMessage());
         }
         return redirect()->back();
     }
 
-    public function restore($id){
-        try {
-            $user = Karyawan::withTrashed()->findOrFail($id);
-            if($user->trashed()){
-                $user->restore();
+    public function restore($id)
+    {
+        $client = new Client();
+        $onlineApi = OnlineApi::first();
 
-                Alert::success('Sukses','Data Karyawan berhasil di restore');
-            } else {
-                Alert::error('Opps','Data Karyawan tidak terhapus');
-            }
+        $user = Karyawan::withTrashed()->findOrFail($id);
+
+        try {
+            DB::transaction(function() use ($client, $onlineApi, $user){
+                if($user->trashed()){
+                    $user->restore();
+    
+                    $client->request('POST', $onlineApi->website . '/api/user/' . $user->idapi . '/restore');
+    
+                    Alert::success('Sukses','Data Karyawan berhasil di restore');
+                } else {
+                    Alert::error('Opps','Data Karyawan tidak terhapus');
+                }
+            });
         } catch (\Exception $e) {
             Alert::error('Error',$e->getMessage());
         }
