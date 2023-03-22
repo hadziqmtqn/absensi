@@ -75,11 +75,12 @@ class UserController extends Controller
         return DTO::ResponseDTO('Delete User Successfully', null, null, $user, Response::HTTP_OK);
     }
 
-    public function restore($id)
+    public function restore($idapi)
     {
         $user = User::withTrashed()
         ->whereNotNull('deleted_at')
-        ->find($id);
+        ->where('idapi', $idapi)
+        ->firstOrFail();
 
         if (is_null($user)) {
             return DTO::ResponseDTO('Restore User Failed', null, 'Data Not Found', null, Response::HTTP_NOT_FOUND);
@@ -95,5 +96,28 @@ class UserController extends Controller
         }
 
         return DTO::ResponseDTO('Restore User Successfully', null, null, $user, Response::HTTP_OK);
+    }
+
+    public function deletePermanen($idapi)
+    {
+        $user = User::withTrashed()
+        ->whereNotNull('deleted_at')
+        ->where('idapi', $idapi)
+        ->firstOrFail();
+
+        if (is_null($user)) {
+            return DTO::ResponseDTO('Delete User Failed', null, 'Data Not Found', null, Response::HTTP_NOT_FOUND);
+        }
+
+        try {
+            $user->forceDelete();
+
+        } catch (\Throwable $th) {
+            Log::error($th->getMessage());
+
+            return DTO::ResponseDTO('Delete User Failed', null, 'Oops, error', null, Response::HTTP_INTERNAL_SERVER_ERROR);
+        }
+
+        return DTO::ResponseDTO('Delete User Successfully', null, null, $user, Response::HTTP_OK);
     }
 }

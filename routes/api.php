@@ -27,5 +27,6 @@ Route::middleware('log.route.api')->group(function (){
         Route::post('/store', [UserController::class, 'store'])->name('user.store');
         Route::delete('/{idapi}/delete', [UserController::class, 'delete'])->name('user.delete');
         Route::post('/{idapi}/restore', [UserController::class, 'restore'])->name('user.restore');
+        Route::delete('/{idapi}/delete-permanen', [UserController::class, 'deletePermanen'])->name('user.delete-permanen');
     });
 });
