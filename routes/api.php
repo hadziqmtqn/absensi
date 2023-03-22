@@ -23,5 +23,9 @@ Route::middleware('log.route.api')->group(function (){
     Route::post('login-api', [ApiKeyController::class, 'apiKeyLogin']);
     // get check api key
     Route::get('get-api-key', [ApiKeyController::class, 'index'])->name('get-api-key');
-    Route::post('user/store', [UserController::class, 'store'])->name('user.store');
+    Route::prefix('user')->group(function(){
+        Route::post('/store', [UserController::class, 'store'])->name('user.store');
+        Route::delete('/{idapi}/delete', [UserController::class, 'delete'])->name('user.delete');
+        Route::post('/{idapi}/restore', [UserController::class, 'restore'])->name('user.restore');
+    });
 });

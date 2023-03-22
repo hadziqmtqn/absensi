@@ -32,6 +32,7 @@ class UserController extends Controller
         try {
             $data = [
                 'name' => $request->name,
+                'idapi' => $request->idapi,
                 'username' => Str::slug($request->name),
                 'short_name' => $request->short_name,
                 'phone' => $request->phone,
@@ -42,6 +43,7 @@ class UserController extends Controller
             ];
 
             $user = User::create($data);
+            $user->assignRole('2');
 
         } catch (\Throwable $th) {
             Log::error($th->getMessage());
@@ -50,5 +52,48 @@ class UserController extends Controller
         }
 
         return DTO::ResponseDTO('Create User Succesfully', null, null, $user, Response::HTTP_OK);
+    }
+
+    public function delete($idapi)
+    {
+        $user = User::where('idapi', $idapi)
+        ->firstOrFail();
+
+        if (is_null($user)) {
+            return DTO::ResponseDTO('Delete User Failed', null, 'Data Not Found', null, Response::HTTP_NOT_FOUND);
+        }
+
+        try {
+            $user->delete();
+
+        } catch (\Throwable $th) {
+            Log::error($th->getMessage());
+
+            return DTO::ResponseDTO('Delete User Failed', null, 'Oops, error', null, Response::HTTP_INTERNAL_SERVER_ERROR);
+        }
+
+        return DTO::ResponseDTO('Delete User Successfully', null, null, $user, Response::HTTP_OK);
+    }
+
+    public function restore($id)
+    {
+        $user = User::withTrashed()
+        ->whereNotNull('deleted_at')
+        ->find($id);
+
+        if (is_null($user)) {
+            return DTO::ResponseDTO('Restore User Failed', null, 'Data Not Found', null, Response::HTTP_NOT_FOUND);
+        }
+
+        try {
+            $user->restore();
+
+        } catch (\Throwable $th) {
+            Log::error($th->getMessage());
+
+            return DTO::ResponseDTO('Restore User Failed', null, 'Oops, error', null, Response::HTTP_INTERNAL_SERVER_ERROR);
+        }
+
+        return DTO::ResponseDTO('Restore User Successfully', null, null, $user, Response::HTTP_OK);
     }
 }

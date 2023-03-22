@@ -70,9 +70,7 @@ class KaryawanController extends Controller
                 })
 
                 ->addColumn('action', function($row){
-					$btn = '<a href="karyawan/'.$row->username.'" class="btn btn-primary" style="padding: 7px 10px">Detail</a>';
-                    $btn = $btn.' <button type="button" href="karyawan/'.$row->id.'/destroy" class="btn btn-danger btn-hapus" style="padding: 7px 10px">Delete</button>';
-                    return $btn;
+					return '<a href="karyawan/'.$row->username.'" class="btn btn-primary" style="padding: 7px 10px">Detail</a>';
                 })
 
                 ->addColumn('status_verifikasi', function($row){
@@ -181,11 +179,12 @@ class KaryawanController extends Controller
     {
         $title = 'Detail Karyawan';
         $appName = Setting::first();
-        $profile = User::where('username',$username)->first();
+        $user = User::where('username', $username)
+        ->first();
         $listRole = Role::get();
         $listKaryawan = User::where('role_id',2)->get();
 
-        return view('dashboard.karyawan.detail', compact('title','appName','profile','listRole','listKaryawan'));
+        return view('dashboard.karyawan.detail', compact('title','appName','user','listRole','listKaryawan'));
     }
 
     public function update(Request $request, $id)
@@ -357,9 +356,11 @@ class KaryawanController extends Controller
         return redirect()->back();
     }
 
-    public function restore($id){
+    public function restore($id)
+    {
+        $user = Karyawan::withTrashed()->findOrFail($id);
+    
         try {
-            $user = Karyawan::withTrashed()->findOrFail($id);
             if($user->trashed()){
                 $user->restore();
 
