@@ -40,11 +40,6 @@ return [
             'driver' => 'session',
             'provider' => 'users',
         ],
-
-        'api_key' => [
-            'driver' => 'session',
-            'provider' => 'apikeys',
-        ],
     ],
 
     /*
@@ -68,11 +63,6 @@ return [
         'users' => [
             'driver' => 'eloquent',
             'model' => App\Models\User::class,
-        ],
-
-        'apikeys' => [
-            'driver' => 'eloquent',
-            'model' => App\Models\ApiKey::class,
         ],
 
         // 'users' => [

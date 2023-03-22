@@ -27,7 +27,7 @@ class LogRouteApiMiddleware
                 $errorLog->error(json_encode($log));
             }
         } catch (\Throwable $th) {
-            //throw $th;
+            Log::error($th->getMessage());
         }
 
         Log::info(json_encode($log));

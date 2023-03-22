@@ -24,11 +24,4 @@ Route::middleware('log.route.api')->group(function (){
     // get check api key
     Route::get('get-api-key', [ApiKeyController::class, 'index'])->name('get-api-key');
     Route::post('user/store', [UserController::class, 'store'])->name('user.store');
-
-    // auth
-    Route::middleware('api.key')->group(function () {
-        Route::get('cek-api-key', function(){
-            return 'benar';
-        });
-    });
 });
