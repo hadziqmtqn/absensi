@@ -82,7 +82,9 @@ class LoginController extends Controller
             }
 
             $user = User::where('email', $request['email'])->firstOrFail();
-            $user->createToken('auth_token', ['*'], now()->addRealHours(8))->plainTextToken;
+            $token = $user->createToken('auth_token', ['*'], now()->addRealHours(8))->plainTextToken;
+            // dd($token);
+            // die();
 
             try {
                 $client->request('POST', $onlineApi->website . '/api/login', [

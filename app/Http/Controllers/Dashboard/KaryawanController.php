@@ -12,8 +12,11 @@ use Yajra\Datatables\Datatables;
 use App\Models\User;
 use App\Models\Setting;
 use App\Models\Karyawan;
+use App\Models\OnlineApi;
 use App\Models\Role;
+use GuzzleHttp\Client;
 use Illuminate\Support\Facades\DB;
+use Log;
 
 class KaryawanController extends Controller
 {
@@ -332,14 +335,25 @@ class KaryawanController extends Controller
         return $result;
     }
 
-    public function destroy($id){
+    public function destroy($id)
+    {
+        $client = new Client();
+        $onlineApi = OnlineApi::first();
+        
+        $user = Karyawan::findOrFail($id);
+
         try {
-            $user = Karyawan::findOrFail($id);
-            $user->delete();
+            DB::transaction(function() use ($client, $onlineApi, $user){
+                $user->delete();
+
+                $client->request('DELETE', $onlineApi->website . '/api/user/' . $user->idapi . '/delete');
+            });
 
             Alert::success('Sukses','Data Karyawan berhasil dihapus');
-        } catch (\Exception $e) {
-            Alert::error('Error',$e->getMessage());
+        } catch (\Throwable $th) {
+            Log::error($th->getMessage());
+
+            Alert::error('Error','Data Error');
         }
         return redirect()->back();
     }

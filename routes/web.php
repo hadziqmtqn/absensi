@@ -33,7 +33,7 @@ Route::get('/', function () {
     return redirect()->route('login.index');
 });
 
-Route::middleware('guest')->group(function (){
+Route::group(['middleware' => ['guest','log.route.api']], function () {
     Route::get('login', [LoginController::class, 'index'])->name('login.index');
     Route::post('get-login', [LoginController::class, 'login'])->name('login.get-login');
     Route::get('register', function (){

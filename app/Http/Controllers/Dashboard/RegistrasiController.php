@@ -52,6 +52,7 @@ class RegistrasiController extends Controller
             $data = [
                 'role_id' => 2,
                 'name' => $request->input('name'),
+                'idapi' => rand(),
                 'username' => Str::slug($request->name),
                 'short_name' => $request->input('short_name'),
                 'phone' => $request->input('phone'),
@@ -67,6 +68,7 @@ class RegistrasiController extends Controller
                 $createUserApi = [
                     'role_id' => $user->role_id,
                     'name' => $user->name,
+                    'idapi' => $user->idapi,
                     'username' => $user->username,
                     'short_name' => $user->short_name,
                     'phone' => $user->phone,
