@@ -14,7 +14,7 @@ return new class extends Migration
     public function up()
     {
         Schema::table('users', function (Blueprint $table) {
-            $table->string('idapi')->nullable()->unique()->after('username');
+            $table->string('idapi')->unique()->after('username');
         });
     }
 

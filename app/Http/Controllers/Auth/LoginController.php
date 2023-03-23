@@ -13,8 +13,6 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Log;
 use RealRashid\SweetAlert\Facades\Alert;
-use Session;
-use Hash;
 
 class LoginController extends Controller
 {
@@ -82,10 +80,8 @@ class LoginController extends Controller
             }
 
             $user = User::where('email', $request['email'])->firstOrFail();
-            $token = $user->createToken('auth_token', ['*'], now()->addRealHours(8))->plainTextToken;
-            // dd($token);
-            // die();
-
+            $user->createToken('auth_token', ['*'], now()->addRealHours(8))->plainTextToken;
+            
             try {
                 $client->request('POST', $onlineApi->website . '/api/login', [
                     'json' => $credentials
