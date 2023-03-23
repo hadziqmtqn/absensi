@@ -19,21 +19,11 @@ class ProfileController extends Controller
 
         $validator = Validator::make($request->all(), [
             'name' => ['required', 'string', 'max:255'],
-            'email' => ['required', 'string', 'max:255', 'unique:users,email,' . $user->id . 'id'],
-            'photo' => ['nullable', 'file', 'mimes:jpg,jpeg,png', 'max:1024']
+            'email' => ['required', 'string', 'max:255', 'unique:users,email,' . $user->id . 'id']
         ]);
 
         if ($validator->fails()) {
             return DTO::ResponseDTO('Update User Failed', null, $validator->errors(), null, Response::HTTP_UNPROCESSABLE_ENTITY);
-        }
-
-        $file = $request->file('photo');
-        if($file){
-            $nama_file = rand().'-'. $file->getClientOriginalName();
-            $file->move('assets',$nama_file);
-            $photo = 'assets/' .$nama_file;
-        }else {
-            $photo = $user->photo;
         }
 
         try {
@@ -41,7 +31,7 @@ class ProfileController extends Controller
                 'idapi' => $user->idapi,
                 'name' => $request->name,
                 'email' => $request->email,
-                'photo' => $photo
+                'photo' => $user->photo
             ];
 
             $user->update($data);

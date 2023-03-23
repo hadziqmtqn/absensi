@@ -26,7 +26,7 @@ class UserController extends Controller
         ]);
 
         if ($validator->fails()) {
-            return DTO::ResponseDTO('Create User Failed', null, $validator->errors(), null, Response::HTTP_UNPROCESSABLE_ENTITY);
+            return DTO::ResponseDTO('Gagal Tambah Karyawan', null, $validator->errors(), null, Response::HTTP_UNPROCESSABLE_ENTITY);
         }
 
         try {
@@ -48,10 +48,80 @@ class UserController extends Controller
         } catch (\Throwable $th) {
             Log::error($th->getMessage());
 
-            return DTO::ResponseDTO('Create User Failed',  null, 'Oops, error', null, Response::HTTP_INTERNAL_SERVER_ERROR);
+            return DTO::ResponseDTO('Gagal Tambah Karyawan',  null, 'Oops, error', null, Response::HTTP_INTERNAL_SERVER_ERROR);
         }
 
-        return DTO::ResponseDTO('Create User Succesfully', null, null, $user, Response::HTTP_OK);
+        return DTO::ResponseDTO('Sukses Tambah Karyawan', null, null, $user, Response::HTTP_OK);
+    }
+    
+    public function update(Request $request, $idapi)
+    {
+        $user = User::where('idapi', $idapi)
+        ->firstOrFail();
+
+        $validator = Validator::make($request->all(), [
+            'name' => ['required', 'string', 'max:255'],
+            'short_name' => ['required'],
+            'phone' => ['required', 'unique:users,phone,' . $user->id . 'id'],
+            'company_name' => ['nullable'],
+            'nik' => ['nullable'],
+            'email' => ['required', 'string', 'max:255', 'unique:users,email,' . $user->id . 'id']
+        ]);
+
+        if ($validator->fails()) {
+            return DTO::ResponseDTO('Gagal Update Karyawan', null, $validator->errors(), null, Response::HTTP_UNPROCESSABLE_ENTITY);
+        }
+
+        try {
+            $data = [
+                'name' => $request->name,
+                'idapi' => $user->idapi,
+                'username' => $user->username,
+                'short_name' => $request->short_name,
+                'phone' => $request->phone,
+                'company_name' => $request->company_name,
+                'nik' => $request->nik,
+                'email' => $request->email,
+            ];
+
+            $user->update($data);
+
+        } catch (\Throwable $th) {
+            Log::error($th->getMessage());
+
+            return DTO::ResponseDTO('Gagal Update Karyawan',  null, 'Oops, error', null, Response::HTTP_INTERNAL_SERVER_ERROR);
+        }
+
+        return DTO::ResponseDTO('Sukses Update Karyawan', null, null, $user, Response::HTTP_OK);
+    }
+    
+    public function updatePassword(Request $request, $idapi)
+    {
+        $user = User::where('idapi', $idapi)
+        ->firstOrFail();
+
+        $validator = Validator::make($request->all(), [
+            'password' => ['required'],
+        ]);
+
+        if ($validator->fails()) {
+            return DTO::ResponseDTO('Gagal Update Karyawan', null, $validator->errors(), null, Response::HTTP_UNPROCESSABLE_ENTITY);
+        }
+
+        try {
+            $data = [
+                'password' => Hash::make($request->password),
+            ];
+
+            $user->update($data);
+
+        } catch (\Throwable $th) {
+            Log::error($th->getMessage());
+
+            return DTO::ResponseDTO('Gagal Update Karyawan',  null, 'Oops, error', null, Response::HTTP_INTERNAL_SERVER_ERROR);
+        }
+
+        return DTO::ResponseDTO('Sukses Update Karyawan', null, null, $user, Response::HTTP_OK);
     }
 
     public function delete($idapi)
@@ -60,7 +130,7 @@ class UserController extends Controller
         ->firstOrFail();
 
         if (is_null($user)) {
-            return DTO::ResponseDTO('Delete User Failed', null, 'Data Not Found', null, Response::HTTP_NOT_FOUND);
+            return DTO::ResponseDTO('Gagal Menghapus Data Karyawan', null, 'Data Not Found', null, Response::HTTP_NOT_FOUND);
         }
 
         try {
@@ -69,10 +139,10 @@ class UserController extends Controller
         } catch (\Throwable $th) {
             Log::error($th->getMessage());
 
-            return DTO::ResponseDTO('Delete User Failed', null, 'Oops, error', null, Response::HTTP_INTERNAL_SERVER_ERROR);
+            return DTO::ResponseDTO('Gagal Menghapus Data Karyawan', null, 'Oops, error', null, Response::HTTP_INTERNAL_SERVER_ERROR);
         }
 
-        return DTO::ResponseDTO('Delete User Successfully', null, null, $user, Response::HTTP_OK);
+        return DTO::ResponseDTO('Sukses Menghapus Data Karyawan', null, null, $user, Response::HTTP_OK);
     }
 
     public function restore($idapi)
@@ -83,7 +153,7 @@ class UserController extends Controller
         ->firstOrFail();
 
         if (is_null($user)) {
-            return DTO::ResponseDTO('Restore User Failed', null, 'Data Not Found', null, Response::HTTP_NOT_FOUND);
+            return DTO::ResponseDTO('Gagal Mengembalikan Data Karyawan', null, 'Data Not Found', null, Response::HTTP_NOT_FOUND);
         }
 
         try {
@@ -92,10 +162,10 @@ class UserController extends Controller
         } catch (\Throwable $th) {
             Log::error($th->getMessage());
 
-            return DTO::ResponseDTO('Restore User Failed', null, 'Oops, error', null, Response::HTTP_INTERNAL_SERVER_ERROR);
+            return DTO::ResponseDTO('Gagal Mengembalikan Data Karyawan', null, 'Oops, error', null, Response::HTTP_INTERNAL_SERVER_ERROR);
         }
 
-        return DTO::ResponseDTO('Restore User Successfully', null, null, $user, Response::HTTP_OK);
+        return DTO::ResponseDTO('Sukses Mengembalikan Data Karyawan', null, null, $user, Response::HTTP_OK);
     }
 
     public function deletePermanen($idapi)
@@ -106,7 +176,7 @@ class UserController extends Controller
         ->firstOrFail();
 
         if (is_null($user)) {
-            return DTO::ResponseDTO('Delete User Failed', null, 'Data Not Found', null, Response::HTTP_NOT_FOUND);
+            return DTO::ResponseDTO('Gagal Menghapus Permanen Data Karyawan', null, 'Data Not Found', null, Response::HTTP_NOT_FOUND);
         }
 
         try {
@@ -115,9 +185,9 @@ class UserController extends Controller
         } catch (\Throwable $th) {
             Log::error($th->getMessage());
 
-            return DTO::ResponseDTO('Delete User Failed', null, 'Oops, error', null, Response::HTTP_INTERNAL_SERVER_ERROR);
+            return DTO::ResponseDTO('Gagal Menghapus Permanen Data Karyawan', null, 'Oops, error', null, Response::HTTP_INTERNAL_SERVER_ERROR);
         }
 
-        return DTO::ResponseDTO('Delete User Successfully', null, null, $user, Response::HTTP_OK);
+        return DTO::ResponseDTO('Sukses Menghapus Permanen Data Karyawan', null, null, $user, Response::HTTP_OK);
     }
 }
