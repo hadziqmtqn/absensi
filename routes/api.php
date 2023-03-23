@@ -2,7 +2,9 @@
 
 use App\Http\Controllers\API\ApiKeyController;
 use App\Http\Controllers\API\AuthController;
+use App\Http\Controllers\API\ProfileController;
 use App\Http\Controllers\API\UserController;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -28,5 +30,25 @@ Route::middleware('log.route.api')->group(function (){
         Route::delete('/{idapi}/delete', [UserController::class, 'delete'])->name('user.delete');
         Route::post('/{idapi}/restore', [UserController::class, 'restore'])->name('user.restore');
         Route::delete('/{idapi}/delete-permanen', [UserController::class, 'deletePermanen'])->name('user.delete-permanen');
+    });
+    // update profile
+    Route::put('profile/{idapi}/update', [ProfileController::class, 'update'])->name('profile.update');
+
+    Route::get('download', function(){
+        try {
+            $url = 'http://localhost:8000/theme/template/images/user.png';
+    
+            $contents = file_get_contents($url);
+            $file_name = basename($url);
+            $save_path = public_path('assets') . '/' . rand() . '-' . $file_name;
+    
+            file_put_contents($save_path, $contents);
+            return response()->json('success');
+
+        } catch (\Throwable $th) {
+            Log::error($th->getMessage());
+
+            return response()->json('gagal');
+        }
     });
 });

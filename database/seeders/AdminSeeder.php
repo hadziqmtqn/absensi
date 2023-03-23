@@ -28,6 +28,7 @@ class AdminSeeder extends Seeder
         $user = User::create([
             'role_id' => 1,
             'name' => 'Admin',
+            'idapi' => '12345',
             'email' => 'aa@g.com',
             'password' => bcrypt('12345678'),
             'is_verifikasi' => 1,
@@ -39,6 +40,7 @@ class AdminSeeder extends Seeder
         $adminOnline = User::create([
             'role_id' => 1,
             'name' => 'Admin Online',
+            'idapi' => '12341234',
             'email' => 'online@gmail.com',
             'password' => bcrypt('12345678'),
             'is_verifikasi' => 1,
