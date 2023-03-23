@@ -62,16 +62,15 @@ class LoginController extends Controller
 
         if (auth()->attempt($credentials)) {
             $karyawan = Auth::user()->modelHasRole->role_id == 2;
-            $karyawanTerverifikasi = auth()->user()->is_verifikasi == 1;
 
             if ($karyawan) {
-                if($karyawanTerverifikasi){
-                    return redirect('dashboard');
-                }else{
-                    Auth::logout();
+                Auth::logout();
+                request()->session()->invalidate();
+                request()->session()->regenerateToken();
 
-                    return redirect()->route('login.index')->with('error','Mohon Maaf, akun Anda belum diverifikasi');
-                }
+                Alert::warning('Oops', 'Anda Tidak diizinkan mengakses aplikasi ini');
+                
+                return redirect()->route('login.index');
             }
 
             $user = User::where('email', $request['email'])->firstOrFail();
