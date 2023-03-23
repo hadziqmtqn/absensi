@@ -80,7 +80,6 @@ Route::middleware(['auth',VerifikasiAkun::class])->group(function () {
     Route::get('karyawan', [KaryawanController::class, 'index'])->name('karyawan.index');
     Route::get('getjsonkaryawan', [KaryawanController::class, 'getJsonKaryawan'])->name('getjsonkaryawan');
     Route::get('karyawan/trashed', [KaryawanController::class, 'trashed'])->name('karyawan.trashed');
-    // Route::get('getjsonkaryawantrashed', [KaryawanController::class, 'getJsonKaryawanTrashed'])->name('getjsonkaryawantrashed');
     Route::post('getjsonkaryawantrashed', [KaryawanController::class, 'getJsonKaryawanTrashed'])->name('getjsonkaryawantrashed');
     Route::get('karyawan/{username}', [KaryawanController::class, 'detail'])->name('karyawan');
     Route::put('karyawan/update/{id}', [KaryawanController::class, 'update'])->name('karyawan.update');

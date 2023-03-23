@@ -37,74 +37,59 @@
                 <form class="forms-sample" method="POST" action="{{ route('karyawan.update',$profile->id) }}" enctype="multipart/form-data" id="profile">
                     @csrf
                     {{ method_field('PUT') }}
-                    <div id="profile">
-                        <div class="row">
-                            <div class="col-md-6">
-                                @if (\Auth::user()->role_id == 1)
-                                <div class="form-group">
-                                    <label for="">Role</label>
-                                    <select name="role_id" class="form-control">
-                                        <option value="">Pilih</option>
-                                        @foreach ($listRole as $role)
-                                            <option value="{{ $role->id }}" {{ $role->id == $profile->role_id ? 'selected' : '' }}>{{ $role->name }}</option>
-                                        @endforeach
-                                    </select>
-                                </div>
-                                @endif
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label for="">Nama Lengkap</label>
+                                <input type="text" class="form-control" name="name" value="{{ $profile->name }}" placeholder="Nama Lengkap">
                             </div>
-                            <div class="col-md-6">
-                                <div class="form-group">
-                                    <label for="">Nama Lengkap</label>
-                                    <input type="text" class="form-control" name="name" value="{{ $profile->name }}" placeholder="Nama Lengkap">
-                                </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label for="">Nama Panggilan</label>
+                                <input type="text" class="form-control" name="short_name" value="{{ $profile->short_name }}" placeholder="Nama Panggilan">
                             </div>
-                            <div class="col-md-6">
-                                <div class="form-group">
-                                    <label for="">Nama Panggilan</label>
-                                    <input type="text" class="form-control" name="short_name" value="{{ $profile->short_name }}" placeholder="Nama Panggilan">
-                                </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label for="">NIK</label>
+                                <input type="number" class="form-control" name="nik" value="{{ $profile->nik }}" placeholder="Nomor Induk Kependudukan">
                             </div>
-                            <div class="col-md-6">
-                                <div class="form-group">
-                                    <label for="">NIK</label>
-                                    <input type="number" class="form-control" name="nik" value="{{ $profile->nik }}" placeholder="Nomor Induk Kependudukan">
-                                </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label for="">No. Telp/HP</label>
+                                <input type="number" class="form-control" name="phone" value="{{ $profile->phone }}" placeholder="No. Telp/HP">
                             </div>
-                            <div class="col-md-6">
-                                <div class="form-group">
-                                    <label for="">No. Telp/HP</label>
-                                    <input type="number" class="form-control" name="phone" value="{{ $profile->phone }}" placeholder="No. Telp/HP">
-                                </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label for="">Nama Asal PT</label>
+                                <input type="text" class="form-control" name="company_name" value="{{ $profile->company_name }}" placeholder="Nama Asal PT">
                             </div>
-                            <div class="col-md-6">
-                                <div class="form-group">
-                                    <label for="">Nama Asal PT</label>
-                                    <input type="text" class="form-control" name="company_name" value="{{ $profile->company_name }}" placeholder="Nama Asal PT">
-                                </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label for="">Email address</label>
+                                <input type="email" class="form-control" name="email" value="{{ $profile->email }}" placeholder="Email">
                             </div>
-                            <div class="col-md-6">
-                                <div class="form-group">
-                                    <label for="">Email address</label>
-                                    <input type="email" class="form-control" name="email" value="{{ $profile->email }}" placeholder="Email">
-                                </div>
-                            </div>
-                            <div class="col-md-6">
-                                <div class="form-group">
-                                    <label>Photo</label>
-                                    <input type="file" name="photo" accept=".jpg,.jpeg,.png,.svg" class="file-upload-default">
-                                    <div class="input-group col-xs-12">
-                                        <input type="text" class="form-control file-upload-info" disabled="" placeholder="Upload Photo">
-                                        <span class="input-group-append">
-                                            <button class="file-upload-browse btn btn-primary" type="button">Upload</button>
-                                        </span>
-                                    </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label>Photo</label>
+                                <input type="file" name="photo" accept=".jpg,.jpeg,.png" class="file-upload-default">
+                                <div class="input-group col-xs-12">
+                                    <input type="text" class="form-control file-upload-info" disabled="" placeholder="Upload Photo">
+                                    <span class="input-group-append">
+                                        <button class="file-upload-browse btn btn-primary" type="button">Upload</button>
+                                    </span>
                                 </div>
                             </div>
                         </div>
-                        <hr>
-                        <button type="submit" class="btn btn-primary mr-2">Submit</button>
-                        <a href="{{ route('karyawan',$profile->username.'/katasandi') }}" class="btn btn-inverse-danger btn-fw">Ubah Password</a>
                     </div>
+                    <hr>
+                    <button type="submit" class="btn btn-primary mr-2">Submit</button>
+                    <a href="{{ route('karyawan.katasandi',$profile->username) }}" class="btn btn-inverse-danger btn-fw">Ubah Password</a>
                 </form>
             </div>
         </div>
@@ -129,7 +114,7 @@
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-inverse-secondary btn-fw" data-dismiss="modal">Batal</button>
-                    <a href="{{ route('karyawan',$profile->id.'/verifikasi') }}" class="btn {{ $profile->is_verifikasi == 1 ? 'btn-success' : 'btn-danger' }}">OK. Yakin</a>
+                    <a href="{{ route('karyawan.verifikasi',$profile->id) }}" class="btn {{ $profile->is_verifikasi == 1 ? 'btn-success' : 'btn-danger' }}">OK. Yakin</a>
                 </div>
             </div>
         </div>

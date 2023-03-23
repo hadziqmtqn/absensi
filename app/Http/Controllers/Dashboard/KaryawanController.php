@@ -15,7 +15,9 @@ use App\Models\Karyawan;
 use App\Models\OnlineApi;
 use App\Models\Role;
 use GuzzleHttp\Client;
+use Hash;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Validator;
 use Log;
 
 class KaryawanController extends Controller
@@ -185,49 +187,77 @@ class KaryawanController extends Controller
         $title = 'Detail Karyawan';
         $appName = Setting::first();
         $profile = User::where('username',$username)->first();
-        $listRole = Role::get();
         $listKaryawan = User::where('role_id',2)->get();
 
-        return view('dashboard.karyawan.detail', compact('title','appName','profile','listRole','listKaryawan'));
+        return view('dashboard.karyawan.detail', compact('title','appName','profile','listKaryawan'));
     }
 
     public function update(Request $request, $id)
 	{
+        $user = User::findOrFail($id);
+
+        $client = New Client();
+        $onlineApi = OnlineApi::first();
+
         try {
-            $request->validate([
-                'role_id',
-                'name' => 'required',
-                'short_name',
-                'nik',
-                'phone',
-                'company_name',
-                'photo' => 'file|mimes:jpg,jpeg,png,svg|max:1024',
-                'email' => 'email|required',
+            $validator = Validator::make($request->all(),[
+                'name' => ['required'],
+                'short_name' => ['nullable'],
+                'nik' => ['nullable'],
+                'phone' => ['required', 'unique:users,phone,' . $user->id . 'id'],
+                'company_name' => ['nullable'],
+                'photo' => ['file', 'mimes:jpg,jpeg,png', 'max:1024'],
+                'email' => ['required', 'unique:users,email,' . $user->id . 'id'],
             ]);
 
-            if(Auth::user()->role_id == 1){
-                $data['role_id'] = $request->role_id;
+            if ($validator->fails()) {
+                return back()->withErrors($validator)->withInput();
             }
-            $data['name'] = $request->name;
-            $data['email'] = $request->email;
-            $data['short_name'] = $request->short_name;
-            $data['nik'] = $request->nik;
-            $data['phone'] = $request->phone;
-            $data['company_name'] = $request->company_name;
-            // $data['created_at'] = date('Y-m-d H:i:s');
-            $data['updated_at'] = date('Y-m-d H:i:s');
-
+            
             $file = $request->file('photo');
             if($file){
                 $nama_file = rand().'-'. $file->getClientOriginalName();
                 $file->move('assets',$nama_file);
-                $data['photo'] = 'assets/' .$nama_file;
+                $photo = 'assets/' .$nama_file;
+            }else {
+                $photo = $user->photo;
             }
 
-            User::where('id', $id)->update($data);
-            Alert::success('Sukses','Profile berhasil diupdate');
+            $data = [
+                'role_id' => $user->role_id,
+                'name' => $request->name,
+                'email' => $request->email,
+                'short_name' => $request->short_name,
+                'nik' => $request->nik,
+                'phone' => $request->phone,
+                'company_name' => $request->company_name,
+                'photo' => $photo
+            ];
+
+            DB::transaction(function () use ($user, $client, $onlineApi, $data){
+                $user->update($data);
+
+                $updateKaryawanApi = [
+                    'role_id' => $user->role_id,
+                    'name' => $user->name,
+                    'email' => $user->email,
+                    'short_name' => $user->short_name,
+                    'nik' => $user->nik,
+                    'phone' => $user->phone,
+                    'company_name' => $user->company_name,
+                ];
+
+                $client->request('PUT', $onlineApi->website . '/api/user/' . $user->idapi . '/update', [
+                    'json' => $updateKaryawanApi
+                ]);
+
+            });
+
+            Alert::success('Sukses','Data Karyawan Berhasil Tersimpan');
         } catch (\Throwable $th) {
-            Alert::error('Error', $th->getMessage());
+            Log::error($th->getMessage());
+
+            Alert::error('Oops', 'Data Error');
         }
 
 		return redirect()->back();
@@ -237,31 +267,53 @@ class KaryawanController extends Controller
     {
         $title = 'Update Password Karyawan';
         $appName = Setting::first();
-        $karyawan = User::where('username',$username)->first();
-        $listRole = Role::get();
-        $listKaryawan = User::where('role_id',2)->get();
+        $karyawan = User::where('username',$username)
+        ->first();
+        $listKaryawan = User::where('role_id',2)
+        ->get();
 
-        return view('dashboard.karyawan.update_password', compact('title','appName','karyawan','listRole','listKaryawan'));
+        return view('dashboard.karyawan.update_password', compact('title','appName','karyawan','listKaryawan'));
     }
 
-    public function password(Request $request,$id)
+    public function password(Request $request, $id)
     {
+        $user = User::findOrFail($id);
+        $client = New Client();
+        $onlineApi = OnlineApi::first();
 
         try {
-            $password = $request->password;
-            $confirm_password = $request->confirm_password;
+            $validator = Validator::make($request->all(),[
+                'password' => ['required'],
+                'confirm_password' => ['required', 'same:password'],
+            ]);
 
-            if($password != $confirm_password){
-                Alert::error('Error','Password harus sama');
-            }else{
-                User::where('id',$id)->update([
-                    'password'=>bcrypt($password)
-                ]);
-                Alert::success('Sukses','Password berhasil diubah');
+            if ($validator->fails()) {
+                return back()->withErrors($validator)->withInput();
             }
-        } catch (\Exception $e) {
-            Alert::error('Error',$e->getMessage());
+
+            $data = [
+                'password' => Hash::make($request->password)
+            ];
+
+            DB::transaction(function () use ($user, $data, $client, $onlineApi, $request) {
+                $user->update($data);
+
+                $updatePasswordApi = [
+                    'password' => $request->password,
+                ];
+
+                $client->request('PUT', $onlineApi->website . '/api/user/' . $user->idapi . '/update-password', [
+                    'json' => $updatePasswordApi
+                ]);
+            });
+
+            Alert::success('Sukses','Password berhasil diubah');
+        } catch (\Throwable $th) {
+            Log::error($th->getMessage());
+
+            Alert::error('Error', 'Data Error');
         }
+
         return redirect()->back();
     }
 
