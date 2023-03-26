@@ -1,10 +1,10 @@
 <?php
 
+use App\Http\Controllers\API\AbsensiController;
 use App\Http\Controllers\API\ApiKeyController;
 use App\Http\Controllers\API\AuthController;
 use App\Http\Controllers\API\ProfileController;
 use App\Http\Controllers\API\UserController;
-use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -35,4 +35,8 @@ Route::middleware('log.route.api')->group(function (){
     });
     // update profile
     Route::put('profile/{idapi}/update', [ProfileController::class, 'update'])->name('profile.update');
+    // absensi
+    Route::prefix('absensi')->group(function(){
+        Route::post('/{idapi}/store', [AbsensiController::class, 'store'])->name('absensi.store');
+    });
 });
