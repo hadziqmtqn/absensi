@@ -11,7 +11,6 @@ use Illuminate\Support\Facades\DB;
 
 use App\Models\DataJob;
 use App\Models\Setting;
-use App\Models\DataPasangBaru;
 use App\Models\Karyawan;
 use App\Models\TeknisiCadangan;
 use Carbon\Carbon;
@@ -27,37 +26,20 @@ class DataJobController extends Controller
     {
         $title = 'Data Job';
         $appName = Setting::first();
-        $listPasangBaru = DataPasangBaru::where('status','0')
-        ->whereDoesntHave('data_job')
-        ->orderBy('created_at','ASC')
-        ->get();
-        $teknisiCadangan = TeknisiCadangan::whereDate('created_at', Carbon::now())->count();
-        $teknisiNonJob = Karyawan::whereHas('absensi', function($e){
-            $e->where('status','1');
-            $e->whereDate('created_at', Carbon::now());
+
+        $toDay = Carbon::now();
+        $teknisiCadangan = TeknisiCadangan::whereDate('created_at', $toDay)
+        ->count();
+        $teknisiNonJob = Karyawan::whereHas('absensi', function($query) use ($toDay){
+            $query->where('status','1');
+            $query->whereDate('created_at', $toDay);
         })
-        ->whereDoesntHave('dataJob', function($e){
-            $e->whereDate('created_at', Carbon::now());
+        ->whereDoesntHave('dataJob', function($query) use ($toDay){
+            $query->whereDate('created_at', $toDay);
         })
         ->count();
 
-        $listKaryawan = Karyawan::with('absensi')
-        ->whereHas('absensi', function($e){
-            $hariIni = Carbon::now()->format('Y-m-d');
-            $e->whereDate('created_at',$hariIni);
-        }) // => karyawan yang sudah absensi
-        ->whereDoesntHave('dataJob', function($e){
-            $hariIni = Carbon::now()->format('Y-m-d');
-            $e->whereDate('created_at',$hariIni);
-        })
-        ->orWhereHas('teknisiCadangan', function($e){
-            $hariIni = Carbon::now()->format('Y-m-d');
-            $e->whereDate('created_at',$hariIni);
-        })
-        ->where('is_verifikasi',1)
-        ->get();
-
-        return view('dashboard.data_job.index', compact('title','appName','listPasangBaru','teknisiCadangan','teknisiNonJob','listKaryawan'));
+        return view('dashboard.data_job.index', compact('title','appName','teknisiCadangan','teknisiNonJob'));
     }
 
     public function getJsonDataJob(Request $request)

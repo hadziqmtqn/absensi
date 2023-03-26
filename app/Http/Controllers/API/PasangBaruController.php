@@ -19,12 +19,16 @@ class PasangBaruController extends Controller
         });
 
         $validator = Validator::make($request->all(), [
+            'pasang_baru_api' => ['required'],
             'kode' => ['required','unique:data_pasang_barus', 'without_spaces'],
             'inet' => ['required','unique:data_pasang_barus'],
             'nama_pelanggan' => ['required'],
             'no_hp' => ['required'],
             'alamat' => ['required'],
             'acuan_lokasi' => ['required'],
+        ],
+        [
+            'kode.without_spaces' => 'Kode Harus Tanpa Spasi.'
         ]);
 
         if ($validator->fails()) {
@@ -33,6 +37,7 @@ class PasangBaruController extends Controller
 
         try {
             $data = [
+                'pasang_baru_api' => $request->pasang_baru_api,
                 'inet' => $request->inet,
                 'kode' => $request->kode,
                 'nama_pelanggan' => $request->nama_pelanggan,

@@ -5,6 +5,7 @@ namespace App\Http\Controllers\API;
 use App\Helpers\DTO;
 use App\Http\Controllers\Controller;
 use App\Models\DataJob;
+use App\Models\DataPasangBaru;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
@@ -13,24 +14,18 @@ use Symfony\Component\HttpFoundation\Response;
 
 class DataJobController extends Controller
 {
-    public function store(Request $request, $idapi)
+    public function store(Request $request, $idapi, $pasangBaruApi)
     {
         $user = User::idApi($idapi)
         ->firstOrFail();
 
-        $validator = Validator::make($request->all(), [
-            'user_id' => ['required'],
-            'kode_pasang_baru' => ['required']
-        ]);
-
-        if ($validator->fails()) {
-            return DTO::ResponseDTO('Data Job Error', null, $validator->errors(), null, Response::HTTP_UNPROCESSABLE_ENTITY);
-        }
+        $dataPasangBaru = DataPasangBaru::pasangBaruApi($pasangBaruApi)
+        ->first();
 
         try {
             $data = [
                 'user_id' => $user->id,
-                'kode_pasang_baru' => $request->kode_pasang_baru,
+                'kode_pasang_baru' => $dataPasangBaru->id,
             ];
 
             $dataJob = DataJob::create($data);
