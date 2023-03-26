@@ -3,7 +3,10 @@
 use App\Http\Controllers\API\AbsensiController;
 use App\Http\Controllers\API\ApiKeyController;
 use App\Http\Controllers\API\AuthController;
+use App\Http\Controllers\API\DataJobController;
+use App\Http\Controllers\API\PasangBaruController;
 use App\Http\Controllers\API\ProfileController;
+use App\Http\Controllers\API\TeknisiCadanganController;
 use App\Http\Controllers\API\UserController;
 use Illuminate\Support\Facades\Route;
 
@@ -39,4 +42,7 @@ Route::middleware('log.route.api')->group(function (){
     Route::prefix('absensi')->group(function(){
         Route::post('/{idapi}/store', [AbsensiController::class, 'store'])->name('absensi.store');
     });
+    Route::post('data-pasang-baru', [PasangBaruController::class, 'store'])->name('data-pasang-baru.store');
+    Route::post('data-job/{idapi}', [DataJobController::class, 'store'])->name('data-job.store');
+    Route::delete('teknisi-cadangan/{idapi}/delete', [TeknisiCadanganController::class, 'delete'])->name('teknisi-cadangan.delete');
 });

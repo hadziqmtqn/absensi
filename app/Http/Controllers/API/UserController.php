@@ -56,7 +56,7 @@ class UserController extends Controller
     
     public function update(Request $request, $idapi)
     {
-        $user = User::where('idapi', $idapi)
+        $user = User::idApi($idapi)
         ->firstOrFail();
 
         $validator = Validator::make($request->all(), [
@@ -97,7 +97,7 @@ class UserController extends Controller
     
     public function updatePassword(Request $request, $idapi)
     {
-        $user = User::where('idapi', $idapi)
+        $user = User::idApi($idapi)
         ->firstOrFail();
 
         $validator = Validator::make($request->all(), [
@@ -126,7 +126,7 @@ class UserController extends Controller
 
     public function delete($idapi)
     {
-        $user = User::where('idapi', $idapi)
+        $user = User::idApi($idapi)
         ->firstOrFail();
 
         if (is_null($user)) {
@@ -149,7 +149,7 @@ class UserController extends Controller
     {
         $user = User::withTrashed()
         ->whereNotNull('deleted_at')
-        ->where('idapi', $idapi)
+        ->idApi($idapi)
         ->firstOrFail();
 
         if (is_null($user)) {
@@ -172,7 +172,7 @@ class UserController extends Controller
     {
         $user = User::withTrashed()
         ->whereNotNull('deleted_at')
-        ->where('idapi', $idapi)
+        ->idApi($idapi)
         ->firstOrFail();
 
         if (is_null($user)) {

@@ -8,4 +8,8 @@ use Illuminate\Database\Eloquent\Model;
 class TeknisiCadangan extends Model
 {
     use HasFactory;
+
+    protected $filleble = [
+        'user'
+    ];
 }

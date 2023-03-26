@@ -56,4 +56,19 @@ class User extends Authenticatable
     {
         return $this->hasOne(ModelHasRole::class, 'model_id');
     }
+
+    public function dataJob()
+    {
+        return $this->hasOne(DataJob::class);
+    }
+
+    public function absensi()
+    {
+        return $this->hasOne(Absensi::class);
+    }
+
+    public function scopeIdApi($query, $idApi)
+    {
+        return $query->where('idapi', $idApi);
+    }
 }
