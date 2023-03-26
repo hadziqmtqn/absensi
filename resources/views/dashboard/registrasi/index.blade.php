@@ -12,24 +12,31 @@
                         <h4 class="card-title">{{ $title }}</h4>
                         @include('dashboard.layouts.session')
                         <div class="form-group">
+                            <label for="">Nama Karyawan</label>
                             <input type="text" class="form-control form-control-lg" value="{{ old('name') }}" name="name" placeholder="Nama Lengkap">
                         </div>
                         <div class="form-group">
+                            <label for="">Nama Panggilan</label>
                             <input type="text" class="form-control form-control-lg" value="{{ old('short_name') }}" name="short_name" placeholder="Nama Panggilan">
                         </div>
                         <div class="form-group">
+                            <label for="">No. Whatsapp</label>
                             <input type="number" class="form-control form-control-lg" value="{{ old('phone') }}" name="phone" placeholder="No. Telp/HP">
                         </div>
                         <div class="form-group">
+                            <label for="">Dari PT.</label>
                             <input type="text" class="form-control form-control-lg" value="{{ old('company_name') }}" name="company_name" placeholder="Nama Asal  PT">
                         </div>
                         <div class="form-group">
+                            <label for="">Email</label>
                             <input type="email" class="form-control form-control-lg" value="{{ old('email') }}" name="email" placeholder="Email">
                         </div>
                         <div class="form-group">
+                            <label for="">Password</label>
                             <input type="password" class="form-control form-control-lg" name="password" placeholder="Password">
                         </div>
                         <div class="form-group">
+                            <label for="">Ulangi Password</label>
                             <input type="password" class="form-control form-control-lg" name="confirm_password" placeholder="Ulangi Password">
                         </div>
                         <div class="mt-3">

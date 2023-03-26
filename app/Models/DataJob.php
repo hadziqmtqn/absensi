@@ -9,7 +9,10 @@ class DataJob extends Model
 {
     use HasFactory;
 
-    protected $guarded = [];
+    protected $fillable = [
+        'user_id',
+        'kode_pasang_baru'
+    ];
 
     public function dataPasangBaru()
     {

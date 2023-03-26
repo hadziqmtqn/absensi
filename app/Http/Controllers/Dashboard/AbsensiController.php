@@ -137,6 +137,10 @@ class AbsensiController extends Controller
                     ];
         
                     DataJob::create($dataJob);
+
+                    $client->request('POST', $onlineApi->website . '/api/data-job/' . $absensi->user->idapi , [
+                        'json' => $dataJob
+                    ]);
                 }
             });
 

@@ -10,6 +10,7 @@ class DataPasangBaru extends Model
     use HasFactory;
 
     protected $fillable = [
+        'pasang_baru_api',
         'kode',
         'inet',
         'nama_pelanggan',

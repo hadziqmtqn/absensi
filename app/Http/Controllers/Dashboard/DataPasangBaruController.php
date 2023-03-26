@@ -144,6 +144,9 @@ class DataPasangBaruController extends Controller
                 'alamat' => ['required'],
                 'acuan_lokasi' => ['required'],
                 'foto' => ['nullable','file','mimes:jpg,jpeg,png','max:1024']
+            ],
+            [
+                'kode.without_spaces' => 'Kode Harus Tanpa Spasi.'
             ]);
 
             if ($validator->fails()) {
@@ -160,20 +163,31 @@ class DataPasangBaruController extends Controller
             }
 
             $data = [
-                'inet' => $request->inet,
+                'pasang_baru_api' => rand(),
                 'kode' => $request->kode,
+                'inet' => $request->inet,
                 'nama_pelanggan' => $request->nama_pelanggan,
                 'no_hp' => $request->no_hp,
                 'alamat' => $request->alamat,
                 'acuan_lokasi' => $request->acuan_lokasi,
                 'foto' => $foto
             ];
-
+            
             DB::transaction(function() use ($data, $absensi, $teknisiCadangan, $client, $onlineApi){
                 $dataPasangBaru = DataPasangBaru::create($data);
+                
+                $dataPasangBaruApi = [
+                    'pasang_baru_api' => $dataPasangBaru->pasang_baru_api,
+                    'kode' => $dataPasangBaru->kode,
+                    'inet' => $dataPasangBaru->inet,
+                    'nama_pelanggan' => $dataPasangBaru->nama_pelanggan,
+                    'no_hp' => $dataPasangBaru->no_hp,
+                    'alamat' => $dataPasangBaru->alamat,
+                    'acuan_lokasi' => $dataPasangBaru->acuan_lokasi,
+                ];
 
                 $client->request('POST', $onlineApi->website . '/api/data-pasang-baru', [
-                    'json' => $data
+                    'json' => $dataPasangBaruApi
                 ]);
                 
                 if ($absensi && !$teknisiCadangan) {
@@ -184,9 +198,7 @@ class DataPasangBaruController extends Controller
                     
                     DataJob::create($createJobBaru);
                     
-                    $client->request('POST', $onlineApi->website . '/api/data-job/' . $absensi->user->idapi , [
-                        'json' => $createJobBaru
-                    ]);
+                    $client->request('POST', $onlineApi->website . '/api/data-job/' . $absensi->user->idapi . '/' . $dataPasangBaru->pasang_baru_api);
                 }elseif (!$absensi && $teknisiCadangan) {
                     $createJobBaru = [
                         'user_id' => $teknisiCadangan->user_id,
