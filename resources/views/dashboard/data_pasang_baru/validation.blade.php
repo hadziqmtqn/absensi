@@ -1,7 +1,10 @@
 <script>
-    if ($("#pasang_baru").length > 0) {
-        $("#pasang_baru").validate({
+    if ($("#validasi").length > 0) {
+        $("#validasi").validate({
             rules: {
+                kode: {
+                    required: true,
+                },
                 inet: {
                     required: true,
                 },
@@ -21,6 +24,9 @@
                 },
             },
             messages: {
+                kode: {
+                    required: "Kode Harus diisi",
+                },
                 inet: {
                     required: "No. Internet Harus diisi",
                     number: "No. Internet Harus Berupa Angka",

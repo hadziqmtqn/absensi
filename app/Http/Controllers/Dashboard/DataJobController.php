@@ -20,7 +20,7 @@ class DataJobController extends Controller
 {
     function __construct()
     {
-        $this->middleware('permission:data-job-list|data-job-create|data-job-edit|data-job-delete', ['only' => ['index','show']]);
+        $this->middleware('permission:data-job-list', ['only' => ['index','detail']]);
         $this->middleware('permission:data-job-create', ['only' => ['create','store']]);
         $this->middleware('permission:data-job-edit', ['only' => ['edit','update']]);
         $this->middleware('permission:data-job-delete', ['only' => ['destroy']]);

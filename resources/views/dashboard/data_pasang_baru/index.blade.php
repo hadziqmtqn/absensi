@@ -67,7 +67,6 @@
 @endsection
 
 @section('scripts')
-@include('dashboard.data_pasang_baru.validation')
 <!-- Modal -->
 <div class="modal fade" id="pasang_baru" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
     <div class="modal-dialog" role="document">
@@ -75,9 +74,9 @@
             <div class="modal-header">
                 <h5 class="modal-title">Tambah Pasang Baru</h5>
             </div>
-            <form class="forms-sample" method="POST" action="{{ route('data-pasang-baru.store') }}" enctype="multipart/form-data" id="pasang_baru">
+            <form class="forms-sample" method="POST" action="{{ route('data-pasang-baru.store') }}" enctype="multipart/form-data" id="validasi">
                 @csrf
-                <div class="modal-body" id="pasang_baru">
+                <div class="modal-body">
                     <div class="form-group">
                         <label for="">Kode</label>
                         <input type="text" class="form-control" name="kode" value="{{ old('kode') }}" placeholder="SC-xxxxxxxxx">
@@ -122,6 +121,7 @@
     </div>
 </div>
 {{-- akhir modal --}}
+@include('dashboard.data_pasang_baru.validation')
 
 <script type="text/javascript" src="{{ asset('theme/template/js/dashboard/pasang-baru.js') }}"></script>
 @endsection

@@ -61,4 +61,14 @@ class User extends Authenticatable
     {
         return $query->where('idapi', $idApi);
     }
+
+    public function dataJob()
+    {
+        return $this->hasOne(DataJob::class);
+    }
+
+    public function absensi()
+    {
+        return $this->hasOne(Absensi::class);
+    }
 }

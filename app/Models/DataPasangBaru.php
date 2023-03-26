@@ -9,7 +9,16 @@ class DataPasangBaru extends Model
 {
     use HasFactory;
 
-    protected $guarded = [];
+    protected $fillable = [
+        'kode',
+        'inet',
+        'nama_pelanggan',
+        'no_hp',
+        'alamat',
+        'acuan_lokasi',
+        'foto',
+        'status'
+    ];
 
     public function data_job()
     {
