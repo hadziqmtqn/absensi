@@ -56,4 +56,9 @@ class User extends Authenticatable
     {
         return $this->hasOne(ModelHasRole::class, 'model_id');
     }
+
+    public function scopeIdApi($query, $idApi)
+    {
+        return $query->where('idapi', $idApi);
+    }
 }

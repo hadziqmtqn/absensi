@@ -15,10 +15,10 @@ use App\Models\Karyawan;
 use App\Models\OnlineApi;
 use App\Models\Role;
 use GuzzleHttp\Client;
-use Hash;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Validator;
-use Log;
 
 class KaryawanController extends Controller
 {

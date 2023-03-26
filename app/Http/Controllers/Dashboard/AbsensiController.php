@@ -15,7 +15,11 @@ use App\Models\DataJob;
 use App\Models\DataPasangBaru;
 use App\Models\Setting;
 use App\Models\Karyawan;
+use App\Models\OnlineApi;
+use App\Models\User;
 use Carbon\Carbon;
+use GuzzleHttp\Client;
+use Illuminate\Support\Facades\Log;
 
 class AbsensiController extends Controller
 {
@@ -92,8 +96,14 @@ class AbsensiController extends Controller
 
     public function store(Request $request)
 	{
+        $pasangBaru = DataPasangBaru::whereDoesntHave('data_job')
+        ->first();
+
+        // client api
+        $client = New Client();
+        $onlineApi = OnlineApi::first();
+
         try {
-            $cekPasangBaru = DataPasangBaru::whereDoesntHave('data_job')->count();
 
             $validator = Validator::make($request->all(),[
                 'user_id' => 'required',
@@ -108,30 +118,33 @@ class AbsensiController extends Controller
                 'waktu_absen' => date('Y-m-d'),
             ];
 
-            if($cekPasangBaru < 1){
-                Absensi::create($data);
-            }else{
-                $pasangBaru = DataPasangBaru::select('id')->whereDoesntHave('data_job')->first();
-
-                DB::beginTransaction();
-
-                Absensi::create($data);
-
-                $dataJob = [
-                    'user_id' => $request->user_id,
-                    'kode_pasang_baru' => $pasangBaru->id,
+            DB::transaction(function() use ($pasangBaru, $data, $client, $onlineApi){
+                $absensi = Absensi::create($data);
+                
+                $createAbsensiApi = [
+                    'user_id' => $absensi->user_id,
+                    'waktu_absen' => $absensi->waktu_absen
                 ];
 
-                DataJob::create($dataJob);
-
-                DB::commit();
-            }
+                $client->request('POST', $onlineApi->website . '/api/absensi/' . $absensi->user->idapi . '/store', [
+                    'json' => $createAbsensiApi
+                ]);
+                
+                if ($pasangBaru) {
+                    $dataJob = [
+                        'user_id' => $absensi->user_id,
+                        'kode_pasang_baru' => $pasangBaru->id,
+                    ];
+        
+                    DataJob::create($dataJob);
+                }
+            });
 
             Alert::success('Sukses','Data Absensi berhasil disimpan');
-        } catch (\Throwable $e) {
-            DB::rollback();
+        } catch (\Throwable $th) {
+            Log::error($th->getMessage());
 
-            Alert::error('Error',$e->getMessage());
+            Alert::error('Oops', 'Data Error');
         }
 
 		return redirect()->back();
