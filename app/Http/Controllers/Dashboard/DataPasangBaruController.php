@@ -204,12 +204,10 @@ class DataPasangBaruController extends Controller
                         'user_id' => $teknisiCadangan->user_id,
                         'kode_pasang_baru' => $dataPasangBaru->id
                     ];
-    
+                    
                     DataJob::create($createJobBaru);
                     
-                    $client->request('POST', $onlineApi->website . '/api/data-job/' . $teknisiCadangan->user->idapi , [
-                        'json' => $createJobBaru
-                    ]);
+                    $client->request('POST', $onlineApi->website . '/api/data-job/' . $teknisiCadangan->user->idapi . '/' . $dataPasangBaru->pasang_baru_api);
                     
                     $client->request('DELETE', $onlineApi->website . '/api/teknisi-cadangan/' . $teknisiCadangan->user->idapi . '/delete');
 
