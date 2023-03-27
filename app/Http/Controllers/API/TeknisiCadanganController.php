@@ -11,6 +11,27 @@ use Symfony\Component\HttpFoundation\Response;
 
 class TeknisiCadanganController extends Controller
 {
+    public function store($idapi)
+    {
+        $user = User::idApi($idapi)
+        ->firstOrFail();
+
+        try {
+            $data = [
+                'user_id' => $user->id,
+            ];
+
+            $dataJob = TeknisiCadangan::create($data);
+
+        } catch (\Throwable $th) {
+            Log::error($th->getMessage());
+
+            return DTO::ResponseDTO('Teknisi Cadangan Gagal Tersimpan',  null, 'Oops, error', null, Response::HTTP_INTERNAL_SERVER_ERROR);
+        }
+
+        return DTO::ResponseDTO('Teknisi Cadangan Berhasil Tersimpan', null, null, $dataJob, Response::HTTP_OK);
+    }
+
     public function delete($idapi)
     {
         $user = User::idApi($idapi)

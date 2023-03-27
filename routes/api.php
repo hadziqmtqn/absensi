@@ -50,5 +50,9 @@ Route::middleware('log.route.api')->group(function (){
     });
     Route::post('data-job/{idapi}/{pasang_baru_api}', [DataJobController::class, 'store'])->name('data-job.store');
     Route::put('data-job/{idapi}/{pasang_baru_api}', [DataJobController::class, 'update'])->name('data-job.update');
-    Route::delete('teknisi-cadangan/{idapi}/delete', [TeknisiCadanganController::class, 'delete'])->name('teknisi-cadangan.delete');
+    // teknisi cadangan
+    Route::prefix('teknisi-cadangan')->group(function(){
+        Route::post('/{idapi}/store', [TeknisiCadanganController::class, 'store'])->name('teknisi-cadangan.store');
+        Route::delete('/{idapi}/delete', [TeknisiCadanganController::class, 'delete'])->name('teknisi-cadangan.delete');
+    });
 });
