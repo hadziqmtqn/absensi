@@ -36,13 +36,13 @@ class RegistrasiController extends Controller
 
         try {
             $validator = Validator::make($request->all(),[
-                'name' => 'required|min:5',
-                'short_name' => 'required',
-                'phone' => 'required|unique:users',
-                'company_name',
-                'email' => 'email|unique:users',
-                'password' => 'required|min:8',
-                'confirm_password' => 'required|same:password',
+                'name' => ['required','min:5'],
+                'short_name' => ['required'],
+                'phone' => ['required', 'unique:users,phone'],
+                'company_name' ['required'],
+                'email' => ['required', 'unique:users,email'],
+                'password' => ['required', 'min:8'],
+                'confirm_password' => ['required', 'same:password'],
             ]);
 
             if ($validator->fails()) {

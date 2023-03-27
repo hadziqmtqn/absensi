@@ -50,5 +50,5 @@
 @endsection
 
 @section('scripts')
-{{--    @include('dashboard.registrasi.validation')--}}
+   @include('dashboard.registrasi.validation')
 @endsection

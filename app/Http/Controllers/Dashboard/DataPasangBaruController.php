@@ -381,19 +381,19 @@ class DataPasangBaruController extends Controller
                             $client->request('POST', $onlineApi->website . '/api/data-job/' . $teknisiNonJob->idapi . '/' . $pasangBaruNonJob->pasang_baru_api);
                             break;
                         case !$teknisiNonJob && $pasangBaruNonJob:
-                                $pasangBaru = [
-                                    'user_id' => $dataPasangBaru->data_job->user_id,
-                                    'kode_pasang_baru' => $pasangBaruNonJob->id
-                                ];
+                            $pasangBaru = [
+                                'user_id' => $dataPasangBaru->data_job->user_id,
+                                'kode_pasang_baru' => $pasangBaruNonJob->id
+                            ];
                                 
                             DataJob::create($pasangBaru);
                             
                             $client->request('POST', $onlineApi->website . '/api/data-job/' . $dataPasangBaru->data_job->user->idapi . '/' . $dataPasangBaru->pasang_baru_api);
                             break;
                         case !$teknisiNonJob && !$pasangBaruNonJob:
-                                $createTeknisiCadangan = [
-                                    'user_id' => $dataPasangBaru->data_job->user_id
-                                ];
+                            $createTeknisiCadangan = [
+                                'user_id' => $dataPasangBaru->data_job->user_id
+                            ];
                                 
                             $teknisiCadangan = TeknisiCadangan::create($createTeknisiCadangan);
                             

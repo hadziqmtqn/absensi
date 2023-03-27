@@ -18,6 +18,9 @@
                     minlength: 11,
                     maxlength: 13,
                 },
+                company_name: {
+                    required: true,
+                },
                 email: {
                     required: true,
                 },
@@ -48,6 +51,9 @@
                     number: "No. Telp/HP Harus Berupa Angka",
                     minlength: "No. Telp/HP Harus Lebih dari 11 Digit",
                     maxlength: "No. Telp/HP Harus Kurang dari 13 Digit",
+                },
+                company_name: {
+                    required: "Dari PT. Wajib diisi",
                 },
                 email: {
                     required: "Email Wajib diisi",
