@@ -23,4 +23,9 @@ class DataJob extends Model
     {
         return $this->belongsTo(Karyawan::class, 'user_id');
     }
+
+    public function user()
+    {
+        return $this->belongsTo(User::class);
+    }
 }

@@ -4,10 +4,7 @@ namespace App\Http\Controllers\Dashboard;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Validator;
-use RealRashid\SweetAlert\Facades\Alert;
 use Yajra\Datatables\Datatables;
-use Illuminate\Support\Facades\DB;
 
 use App\Models\DataJob;
 use App\Models\Setting;
@@ -45,18 +42,16 @@ class DataJobController extends Controller
     public function getJsonDataJob(Request $request)
     {
         if ($request->ajax()) {
-            $data = DataJob::select('data_jobs.id as idjob','data_jobs.user_id','data_jobs.created_at','users.name as karyawan',
-            'data_pasang_barus.kode','data_pasang_barus.inet','data_pasang_barus.nama_pelanggan','data_pasang_barus.no_hp','data_pasang_barus.alamat',
-            'data_pasang_barus.status')
-            ->join('users','data_jobs.user_id','users.id')
-            ->join('data_pasang_barus','data_jobs.kode_pasang_baru','=','data_pasang_barus.id')
+            $data = DataJob::with('user','dataPasangBaru')
             ->orderBy('data_jobs.created_at','DESC');
 
             return Datatables::of($data)
                 ->addIndexColumn()
                 ->filter(function ($instance) use ($request) {
-					if ($request->get('status') == '0' || $request->get('status') == '1' || $request->get('status') == '2' || $request->get('status') == '3') {
-                        $instance->where('status', $request->get('status'));
+					if ($request->get('status') != null) {
+                        $instance->whereHas('dataPasangBaru', function($query) use ($request){
+                            $query->where('status', $request->get('status'));
+                        });
                     }
 
                     if ($request->get('created_at') != null) {
@@ -66,14 +61,36 @@ class DataJobController extends Controller
                     if (!empty($request->get('search'))) {
                             $instance->where(function($w) use($request){
                             $search = $request->get('search');
-                            $w->orWhere('data_pasang_barus.kode', 'LIKE', "%$search%")
-							->orWhere('data_pasang_barus.nama_pelanggan', 'LIKE', "%$search%")
-							->orWhere('data_pasang_barus.no_hp', 'LIKE', "%$search%")
-							->orWhere('data_pasang_barus.alamat', 'LIKE', "%$search%")
-							->orWhere('data_jobs.created_at', 'LIKE', "%$search%")
-                            ->orWhere('users.name', 'LIKE', "%$search%");
+                            $w->whereHas('dataPasangBaru', function($query) use ($search){
+                                $query->where('kode', 'LIKE', "%$search%");
+                                $query->orWhere('nama_pelanggan', 'LIKE', "%$search%");
+                                $query->orWhere('alamat', 'LIKE', "%$search%");
+                            })
+                            ->orWhereHas('user', function($query) use ($search){
+                                $query->where('name', 'LIKE', "%$search%");
+                            });
                         });
                     }
+                })
+
+                ->addColumn('kode', function($row){
+                    return $row->dataPasangBaru->kode;
+                })
+                
+                ->addColumn('user', function($row){
+                    return $row->user->name;
+                })
+
+                ->addColumn('nama_pelanggan', function($row){
+                    return $row->dataPasangBaru->nama_pelanggan;
+                })
+                
+                ->addColumn('no_hp', function($row){
+                    return !$row->dataPasangBaru ? null : $row->dataPasangBaru->no_hp;
+                })
+                
+                ->addColumn('alamat', function($row){
+                    return !$row->dataPasangBaru ? null : $row->dataPasangBaru->alamat;
                 })
 
                 ->addColumn('created_at', function ($row) {
@@ -81,26 +98,14 @@ class DataJobController extends Controller
                 })
 
                 ->addColumn('action', function($row){
-					$btn = '<a href="data-job/'.$row->idjob.'" class="btn btn-primary" style="padding: 7px 10px">Detail</a>';
-                    if($row->status < 3){
-                        $btn = $btn.' <a href="data-job/edit/'.$row->idjob.'" class="btn btn-warning" style="padding: 7px 10px">Edit</a>';
-                    }else{
-                        $btn = $btn.' <button type="button" class="btn btn-warning disabled" style="padding: 7px 10px">Edit</button>';
-                    }
-                    $btn = $btn.' <button type="button" href="data-job/hapus/'.$row->idjob.'" class="btn btn-danger btn-hapus" style="padding: 7px 10px">Delete</button>';
-                    return $btn;
+					return '<a href="data-job/'.$row->id.'" class="btn btn-primary" style="padding: 7px 10px">Detail</a>';
                 })
 
                 ->addColumn('status', function($row){
-                    if($row->status == 0){
-                        return '<span class="badge badge-info">Waiting</span>';
-                    }elseif($row->status == 1){
-                        return '<span class="badge badge-primary">In Progress</span>';
-                    }elseif($row->status == 2){
-                        return '<span class="badge badge-warning">Pending</span>';
-                    }elseif($row->status == 3){
-                        return '<span class="badge badge-success">Success</span>';
-                    }
+                    $badge = $row->dataPasangBaru->status == '0' ? 'badge-info' : ($row->dataPasangBaru->status == '1' ? 'badge-primary' : ($row->dataPasangBaru->status == '2' ? 'badge-warning' : 'badge-success'));
+                    $status = $row->dataPasangBaru->status == '0' ? 'Waiting' : ($row->dataPasangBaru->status == '1' ? 'In Progress' : ($row->dataPasangBaru->status == '2' ? 'Pending' : 'Success'));
+
+                    return '<span class="badge '.$badge.'">'.$status.'</span>';
                 })
 
                 ->rawColumns(['action','status'])

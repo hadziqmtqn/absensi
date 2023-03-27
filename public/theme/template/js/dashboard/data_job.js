@@ -23,7 +23,7 @@ $(function () {
             {data: 'action', name: 'action', orderable: false, searchable: false},
             {data: 'status', name: 'status', orderable: false, searchable: false},
             {data: 'kode', name: 'kode'},
-            {data: 'karyawan', name: 'karyawan'},
+            {data: 'user', name: 'user'},
             {data: 'nama_pelanggan', name: 'nama_pelanggan'},
             {data: 'no_hp', name: 'no_hp'},
             {data: 'alamat', name: 'alamat'},

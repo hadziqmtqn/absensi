@@ -9,7 +9,7 @@ class TeknisiCadangan extends Model
 {
     use HasFactory;
 
-    protected $filleble = [
-        'user'
+    protected $fillable = [
+        'user_id'
     ];
 }

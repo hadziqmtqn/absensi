@@ -5,7 +5,7 @@
 @section('content')
 <div class="row">
     <div class="col-md-6">
-        <div class="card">
+        <div class="card mb-3">
             <div class="card-body">
                 <h4 class="card-title">{{ $title }}</h4>
                 <div class="table-responsive">
@@ -39,9 +39,21 @@
                                 <th style="width: 150px">Status</th>
                                 <td><label class="badge {{ $badge }}">{{ $status }}</label></td>
                             </tr>
+                            <tr>
+                                <th style="width: 150px">Tanggal Dibuat</th>
+                                <td>{{ Carbon\Carbon::parse($dataPasangBaru->created_at)->isoFormat('DD MMMM YYYY H:m') }}</td>
+                            </tr>
                         </tbody>
                     </table>
                 </div>
+                @if ($dataPasangBaru->data_job)
+                <hr>
+                <h4>Teknisi Job Pasang Baru</h4>
+                <ul>
+                    <li>Nama : {{ $dataPasangBaru->data_job->user->name }}</li>
+                    <li>Dari PT. : {{ $dataPasangBaru->data_job->user->company_name }}</li>
+                </ul>
+                @endif
             </div>
         </div>
     </div>
