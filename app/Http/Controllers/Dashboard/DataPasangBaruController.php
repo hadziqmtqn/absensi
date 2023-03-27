@@ -75,8 +75,8 @@ class DataPasangBaruController extends Controller
                 })
 
                 ->addColumn('action', function($row){
-					$btn = '<a href="data-pasang-baru/'.$row->kode.'" class="btn btn-primary" style="padding: 7px 10px">Detail</a>';
-                    $btn = $btn.' <a href="data-pasang-baru/edit/'.$row->kode.'" class="btn btn-warning" style="padding: 7px 10px">Edit</a>';
+					$btn = '<a href="data-pasang-baru/'.$row->pasang_baru_api.'/detail" class="btn btn-primary" style="padding: 7px 10px">Detail</a>';
+                    $btn = $btn.' <a href="data-pasang-baru/edit/'.$row->pasang_baru_api.'" class="btn btn-warning" style="padding: 7px 10px">Edit</a>';
                     if (!$row->data_job) {
                         $btn = $btn.' <button type="button" href="data-pasang-baru/hapus/'.$row->id.'" class="btn btn-danger btn-hapus" style="padding: 7px 10px">Delete</button>';
                     }
@@ -228,86 +228,118 @@ class DataPasangBaruController extends Controller
 		return redirect()->back();
 	}
 
-    public function detail($kode)
+    public function detail($pasangBaruApi)
     {
         $title = 'Detail Pasang Baru';
         $appName = Setting::first();
-        $data = DataPasangBaru::where('kode',$kode)->first();
-        $listPasangBaru = DataPasangBaru::orderBy('created_at','DESC')->get();
+        $dataPasangBaru = DataPasangBaru::where('pasang_baru_api',$pasangBaruApi)
+        ->firstOrfail();
 
-        if($data->status == 0){
+        if($dataPasangBaru->status == 0){
             $badge = 'badge-info';
             $status = 'Waiting';
-        }elseif($data->status == 1){
+        }elseif($dataPasangBaru->status == 1){
             $badge = 'badge-primary';
             $status = 'In Progress';
-        }elseif($data->status == 2){
+        }elseif($dataPasangBaru->status == 2){
             $badge = 'badge-warning';
             $status = 'Pending';
-        }elseif($data->status == 3){
+        }elseif($dataPasangBaru->status == 3){
             $badge = 'badge-success';
             $status = 'Success';
         }
 
-        return view('dashboard.data_pasang_baru.detail', compact('title','appName','data','listPasangBaru','badge','status'));
+        return view('dashboard.data_pasang_baru.detail', compact('title','appName','dataPasangBaru','badge','status'));
     }
 
-    public function edit($kode)
+    public function edit($pasangBaruApi)
     {
         $title = 'Edit Pasang Baru';
         $appName = Setting::first();
-        $data = DataPasangBaru::where('kode',$kode)->first();
-        $listPasangBaru = DataPasangBaru::orderBy('created_at','DESC')->get();
+        $dataPasangBaru = DataPasangBaru::where('pasang_baru_api',$pasangBaruApi)
+        ->firstOrFail();
 
-        return view('dashboard.data_pasang_baru.edit', compact('title','appName','data','listPasangBaru'));
+        return view('dashboard.data_pasang_baru.edit', compact('title','appName','dataPasangBaru'));
     }
 
     public function update(Request $request, $id)
 	{
+        $dataPasangBaru = DataPasangBaru::findOrFail($id);
+        
+        $client = New Client();
+        $onlineApi = OnlineApi::first();
+
         try {
-            $request->validate([
-                'inet' => 'required',
-                'kode' => 'required',
-                'nama_pelanggan' => 'required',
-                'no_hp' => 'required',
-                'alamat' => 'required',
-                'acuan_lokasi' => 'required',
-                'foto' => 'file|mimes:jpg,jpeg,png|max:1024'
-            ]);
-            
-            $data['inet'] = $request->inet;
-            $data['kode'] = $request->kode;
-            $data['nama_pelanggan'] = $request->nama_pelanggan;
-            $data['no_hp'] = $request->no_hp;
-            $data['alamat'] = $request->alamat;
-            $data['acuan_lokasi'] = $request->acuan_lokasi;
-            // $data['created_at'] = date('Y-m-d H:i:s');
-            $data['updated_at'] = date('Y-m-d H:i:s');
+            Validator::extend('without_spaces', function($attr, $value){
+                return preg_match('/^\S*$/u', $value);
+            });
     
+            $validator = Validator::make($request->all(), [
+                'kode' => ['required','unique:data_pasang_barus,kode,' . $id . 'id', 'without_spaces'],
+                'inet' => ['required','unique:data_pasang_barus,inet,' . $id . 'id'],
+                'nama_pelanggan' => ['required'],
+                'no_hp' => ['required'],
+                'alamat' => ['required'],
+                'acuan_lokasi' => ['required'],
+            ],
+            [
+                'kode.without_spaces' => 'Kode Harus Tanpa Spasi.'
+            ]);
+    
+            if ($validator->fails()) {
+                return back()->withErrors($validator)->withInput();
+            }
+            
             $file = $request->file('foto');
             if($file){
                 $nama_file = rand().'-'. $file->getClientOriginalName();
                 $file->move('assets',$nama_file);
-                $data['foto'] = 'assets/' .$nama_file;
+                $foto = 'assets/' .$nama_file;
+            }else {
+                $foto = $dataPasangBaru->foto;
             }
-    
-            DataPasangBaru::where('id',$id)->update($data);
+
+            $data = [
+                'kode' => $request->kode,
+                'inet' => $request->inet,
+                'nama_pelanggan' => $request->nama_pelanggan,
+                'no_hp' => $request->no_hp,
+                'alamat' => $request->alamat,
+                'acuan_lokasi' => $request->acuan_lokasi,
+                'foto' => $foto
+            ];
+            
+            DB::transaction(function() use ($dataPasangBaru, $data, $client, $onlineApi){
+                $dataPasangBaru->update($data);
+                
+                $client->request('PUT', $onlineApi->website . '/api/data-pasang-baru/' . $dataPasangBaru->pasang_baru_api . '/update', [
+                    'json' => $data
+                ]);
+            });
+            
             Alert::success('Sukses','Data Pasang Baru berhasil diupdate');
-            
-            return redirect()->route('data-pasang-baru.index');
         } catch (\Throwable $th) {
-            Alert::error('Error',$th->getMessage());
-            
-            return redirect()->back();
+            Log::error($th->getMessage());
+
+            Alert::error('Oops', 'Data Error');
         }
+
+        return redirect()->back();
 	}
 
     public function delete($id)
     {
         $dataPasangBaru = DataPasangBaru::findOrFail($id);
 
+        $client = New Client();
+        $onlineApi = OnlineApi::first();
+
         try {
-            $dataPasangBaru->delete();
+            DB::transaction(function() use ($dataPasangBaru, $client, $onlineApi){
+                $dataPasangBaru->delete();
+
+                $client->request('DELETE', $onlineApi->website . '/api/data-pasang-baru/' . $dataPasangBaru->pasang_baru_api . '/delete');
+            });
 
             Alert::success('Sukses','Data Pasang Baru berhasil dihapus');
         } catch (\Throwable $th) {

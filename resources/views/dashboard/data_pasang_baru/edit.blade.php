@@ -1,57 +1,41 @@
 @extends('dashboard.layouts.master')
 @section('title')
-    {{ $title }} - {{ $data->kode }}
+    {{ $title }} - {{ $dataPasangBaru->kode }}
 @endsection
 @section('content')
-<div class="row">
-    <div class="col-md-12 grid-margin stretch-card">
-        <div class="card">
-            <div class="card-body">
-                <h4 class="card-title">Pilih Kode</h4>
-                <div class="form-group">
-                    <select class="form-control" onchange="location = this.value;">
-                        @foreach ($listPasangBaru as $pasang)
-                        <option value="{{ route('data-pasang-baru.edit',$pasang->kode) }}" {{ ($data->kode == $pasang->kode) ? 'selected' : '' }}>{{ $pasang->kode }}</option>
-                        @endforeach
-                    </select>
-                </div>
-            </div>
-        </div>
-    </div>
-</div>
 <div class="row">
     <div class="col-md-12">
         <div class="card">
             <div class="card-body">
                 <h4 class="card-title">{{ $title }}</h4>
                 @include('dashboard.layouts.session')
-                <form class="forms-sample" method="POST" action="{{ route('data-pasang-baru.update', $data->id) }}" enctype="multipart/form-data" id="pasang_baru">
+                <form class="forms-sample" method="POST" action="{{ route('data-pasang-baru.update', $dataPasangBaru->id) }}" enctype="multipart/form-data" id="pasang_baru">
                     @csrf
                     {{ method_field('PUT') }}
                     <div id="pasang_baru">
                         <div class="form-group">
                             <label for="">Kode Job</label>
-                            <input type="text" class="form-control" name="kode" value="{{ $data->kode }}" placeholder="SC-xxxxxxxxx">
+                            <input type="text" class="form-control" name="kode" value="{{ $dataPasangBaru->kode }}" placeholder="SC-xxxxxxxxx">
                         </div>
                         <div class="form-group">
                             <label for="">Inet</label>
-                            <input type="number" class="form-control" name="inet" value="{{ $data->inet }}" placeholder="No. Internet">
+                            <input type="number" class="form-control" name="inet" value="{{ $dataPasangBaru->inet }}" placeholder="No. Internet">
                         </div>
                         <div class="form-group">
                             <label for="">Nama Pelanggan</label>
-                            <input type="text" class="form-control" name="nama_pelanggan" value="{{ $data->nama_pelanggan }}" placeholder="Nama Pelanggan">
+                            <input type="text" class="form-control" name="nama_pelanggan" value="{{ $dataPasangBaru->nama_pelanggan }}" placeholder="Nama Pelanggan">
                         </div>
                         <div class="form-group">
                             <label for="">No. HP</label>
-                            <input type="number" class="form-control" name="no_hp" value="{{ $data->no_hp }}" placeholder="No. HP">
+                            <input type="number" class="form-control" name="no_hp" value="{{ $dataPasangBaru->no_hp }}" placeholder="No. HP">
                         </div>
                         <div class="form-group">
                             <label for="">Alamat</label>
-                            <textarea name="alamat" class="form-control" placeholder="Alamat">{{ $data->alamat }}</textarea>
+                            <textarea name="alamat" class="form-control" placeholder="Alamat">{{ $dataPasangBaru->alamat }}</textarea>
                         </div>
                         <div class="form-group">
                             <label for="">Acuan Lokasi</label>
-                            <textarea name="acuan_lokasi" class="form-control" placeholder="Acuan Lokasi">{{ $data->acuan_lokasi }}</textarea>
+                            <textarea name="acuan_lokasi" class="form-control" placeholder="Acuan Lokasi">{{ $dataPasangBaru->acuan_lokasi }}</textarea>
                         </div>
                         <div class="form-group">
                             <label for="">Foto</label>

@@ -157,12 +157,18 @@ class DataJobController extends Controller
             ];
 
             DB::transaction(function () use ($request, $data, $client, $onlineApi){
-                TeknisiCadangan::where('user_id',$request->user_id)
-                ->delete();
-                
                 $dataJob = DataJob::create($data);
 
                 $client->request('POST', $onlineApi->website . '/api/data-job/' . $dataJob->user->idapi . '/' . $dataJob->dataPasangBaru->pasang_baru_api);
+                
+                $teknisiCadangan = TeknisiCadangan::where('user_id', $dataJob->user_id)
+                ->first();
+                
+                if ($teknisiCadangan) {
+                    $teknisiCadangan->delete();
+                    
+                    $client->request('DELETE', $onlineApi->website . '/api/teknisi-cadangan/' . $teknisiCadangan->user->idapi . '/delete');
+                }
             });
 
             Alert::success('Sukses','Data Job Baru berhasil disimpan');
@@ -205,11 +211,6 @@ class DataJobController extends Controller
         $appName = Setting::first();
         
         $dataJob = DataJob::findOrFail($id);
-        $listPasangBaru = DataPasangBaru::where('status','0')
-        // ->whereDoesntHave('data_job')
-        // ->orWhere('id', $dataJob->kode_pasang_baru)
-        ->orderBy('created_at', 'DESC')
-        ->get();
 
         $hariIni = Carbon::now()->format('Y-m-d');
         $listAbsensi = Absensi::with('user')
@@ -220,106 +221,21 @@ class DataJobController extends Controller
             $query->orWhereHas('teknisiCadangan');
         })
         ->get();
-        // cek status pasang baru
-        // $cekStatusPasangBaru = DataPasangBaru::where('id', $data->kode_pasang_baru)
-        // ->select('id','status')
-        // ->first();
-
-
-        // switch ($cekStatusPasangBaru) {
-        //     case $cekStatusPasangBaru->status == 0:
-        //         $listKaryawan = Karyawan::where('id',$data->user_id)
-        //         ->whereHas('absensi', function($e) use ($hariIni){
-        //             $e->whereDate('created_at',$hariIni); // mengisi absensi pada hari ini
-        //         })
-        //         // ->whereDoesntHave('dataJob') // yang belum memili job
-        //         ->orWhereHas('dataJob', function($e){
-        //             $e->whereHas('dataPasangBaru', function($e){
-        //                 $e->where('status','0');
-        //             });
-        //         })
-        //         ->orWhereHas('teknisiCadangan', function($e) use ($hariIni){
-        //             $e->whereDate('created_at',$hariIni);
-        //         })
-        //         ->where('is_verifikasi',1)
-        //         ->get();
-
-        //         break;
-
-        //     case $cekStatusPasangBaru->status == 1:
-        //         $listKaryawan = Karyawan::whereHas('absensi', function($e) use ($hariIni){
-        //             $e->whereDate('created_at', $hariIni); // mengisi absensi pada hari ini
-        //         })
-        //         ->whereDoesntHave('dataJob') // yang belum memili job
-        //         ->orWhereHas('dataJob', function($e){
-        //             $e->whereHas('dataPasangBaru', function($e){
-        //                 $e->where('status','1');
-        //             });
-        //         })
-        //         ->where('id',$data->user_id)
-        //         ->orWhereHas('teknisiCadangan', function($e) use ($hariIni){
-        //             $e->whereDate('created_at', $hariIni);
-        //         })
-        //         ->where('is_verifikasi',1)
-        //         ->get();
-
-        //         break;
-
-        //     case $cekStatusPasangBaru->status == 2:
-        //         $listKaryawan = Karyawan::whereHas('absensi', function($e) use ($hariIni){
-        //             $e->whereDate('created_at', $hariIni); // mengisi absensi pada hari ini
-        //         })
-        //         ->whereDoesntHave('dataJob') // yang belum memili job
-        //         ->orWhereHas('dataJob', function($e){
-        //             $e->whereHas('dataPasangBaru', function($e){
-        //                 $e->where('status','2');
-        //             });
-        //         })
-        //         ->where('id',$data->user_id)
-        //         ->orWhereHas('teknisiCadangan', function($e) use ($hariIni){
-        //             $e->whereDate('created_at', $hariIni);
-        //         })
-        //         ->where('is_verifikasi',1)
-        //         ->get();
-
-        //         break;
-
-        //     case $cekStatusPasangBaru->status == 3:
-        //         $listKaryawan = Karyawan::whereHas('absensi', function($e) use ($hariIni){
-        //             $e->whereDate('created_at', $hariIni); // mengisi absensi pada hari ini
-        //         })
-        //         ->where('id',$data->user_id)
-        //         ->get();
-
-        //         break;
-        // }
-
-        return view('dashboard.data_job.edit', compact('title','appName','dataJob','listPasangBaru','listAbsensi'));
+        
+        return view('dashboard.data_job.edit', compact('title','appName','dataJob','listAbsensi'));
     }
 
-    public function update(Request $request,$id)
+    public function update(Request $request, $id)
 	{
+        $client = New Client();
+        $onlineApi = OnlineApi::first();
+
         try {
             $dataJob = DataJob::findOrFail($id);
 
-            $cekTeknisiCadangan = Karyawan::whereHas('dataJob', function($e){
-                $e->whereHas('dataPasangBaru', function($e){
-                    $e->where('status','3');
-                });
-            })
-            ->where('id',$dataJob->user_id)
-            ->count();
-
-            if($dataJob->user_id != $request->user_id && $cekTeknisiCadangan > 0){
-                TeknisiCadangan::create([
-                    'user_id' => $dataJob->user_id,
-                ]);
-            }
-
             $validator = Validator::make($request->all(),[
-                'user_id' => 'required',
-                'kode_pasang_baru' => 'required',
-                'status',
+                'user_id' => ['required'],
+                'kode_pasang_baru' => ['required'],
             ]);
 
             if ($validator->fails()) {
@@ -331,66 +247,10 @@ class DataJobController extends Controller
                 'kode_pasang_baru' => $request->kode_pasang_baru,
             ];
 
-            $pasangbaru = [
-                'status' => $request->status
-            ];
-
-            DB::transaction(function () use ($dataJob, $data, $pasangbaru, $request) {
+            DB::transaction(function () use ($dataJob, $data, $client, $onlineApi) {
                 $dataJob->update($data);
 
-                DataPasangBaru::where('id', $dataJob->kode_pasang_baru)
-                ->update($pasangbaru);
-
-                if($request->status == 3){
-                    /*
-                    jika semua teknisi yang sudah absensi memiliki job,
-                    maka teknisi yang memiliki job sukses langsung ditambah job baru
-
-                    jika ada teknisi yang sudah absensi dan belum memiliki job,
-                    maka teknisi yang memiliki job sukses diarahkan ke teknisi cadangan
-                    dan jika ada job baru diambil oleh teknisi yang belum memiliki job sama sekali
-
-                    jika semua job sudah dimiliki oleh teknisi,
-                    maka teknisi yang meiliki job sukses diarahkan ke teknisi cadangan
-                    */
-
-                    $cekNonJob = Karyawan::whereHas('absensi', function($e){
-                        $e->whereDate('created_at', date('Y-m-d'));
-                    })
-                    ->whereDoesntHave('dataJob')
-                    ->first();
-
-                    $dataPasangBaru = DataPasangBaru::select('id')
-                    ->whereDoesntHave('data_job')
-                    ->first();
-
-                    if($cekNonJob == null && $dataPasangBaru != null){
-                        $dataJob = [
-                            'user_id' => $dataJob->user_id,
-                            'kode_pasang_baru' => $dataPasangBaru->id,
-                        ];
-
-                        DataJob::create($dataJob);
-                    }else{
-                        /*
-                        pastikan teknisi cadangan yang user_id nya sesuai dengan user_id teknisi cadangan itu hanya satu,
-                        jika ternyata datanya lebih dari satu maka hapus semua, dan buat 1 data lagi, sehingga hasil akhir
-                        teknisi sesuai user_id ini hanya 1 data
-                        */
-
-                        TeknisiCadangan::where('user_id',$request->user_id)
-                        ->delete();
-
-                        TeknisiCadangan::create([
-                            'user_id' => $request->user_id,
-                        ]);
-                    }
-
-                }elseif ($request->user_id){
-                    TeknisiCadangan::where('user_id',$dataJob->user_id)
-                    ->delete();
-                }
-
+                $client->request('PUT', $onlineApi->website . '/api/data-job/' . $dataJob->user->idapi . '/' . $dataJob->dataPasangBaru->pasang_baru_api);
             });
 
             Alert::success('Sukses','Data Job Baru berhasil diupdate');
@@ -402,7 +262,7 @@ class DataJobController extends Controller
 
 		return redirect()->back();
 	}
-
+    
     public function delete($id){
         try {
             DataJob::where('id',$id)->delete();

@@ -7,10 +7,10 @@ $(function () {
         lengthMenu: [ [10, 25, 50, -1], [10, 25, 50, "All"] ],
         order: [[3,'desc']],
         ajax: {
-            url: "getjsonpasangbaru",
-            type: "GET",
+            url: "data-pasang-baru/getjsonpasangbaru",
+            type: "POST",
             headers: {
-                'X-CSRF-TOKEN': '{{ csrf_token() }}',
+                'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
             },
             data: function (d) {
                 d.status = $('#filter-status').val(),

@@ -18,9 +18,7 @@
                                     <label for="">Kode Pasang Baru</label>
                                     <select name="kode_pasang_baru" class="form-control">
                                         <option value="">Pilih</option>
-                                        @foreach ($listPasangBaru as $pasang)
-                                            <option value="{{ $pasang->id }}" {{ $pasang->id == $dataJob->kode_pasang_baru ? 'selected' : '' }}>{{ $pasang->id }} - {{ $pasang->kode }}</option>
-                                        @endforeach
+                                        <option value="{{ $dataJob->kode_pasang_baru }}" selected>{{ $dataJob->dataPasangBaru->kode }}</option>
                                     </select>
                                 </div>
                             </div>
