@@ -14,7 +14,7 @@ use Symfony\Component\HttpFoundation\Response;
 
 class DataJobController extends Controller
 {
-    public function store(Request $request, $idapi, $pasangBaruApi)
+    public function store($idapi, $pasangBaruApi)
     {
         $user = User::idApi($idapi)
         ->firstOrFail();
