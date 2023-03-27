@@ -20,7 +20,7 @@ class DataJobController extends Controller
         ->firstOrFail();
 
         $dataPasangBaru = DataPasangBaru::pasangBaruApi($pasangBaruApi)
-        ->first();
+        ->firstOrFail();
 
         try {
             $data = [
@@ -36,6 +36,32 @@ class DataJobController extends Controller
             return DTO::ResponseDTO('Data Job Error',  null, 'Oops, error', null, Response::HTTP_INTERNAL_SERVER_ERROR);
         }
 
-        return DTO::ResponseDTO('Sukses Absen', null, null, $dataJob, Response::HTTP_OK);
+        return DTO::ResponseDTO('Sukses Tambah Job Baru', null, null, $dataJob, Response::HTTP_OK);
+    }
+    
+    public function update($idapi, $pasangBaruApi)
+    {
+        $user = User::idApi($idapi)
+        ->firstOrFail();
+        
+        $dataPasangBaru = DataPasangBaru::where('pasang_baru_api', $pasangBaruApi)
+        ->firstOrFail();
+
+        try {
+            $data = [
+                'user_id' => $user->id,
+                'kode_pasang_baru' => $dataPasangBaru->id,
+            ];
+
+            $dataJob = DataJob::where('kode_pasang_baru', $dataPasangBaru->id)
+            ->update($data);
+
+        } catch (\Throwable $th) {
+            Log::error($th->getMessage());
+
+            return DTO::ResponseDTO('Data Job Error',  null, 'Oops, error', null, Response::HTTP_INTERNAL_SERVER_ERROR);
+        }
+
+        return DTO::ResponseDTO('Sukses Tambah Job Baru', null, null, $dataJob, Response::HTTP_OK);
     }
 }

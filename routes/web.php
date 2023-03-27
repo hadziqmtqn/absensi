@@ -81,9 +81,11 @@ Route::middleware(['auth',VerifikasiAkun::class])->group(function () {
     Route::get('teknisi-cadangan', [TeknisiCadanganController::class, 'index'])->name('teknisi-cadangan.index');
     Route::get('getjsonteknisicadangan', [TeknisiCadanganController::class, 'getJsonTeknisiCadangan'])->name('getjsonteknisicadangan');
     // data pasang baru
-    Route::get('data-pasang-baru', [DataPasangBaruController::class, 'index'])->name('data-pasang-baru.index');
-    Route::get('getjsonpasangbaru', [DataPasangBaruController::class, 'getJsonPasangBaru'])->name('getjsonpasangbaru');
-    Route::get('data-pasang-baru/{kode}', [DataPasangBaruController::class, 'detail'])->name('data-pasang-baru.detail');
+    Route::prefix('data-pasang-baru')->group(function(){
+        Route::get('/', [DataPasangBaruController::class, 'index'])->name('data-pasang-baru.index');
+        Route::post('/getjsonpasangbaru', [DataPasangBaruController::class, 'getJsonPasangBaru'])->name('data-pasang-baru.getjsonpasangbaru');
+        Route::get('/{pasang_baru_api}/detail', [DataPasangBaruController::class, 'detail'])->name('data-pasang-baru.detail');
+    });
     // data job
     Route::get('data-job', [DataJobController::class, 'index'])->name('data-job.index');
     Route::post('data-job/store', [DataJobController::class, 'store'])->name('data-job.store');

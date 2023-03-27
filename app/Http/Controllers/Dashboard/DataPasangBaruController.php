@@ -63,7 +63,7 @@ class DataPasangBaruController extends Controller
                 })
 
                 ->addColumn('action', function($row){
-					return '<a href="data-pasang-baru/'.$row->kode.'" class="btn btn-primary" style="padding: 7px 10px">Detail</a>';
+					return '<a href="data-pasang-baru/'.$row->pasang_baru_api.'/detail" class="btn btn-primary" style="padding: 7px 10px">Detail</a>';
                 })
 
                 ->addColumn('status', function($row){
@@ -92,27 +92,27 @@ class DataPasangBaruController extends Controller
         return response()->json(true);
     }
 
-    public function detail($kode)
+    public function detail($pasangBaruApi)
     {
         $title = 'Detail Pasang Baru';
         $appName = Setting::first();
-        $data = DataPasangBaru::where('kode',$kode)->first();
-        $listPasangBaru = DataPasangBaru::orderBy('created_at','DESC')->get();
+        $dataPasangBaru = DataPasangBaru::where('pasang_baru_api',$pasangBaruApi)
+        ->firstOrFail();
 
-        if($data->status == 0){
+        if($dataPasangBaru->status == 0){
             $badge = 'badge-info';
             $status = 'Waiting';
-        }elseif($data->status == 1){
+        }elseif($dataPasangBaru->status == 1){
             $badge = 'badge-primary';
             $status = 'In Progress';
-        }elseif($data->status == 2){
+        }elseif($dataPasangBaru->status == 2){
             $badge = 'badge-warning';
             $status = 'Pending';
-        }elseif($data->status == 3){
+        }elseif($dataPasangBaru->status == 3){
             $badge = 'badge-success';
             $status = 'Success';
         }
 
-        return view('dashboard.data_pasang_baru.detail', compact('title','appName','data','listPasangBaru','badge','status'));
+        return view('dashboard.data_pasang_baru.detail', compact('title','appName','dataPasangBaru','badge','status'));
     }
 }

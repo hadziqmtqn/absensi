@@ -42,7 +42,13 @@ Route::middleware('log.route.api')->group(function (){
     Route::prefix('absensi')->group(function(){
         Route::post('/{idapi}/store', [AbsensiController::class, 'store'])->name('absensi.store');
     });
-    Route::post('data-pasang-baru', [PasangBaruController::class, 'store'])->name('data-pasang-baru.store');
+    Route::prefix('data-pasang-baru')->group(function(){
+        Route::post('/', [PasangBaruController::class, 'store'])->name('data-pasang-baru.store');
+        Route::put('/{pasang_baru_api}/update', [PasangBaruController::class, 'update'])->name('data-pasang-baru.update');
+        Route::put('/{pasang_baru_api}/update-status', [PasangBaruController::class, 'updateStatus'])->name('data-pasang-baru.update-status');
+        Route::delete('/{pasang_baru_api}/delete', [PasangBaruController::class, 'delete'])->name('data-pasang-baru.delete');
+    });
     Route::post('data-job/{idapi}/{pasang_baru_api}', [DataJobController::class, 'store'])->name('data-job.store');
+    Route::put('data-job/{idapi}/{pasang_baru_api}', [DataJobController::class, 'update'])->name('data-job.update');
     Route::delete('teknisi-cadangan/{idapi}/delete', [TeknisiCadanganController::class, 'delete'])->name('teknisi-cadangan.delete');
 });

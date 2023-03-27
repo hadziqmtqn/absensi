@@ -142,7 +142,7 @@ class UserController extends Controller
             return DTO::ResponseDTO('Gagal Menghapus Data Karyawan', null, 'Oops, error', null, Response::HTTP_INTERNAL_SERVER_ERROR);
         }
 
-        return DTO::ResponseDTO('Sukses Menghapus Data Karyawan', null, null, $user, Response::HTTP_OK);
+        return DTO::ResponseDTO('Sukses Menghapus Data Karyawan', null, null, null, Response::HTTP_OK);
     }
 
     public function restore($idapi)
@@ -188,6 +188,6 @@ class UserController extends Controller
             return DTO::ResponseDTO('Gagal Menghapus Permanen Data Karyawan', null, 'Oops, error', null, Response::HTTP_INTERNAL_SERVER_ERROR);
         }
 
-        return DTO::ResponseDTO('Sukses Menghapus Permanen Data Karyawan', null, null, $user, Response::HTTP_OK);
+        return DTO::ResponseDTO('Sukses Menghapus Permanen Data Karyawan', null, null, null, Response::HTTP_OK);
     }
 }
