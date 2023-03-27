@@ -13,6 +13,7 @@ use App\Models\Setting;
 use App\Models\DataPasangBaru;
 use App\Models\OnlineApi;
 use App\Models\TeknisiCadangan;
+use App\Models\User;
 use Carbon\Carbon;
 use GuzzleHttp\Client;
 use Illuminate\Support\Facades\DB;
@@ -235,16 +236,16 @@ class DataPasangBaruController extends Controller
         $dataPasangBaru = DataPasangBaru::where('pasang_baru_api',$pasangBaruApi)
         ->firstOrfail();
 
-        if($dataPasangBaru->status == 0){
+        if($dataPasangBaru->status == '0'){
             $badge = 'badge-info';
             $status = 'Waiting';
-        }elseif($dataPasangBaru->status == 1){
+        }elseif($dataPasangBaru->status == '1'){
             $badge = 'badge-primary';
             $status = 'In Progress';
-        }elseif($dataPasangBaru->status == 2){
+        }elseif($dataPasangBaru->status == '2'){
             $badge = 'badge-warning';
             $status = 'Pending';
-        }elseif($dataPasangBaru->status == 3){
+        }elseif($dataPasangBaru->status == '3'){
             $badge = 'badge-success';
             $status = 'Success';
         }
@@ -315,6 +316,91 @@ class DataPasangBaruController extends Controller
                 $client->request('PUT', $onlineApi->website . '/api/data-pasang-baru/' . $dataPasangBaru->pasang_baru_api . '/update', [
                     'json' => $data
                 ]);
+            });
+            
+            Alert::success('Sukses','Data Pasang Baru berhasil diupdate');
+        } catch (\Throwable $th) {
+            Log::error($th->getMessage());
+
+            Alert::error('Oops', 'Data Error');
+        }
+
+        return redirect()->back();
+	}
+    
+    public function updateStatus(Request $request, $id)
+	{
+        $dataPasangBaru = DataPasangBaru::findOrFail($id);
+
+        $toDay = date('Y-m-d');
+        // jika ada teknisi yang absen hari ini dan belum memiliki job
+        $teknisiNonJob = User::with('absensi','dataJob')
+        ->whereHas('absensi', function($query) use ($toDay){
+            $query->whereDate('created_at', $toDay);
+        })
+        ->whereDoesntHave('dataJob')
+        ->first();
+        // jika ada pasang baru dan belum dimiliki oleh teknisi
+        $pasangBaruNonJob = DataPasangBaru::with('data_job')
+        ->whereDoesntHave('data_job')
+        ->first();
+        
+        $client = New Client();
+        $onlineApi = OnlineApi::first();
+
+        try {
+            $validator = Validator::make($request->all(), [
+                'status' => ['required']
+            ]);
+    
+            if ($validator->fails()) {
+                return back()->withErrors($validator)->withInput();
+            }
+            
+            $data = [
+                'status' => $request->status
+            ];
+            
+            DB::transaction(function() use ($dataPasangBaru, $data, $client, $onlineApi, $teknisiNonJob, $pasangBaruNonJob){
+                $dataPasangBaru->update($data);
+
+                $client->request('PUT', $onlineApi->website . '/api/data-pasang-baru/' . $dataPasangBaru->pasang_baru_api . '/update-status', [
+                    'json' => $data
+                ]);
+
+                if ($dataPasangBaru->status == '3') {
+                    switch (true) {
+                        case $teknisiNonJob && $pasangBaruNonJob:
+                            $pasangBaru = [
+                                'user_id' => $teknisiNonJob->id,
+                                'kode_pasang_baru' => $pasangBaruNonJob->id
+                            ];
+                
+                            DataJob::create($pasangBaru);
+
+                            $client->request('POST', $onlineApi->website . '/api/data-job/' . $teknisiNonJob->idapi . '/' . $pasangBaruNonJob->pasang_baru_api);
+                            break;
+                        case !$teknisiNonJob && $pasangBaruNonJob:
+                                $pasangBaru = [
+                                    'user_id' => $dataPasangBaru->data_job->user_id,
+                                    'kode_pasang_baru' => $pasangBaruNonJob->id
+                                ];
+                                
+                            DataJob::create($pasangBaru);
+                            
+                            $client->request('POST', $onlineApi->website . '/api/data-job/' . $dataPasangBaru->data_job->user->idapi . '/' . $dataPasangBaru->pasang_baru_api);
+                            break;
+                        case !$teknisiNonJob && !$pasangBaruNonJob:
+                                $createTeknisiCadangan = [
+                                    'user_id' => $dataPasangBaru->data_job->user_id
+                                ];
+                                
+                            $teknisiCadangan = TeknisiCadangan::create($createTeknisiCadangan);
+                            
+                            $client->request('POST', $onlineApi->website . '/api/teknisi-cadangan/' . $teknisiCadangan->user->idapi . '/store');
+                            break;
+                    }
+                }
             });
             
             Alert::success('Sukses','Data Pasang Baru berhasil diupdate');

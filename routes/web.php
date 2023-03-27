@@ -101,6 +101,7 @@ Route::middleware(['auth',VerifikasiAkun::class])->group(function () {
         Route::get('/edit/{pasang_baru_api}', [DataPasangBaruController::class, 'edit'])->name('data-pasang-baru.edit');
         Route::put('/edit/{id}', [DataPasangBaruController::class, 'update'])->name('data-pasang-baru.update');
         Route::delete('/hapus/{id}', [DataPasangBaruController::class, 'delete'])->name('data-pasang-baru.hapus');
+        Route::put('/{id}/update-status', [DataPasangBaruController::class, 'updateStatus'])->name('data-pasang-baru.update-status');
     });
     // data job
     Route::get('data-job', [DataJobController::class, 'index'])->name('data-job.index');
