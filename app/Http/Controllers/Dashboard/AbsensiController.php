@@ -131,16 +131,14 @@ class AbsensiController extends Controller
                 ]);
                 
                 if ($pasangBaru) {
-                    $dataJob = [
+                    $createDataJob = [
                         'user_id' => $absensi->user_id,
                         'kode_pasang_baru' => $pasangBaru->id,
                     ];
         
-                    DataJob::create($dataJob);
+                    $dataJob = DataJob::create($createDataJob);
 
-                    $client->request('POST', $onlineApi->website . '/api/data-job/' . $absensi->user->idapi , [
-                        'json' => $dataJob
-                    ]);
+                    $client->request('POST', $onlineApi->website . '/api/data-job/' . $dataJob->user->idapi . '/' . $dataJob->dataPasangBaru->pasang_baru_api);
                 }
             });
 

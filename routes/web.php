@@ -54,6 +54,7 @@ Route::middleware(['auth',VerifikasiAkun::class])->group(function () {
     Route::put('profile/password/{id}', [ProfileController::class, 'password'])->name('profile.password');
     // absensi
     Route::get('absensi', [AbsensiController::class, 'index'])->name('absensi.index');
+    Route::post('absensi/store', [AbsensiController::class, 'store'])->name('absensi.store');
     Route::get('absensi/add_absensi', [AbsensiController::class, 'add_absensi'])->name('absensi.add_absensi');
     Route::get('getjsonabsensi', [AbsensiController::class, 'getJsonAbsensi'])->name('getjsonabsensi');
     Route::delete('absensi/hapus/{id}',[AbsensiController::class, 'delete'])->name('absensi.hapus');
@@ -110,8 +111,6 @@ Route::middleware(['auth',VerifikasiAkun::class])->group(function () {
     // teknisi non job
     Route::get('teknisi-non-job', [DataJobController::class, 'teknisiNonJob'])->name('teknisi-non-job.index');
     Route::get('getjsonteknisinonjob', [DataJobController::class, 'getJsonTeknisiNonJob'])->name('getjsonteknisinonjob');
-    // absen
-    Route::post('absensi/store', [AbsensiController::class, 'store'])->name('absensi.store');
     // whatsapp api
     Route::get('whatsapp-api', [WhatsappApiController::class, 'index'])->name('whatsapp-api.index');
     Route::post('whatsapp-api/store', [WhatsappApiController::class, 'store'])->name('whatsapp-api.store');

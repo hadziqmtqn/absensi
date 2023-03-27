@@ -71,4 +71,9 @@ class User extends Authenticatable
     {
         return $this->hasOne(Absensi::class);
     }
+
+    public function teknisiCadangan()
+    {
+        return $this->hasOne(TeknisiCadangan::class);
+    }
 }

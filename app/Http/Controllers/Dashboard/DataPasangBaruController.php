@@ -77,7 +77,10 @@ class DataPasangBaruController extends Controller
                 ->addColumn('action', function($row){
 					$btn = '<a href="data-pasang-baru/'.$row->kode.'" class="btn btn-primary" style="padding: 7px 10px">Detail</a>';
                     $btn = $btn.' <a href="data-pasang-baru/edit/'.$row->kode.'" class="btn btn-warning" style="padding: 7px 10px">Edit</a>';
-                    $btn = $btn.' <button type="button" href="data-pasang-baru/hapus/'.$row->id.'" class="btn btn-danger btn-hapus" style="padding: 7px 10px">Delete</button>';
+                    if (!$row->data_job) {
+                        $btn = $btn.' <button type="button" href="data-pasang-baru/hapus/'.$row->id.'" class="btn btn-danger btn-hapus" style="padding: 7px 10px">Delete</button>';
+                    }
+
                     return $btn;
                 })
 
@@ -299,14 +302,20 @@ class DataPasangBaruController extends Controller
         }
 	}
 
-    public function delete($id){
+    public function delete($id)
+    {
+        $dataPasangBaru = DataPasangBaru::findOrFail($id);
+
         try {
-            DataPasangBaru::where('id',$id)->delete();
+            $dataPasangBaru->delete();
 
             Alert::success('Sukses','Data Pasang Baru berhasil dihapus');
-        } catch (\Exception $e) {
-            Alert::error('Error',$e->getMessage());
+        } catch (\Throwable $th) {
+            Log::error($th->getMessage());
+
+            Alert::error('Oops', 'Data Error');
         }
+
         return redirect()->back();
     }
 }

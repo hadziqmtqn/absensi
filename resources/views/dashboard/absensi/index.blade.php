@@ -39,22 +39,20 @@
                                 </div>
                                 <form class="forms-sample" method="POST" action="{{ route('absensi.store') }}" id="absensi">
                                     @csrf
-                                    <div id="absensi">
-                                        <div class="modal-body">
-                                            <div class="form-group">
-                                                <label for="">Pilih Nama Karyawan</label>
-                                                <select name="user_id" class="form-control">
-                                                    <option value="">Pilih</option>
-                                                    @foreach ($listKaryawan as $karyawan)
-                                                        <option value="{{ $karyawan->id }}">{{ $karyawan->name }}</option>
-                                                    @endforeach
-                                                </select>
-                                            </div>
+                                    <div class="modal-body">
+                                        <div class="form-group">
+                                            <label for="">Pilih Nama Karyawan</label>
+                                            <select name="user_id" class="form-control">
+                                                <option value="">Pilih</option>
+                                                @foreach ($listKaryawan as $karyawan)
+                                                    <option value="{{ $karyawan->id }}">{{ $karyawan->name }}</option>
+                                                @endforeach
+                                            </select>
                                         </div>
-                                        <div class="modal-footer">
-                                            <button type="button" class="btn btn-inverse-secondary btn-fw" data-dismiss="modal">Batal</button>
-                                            <button type="submit" class="btn btn-primary">Submit</button>
-                                        </div>
+                                    </div>
+                                    <div class="modal-footer">
+                                        <button type="button" class="btn btn-inverse-secondary btn-fw" data-dismiss="modal">Batal</button>
+                                        <button type="submit" class="btn btn-primary">Submit</button>
                                     </div>
                                 </form>
                             </div>
