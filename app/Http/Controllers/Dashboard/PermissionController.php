@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Dashboard;
 use App\Http\Controllers\Controller;
 use App\Models\Setting;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Log;
 use Yajra\Datatables\Datatables;
 use RealRashid\SweetAlert\Facades\Alert;
 use Spatie\Permission\Models\Permission;
@@ -13,15 +14,15 @@ class PermissionController extends Controller
 {
     function __construct()
     {
-        $this->middleware('permission:permission-list|permission-create|permission-edit|permission-delete', ['only' => ['index','show']]);
+        $this->middleware('permission:permission-list', ['only' => ['index']]);
         $this->middleware('permission:permission-create', ['only' => ['create','store']]);
         $this->middleware('permission:permission-edit', ['only' => ['edit','update']]);
-        $this->middleware('permission:permission-delete', ['only' => ['destroy']]);
+        $this->middleware('permission:permission-delete', ['only' => ['delete']]);
     }
 
     public function index()
     {
-        $title = 'Data Role';
+        $title = 'Data Permission';
         $appName = Setting::first();
 
         return view('dashboard.permission.index', compact('title','appName'));
@@ -45,7 +46,7 @@ class PermissionController extends Controller
 
                 ->addColumn('action', function($row){
 					$btn = '<a href="permission/edit/'.$row->id.'" class="btn btn-warning" style="padding: 7px 10px">Edit</a>';
-                    $btn = $btn.' <button type="button" href="permission/'.$row->id.'/destroy" class="btn btn-danger btn-hapus" style="padding: 7px 10px">Delete</button>';
+                    $btn = $btn.' <button type="button" href="permission/'.$row->id.'/delete" class="btn btn-danger btn-hapus" style="padding: 7px 10px">Delete</button>';
                     return $btn;
                 })
 
@@ -109,5 +110,22 @@ class PermissionController extends Controller
 
             return redirect()->back();
         }
+    }
+    
+    public function delete($id)
+    {
+        $permission = Permission::findOrFail($id);
+
+        try {
+            $permission->delete();
+
+            Alert::success('Sukses','Permission berhasil diupdate');
+        } catch (\Throwable $th) {
+            Log::error($th->getMessage());
+
+            Alert::error('Oops', 'Data Error');
+        }
+        
+        return redirect()->back();
     }
 }

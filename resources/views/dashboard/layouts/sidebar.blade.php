@@ -57,13 +57,13 @@
         </div>
     </li>
 
-    <li class="nav-item {{ $title == 'Data Role' || $title == 'Detail Role' || $title == 'Edit Role' ? 'active' : '' }}">
+    <li class="nav-item {{ $title == 'Data Role' || $title == 'Detail Role' || $title == 'Edit Role' || $title == 'Data Permission' || $title == 'Edit Permission' ? 'active' : '' }}">
         <a class="nav-link collapsed" data-toggle="collapse" href="#role_permission" aria-expanded="false" aria-controls="role_permission">
             <i class="mdi mdi-account-key menu-icon"></i>
             <span class="menu-title">Hak Akses</span>
             <i class="menu-arrow"></i>
         </a>
-        <div class="collapse {{ $title == 'Data Role' || $title == 'Detail Role' || $title == 'Edit Role' ? 'show' : '' }}" id="role_permission" style="">
+        <div class="collapse {{ $title == 'Data Role' || $title == 'Detail Role' || $title == 'Edit Role' || $title == 'Data Permission' || $title == 'Edit Permission' ? 'show' : '' }}" id="role_permission" style="">
             <ul class="nav flex-column sub-menu">
                 <li class="nav-item"> <a class="nav-link" href="{{ route('role.index') }}"> Role</a></li>
                 <li class="nav-item"> <a class="nav-link" href="{{ route('permission.index') }}"> Permission</a></li>
