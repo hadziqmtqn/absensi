@@ -61,11 +61,14 @@ Route::middleware(['auth',VerifikasiAkun::class])->group(function () {
     Route::get('role/edit/{id}', [RoleController::class, 'edit'])->name('role.edit');
     Route::put('role/edit/{id}', [RoleController::class, 'update'])->name('role.update');
     // permission
-    Route::get('permission', [PermissionController::class, 'index'])->name('permission.index');
-    Route::get('getjsonpermission', [PermissionController::class, 'getJsonPermission'])->name('getjsonpermission');
-    Route::post('permission/store', [PermissionController::class, 'store'])->name('permission.store');
-    Route::get('permission/edit/{id}', [PermissionController::class, 'edit'])->name('permission.edit');
-    Route::put('permission/edit/{id}', [PermissionController::class, 'update'])->name('permission.update');
+    Route::prefix('permission')->group(function(){
+        Route::get('/', [PermissionController::class, 'index'])->name('permission.index');
+        Route::get('/getjsonpermission', [PermissionController::class, 'getJsonPermission'])->name('permission.getjsonpermission');
+        Route::post('/store', [PermissionController::class, 'store'])->name('permission.store');
+        Route::get('/edit/{id}', [PermissionController::class, 'edit'])->name('permission.edit');
+        Route::put('/edit/{id}', [PermissionController::class, 'update'])->name('permission.update');
+        Route::delete('/{id}/delete', [PermissionController::class, 'delete'])->name('permission.delete');
+    });
     // setting
     Route::get('setting', [SettingController::class, 'index'])->name('setting.index');
     Route::post('setting/store', [SettingController::class, 'store'])->name('setting.store');

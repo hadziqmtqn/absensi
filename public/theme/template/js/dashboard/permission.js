@@ -7,7 +7,7 @@ $(function () {
         lengthMenu: [ [10, 25, 50, -1], [10, 25, 50, "All"] ],
         order: [[2,'asc']],
         ajax: {
-            url: "getjsonpermission",
+            url: "permission/getjsonpermission",
             type: "GET",
             headers: {
                 'X-CSRF-TOKEN': '{{ csrf_token() }}',
