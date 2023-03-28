@@ -9,6 +9,7 @@ use App\Models\User;
 use GuzzleHttp\Client;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Str;
@@ -36,10 +37,10 @@ class RegistrasiController extends Controller
 
         try {
             $validator = Validator::make($request->all(),[
-                'name' => ['required','min:5'],
+                'name' => ['required', 'min:5'],
                 'short_name' => ['required'],
-                'phone' => ['required', 'unique:users,phone'],
-                'company_name' ['required'],
+                'phone' => ['required', 'unique:users,phone', 'min:10', 'max:13'],
+                'company_name' => ['required'],
                 'email' => ['required', 'unique:users,email'],
                 'password' => ['required', 'min:8'],
                 'confirm_password' => ['required', 'same:password'],
@@ -58,12 +59,14 @@ class RegistrasiController extends Controller
                 'phone' => $request->input('phone'),
                 'company_name' => $request->input('company_name'),
                 'email' => $request->input('email'),
-                'password' => bcrypt($request->input('password')),
-                'is_verifikasi' => '1'
+                'password' => Hash::make($request->password),
+                'is_verifikasi' => 1
             ];
 
             DB::transaction(function () use ($data, $request, $onlineApi, $client){
                 $user = User::create($data);
+
+                $user->assignRole('2');
 
                 $createUserApi = [
                     'role_id' => $user->role_id,
@@ -74,7 +77,7 @@ class RegistrasiController extends Controller
                     'phone' => $user->phone,
                     'company_name' => $user->company_name,
                     'email' => $user->email,
-                    'password' => bcrypt($request->input('password')),
+                    'password' => Hash::make($request->password),
                     'is_verifikasi' => $user->is_verifikasi
                 ];
 
@@ -82,12 +85,10 @@ class RegistrasiController extends Controller
                     'json' => $createUserApi
                 ]);
 
-                $user->assignRole('2');
-
                 $this->whatsapp($user->id, $request);
             });
 
-            Alert::success('Success','Registrasi Absen Karyawan Berhasil Tersimpan');
+            Alert::success('Success','Registrasi Absensi Karyawan Berhasil Tersimpan');
         } catch (\Throwable $th) {
             Log::error($th->getMessage());
 
