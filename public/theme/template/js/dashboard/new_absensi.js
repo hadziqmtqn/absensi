@@ -22,7 +22,6 @@ $(function () {
             {data: 'namakaryawan', name: 'namakaryawan'},
             {data: 'created_at', name: 'created_at'},
             {data: 'status', name: 'status', orderable: false, searchable: false},
-            {data: 'action', name: 'action', orderable: false, searchable: false},
         ]
     });
 

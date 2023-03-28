@@ -1,27 +1,11 @@
 @extends('dashboard.layouts.master')
 @section('title')
-    {{ $title }} - {{ $data->kode }}
+    {{ $title }} - {{ $dataPasangBaru->kode }}
 @endsection
 @section('content')
 <div class="row">
-    <div class="col-md-12 grid-margin stretch-card">
-        <div class="card">
-            <div class="card-body">
-                <h4 class="card-title">Pilih Kode</h4>
-                <div class="form-group">
-                    <select class="form-control" onchange="location = this.value;">
-                        @foreach ($listPasangBaru as $pasang)
-                        <option value="{{ route('data-pasang-baru.detail',$pasang->kode) }}" {{ ($data->kode == $pasang->kode) ? 'selected' : '' }}>{{ $pasang->kode }}</option>
-                        @endforeach
-                    </select>
-                </div>
-            </div>
-        </div>
-    </div>
-</div>
-<div class="row">
     <div class="col-md-6">
-        <div class="card">
+        <div class="card mb-3">
             <div class="card-body">
                 <h4 class="card-title">{{ $title }}</h4>
                 <div class="table-responsive">
@@ -29,35 +13,47 @@
                         <tbody>
                             <tr>
                                 <th style="width: 150px">Kode</th>
-                                <td>{{ $data->kode }}</td>
+                                <td>{{ $dataPasangBaru->kode }}</td>
                             </tr>
                             <tr>
                                 <th style="width: 150px">Inet</th>
-                                <td>{{ $data->inet }}</td>
+                                <td>{{ $dataPasangBaru->inet }}</td>
                             </tr>
                             <tr>
                                 <th style="width: 150px">Nama Pelanggan</th>
-                                <td>{{ $data->nama_pelanggan }}</td>
+                                <td>{{ $dataPasangBaru->nama_pelanggan }}</td>
                             </tr>
                             <tr>
                                 <th style="width: 150px">No. HP</th>
-                                <td>{{ $data->no_hp }}</td>
+                                <td>{{ $dataPasangBaru->no_hp }}</td>
                             </tr>
                             <tr>
                                 <th style="width: 150px">Alamat</th>
-                                <td>{{ $data->alamat }}</td>
+                                <td>{{ $dataPasangBaru->alamat }}</td>
                             </tr>
                             <tr>
                                 <th style="width: 150px">Acuan Lokasi</th>
-                                <td>{{ $data->acuan_lokasi }}</td>
+                                <td>{{ $dataPasangBaru->acuan_lokasi }}</td>
                             </tr>
                             <tr>
                                 <th style="width: 150px">Status</th>
                                 <td><label class="badge {{ $badge }}">{{ $status }}</label></td>
                             </tr>
+                            <tr>
+                                <th style="width: 150px">Tanggal Dibuat</th>
+                                <td>{{ Carbon\Carbon::parse($dataPasangBaru->created_at)->isoFormat('DD MMMM YYYY H:m') }}</td>
+                            </tr>
                         </tbody>
                     </table>
                 </div>
+                @if ($dataPasangBaru->data_job)
+                <hr>
+                <h4>Teknisi Job Pasang Baru</h4>
+                <ul>
+                    <li>Nama : {{ $dataPasangBaru->data_job->user->name }}</li>
+                    <li>Dari PT. : {{ $dataPasangBaru->data_job->user->company_name }}</li>
+                </ul>
+                @endif
             </div>
         </div>
     </div>
@@ -66,15 +62,11 @@
         <div class="card">
             <div class="card-body">
                 <h4 class="card-title">Foto {{ $title }}</h4>
-                @if(!empty($data->foto))
-                <img src="{{ asset($data->foto) }}" alt="{{ $data->kode }}" style="width: 100%">
+                @if(!empty($dataPasangBaru->foto))
+                <img src="{{ asset($dataPasangBaru->foto) }}" alt="{{ $dataPasangBaru->kode }}" style="width: 100%">
                 @endif
             </div>
         </div>
     </div>
 </div>
-@endsection
-
-@section('scripts')
-    
 @endsection

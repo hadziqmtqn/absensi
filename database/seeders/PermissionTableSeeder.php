@@ -26,29 +26,18 @@ class PermissionTableSeeder extends Seeder
             'permission-edit',
             'permission-delete',
             'absensi-list',
-            'absensi-create',
-            'absensi-edit',
-            'absensi-delete',
             'setting-create',
             'setting-edit',
             'data-pasang-baru-list',
-            'data-pasang-baru-create',
-            'data-pasang-baru-edit',
-            'data-pasang-baru-delete',
             'data-job-list',
-            'data-job-create',
-            'data-job-edit',
-            'data-job-delete',
             'karyawan-list',
-            'karyawan-create',
-            'karyawan-edit',
-            'karyawan-delete',
             'profile-list',
             'profile-password',
             'teknisi-cadangan-list',
             'whatsapp-api-create',
             'whatsapp-api-edit',
-            'registrasi-create'
+            'registrasi-create',
+            'api-key-list'
         ];
 
         foreach ($permissions as $permission) {

@@ -21,6 +21,7 @@ class User extends Authenticatable
      */
     protected $fillable = [
         'name',
+        'idapi',
         'email',
         'password',
         'short_name',
@@ -28,7 +29,8 @@ class User extends Authenticatable
         'username',
         'nik',
         'company_name',
-        'is_verifikasi'
+        'is_verifikasi',
+        'photo'
     ];
 
     /**
@@ -49,4 +51,24 @@ class User extends Authenticatable
     protected $casts = [
         'email_verified_at' => 'datetime',
     ];
+
+    public function modelHasRole()
+    {
+        return $this->hasOne(ModelHasRole::class, 'model_id');
+    }
+
+    public function dataJob()
+    {
+        return $this->hasOne(DataJob::class);
+    }
+
+    public function absensi()
+    {
+        return $this->hasOne(Absensi::class);
+    }
+
+    public function scopeIdApi($query, $idApi)
+    {
+        return $query->where('idapi', $idApi);
+    }
 }

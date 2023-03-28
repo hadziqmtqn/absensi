@@ -10,6 +10,8 @@ use Illuminate\Support\Facades\Auth;
 use App\Models\User;
 use App\Models\Setting;
 use App\Models\Role;
+use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Validator;
 
 class ProfileController extends Controller
 {
@@ -24,49 +26,50 @@ class ProfileController extends Controller
         $idUser = Auth::user()->id;
         $title = 'Profile Setting';
         $appName = Setting::first();
-        $profile = User::where('id',$idUser)->first();
-        $listRole = Role::get();
+        $profile = User::where('id', $idUser)
+        ->first();
 
-        return view('dashboard.profile.index', compact('title','appName','profile','listRole'));
+        return view('dashboard.profile.index', compact('title','appName','profile'));
     }
 
     public function update(Request $request, $id)
 	{
+        $user = User::findOrFail($id);
+
         try {
-            $request->validate([
-                'role_id',
-                'name' => 'required',
-                'short_name',
-                'nik',
-                'phone',
-                'company_name',
-                'photo' => 'file|mimes:jpg,jpeg,png,svg|max:1024',
-                'email' => 'email|required',
+            $validator = Validator::make($request->all(), [
+                'name' => ['required'],
+                'photo' => ['nullable','file','mimes:jpg,jpeg,png','max:1024'],
+                'email' => ['email','required'],
             ]);
 
-            if(Auth::user()->role_id == 1){
-                $data['role_id'] = $request->role_id;
+            if ($validator->fails()) {
+                return back()->withErrors($validator)->withInput();
             }
-            $data['name'] = $request->name;
-            $data['email'] = $request->email;
-            $data['short_name'] = $request->short_name;
-            $data['nik'] = $request->nik;
-            $data['phone'] = $request->phone;
-            $data['company_name'] = $request->company_name;
-            // $data['created_at'] = date('Y-m-d H:i:s');
-            $data['updated_at'] = date('Y-m-d H:i:s');
-
+    
             $file = $request->file('photo');
             if($file){
                 $nama_file = rand().'-'. $file->getClientOriginalName();
                 $file->move('assets',$nama_file);
-                $data['photo'] = 'assets/' .$nama_file;
+                $photo = 'assets/' .$nama_file;
+            }else {
+                $photo = $user->photo;
             }
 
-            User::where('id', $id)->update($data);
+            $data = [
+                'role_id' => $user->role_id,
+                'name' => $request->name,
+                'email' => $request->email,
+                'photo' => $photo
+            ];
+
+            $user->update($data);
+
             Alert::success('Sukses','Profile berhasil diupdate');
         } catch (\Throwable $th) {
-            Alert::error('Error',$th->getMessage());
+            Log::error($th->getMessage());
+
+            Alert::error('Oops','Data Error');
         }
 
 		return redirect()->back();

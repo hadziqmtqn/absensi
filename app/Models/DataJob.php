@@ -9,7 +9,10 @@ class DataJob extends Model
 {
     use HasFactory;
 
-    protected $guarded = [];
+    protected $fillable = [
+        'user_id',
+        'kode_pasang_baru'
+    ];
 
     public function dataPasangBaru()
     {
@@ -19,5 +22,10 @@ class DataJob extends Model
     public function karyawan()
     {
         return $this->belongsTo(Karyawan::class, 'user_id');
+    }
+
+    public function user()
+    {
+        return $this->belongsTo(User::class);
     }
 }

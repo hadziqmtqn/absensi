@@ -3,12 +3,14 @@
 namespace App\Http\Controllers\Auth;
 
 use App\Http\Controllers\Controller;
+use App\Models\Setting;
+use App\Models\User;
 use App\Providers\RouteServiceProvider;
 use Illuminate\Foundation\Auth\AuthenticatesUsers;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
-use Session;
-use Hash;
+use Illuminate\Support\Facades\Log;
+use RealRashid\SweetAlert\Facades\Alert;
 
 class LoginController extends Controller
 {
@@ -42,30 +44,58 @@ class LoginController extends Controller
         $this->middleware('guest')->except('logout');
     }
 
+    public function index()
+    {
+        $appName = Setting::first();
+
+        return view('auth.login', compact('appName'));
+    }
+
     public function login(Request $request)
     {
         $this->validate($request, [
-            'phone' => 'required|string',
+            'email' => 'required|string',
             'password' => 'required|string',
         ]);
 
-        $loginType = filter_var($request->phone, FILTER_VALIDATE_EMAIL) ? 'email' : 'phone';
+        $credentials = $request->only('email', 'password');
 
-        $login = [
-            $loginType => $request->phone,
-            'password' => $request->password
-        ];
+        if (auth()->attempt($credentials)) {
+            $karyawan = Auth::user()->modelHasRole->role_id == 2;
 
-        if (auth()->attempt($login)) {
-            if (auth()->user()->is_verifikasi == 1) {
-                return redirect('dashboard');
-            }else{
+            if ($karyawan) {
                 Auth::logout();
+                request()->session()->invalidate();
+                request()->session()->regenerateToken();
 
-                return redirect()->route('login')->with('error','Mohon Maaf, akun Anda belum diverifikasi');
+                Alert::warning('Oops', 'Anda Tidak diizinkan mengakses aplikasi ini');
+                
+                return redirect()->route('login.index');
             }
-            return redirect()->intended('home');
+
+            $user = User::where('email', $request['email'])->firstOrFail();
+            $user->createToken('auth_token', ['*'], now()->addRealHours(8))->plainTextToken;
+
         }
+
         return redirect()->back()->with(['error' => 'No. HP/Email/Kata Sandi salah!']);
+    }
+
+    public function logout(Request $request)
+    {
+        try {
+            Auth::logout();
+            request()->session()->invalidate();
+            request()->session()->regenerateToken();
+
+            Alert::success('Success', 'Anda Berhasil Keluar');
+
+            return redirect('login');
+        } catch (\Throwable $th) {
+            Log::error($th->getMessage());
+            Alert::error('Oops', 'Anda Gagal Keluar');
+
+            return back();
+        }
     }
 }

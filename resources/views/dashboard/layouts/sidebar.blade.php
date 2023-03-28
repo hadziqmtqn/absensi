@@ -28,15 +28,14 @@
         </a>
     </li>
 
-    <li class="nav-item {{ $title == 'Data Karyawan' || $title == 'Detail Karyawan' || $title == 'Update Password Karyawan' || $title == 'Data Karyawan Terhapus' || $title == 'Registrasi Absensi Karyawan' ? 'active' : '' }}">
+    <li class="nav-item {{ $title == 'Data Karyawan' || $title == 'Detail Karyawan' || $title == 'Update Password Karyawan' || $title == 'Data Karyawan Terhapus' ? 'active' : '' }}">
         <a class="nav-link collapsed" data-toggle="collapse" href="#karyawan" aria-expanded="false" aria-controls="karyawan">
             <i class="mdi mdi-account-multiple menu-icon"></i>
             <span class="menu-title">Data Karyawan</span>
             <i class="menu-arrow"></i>
         </a>
-        <div class="collapse {{ $title == 'Data Karyawan' || $title == 'Detail Karyawan' || $title == 'Update Password Karyawan' || $title == 'Data Karyawan Terhapus' || $title == 'Registrasi Absensi Karyawan' ? 'show' : '' }}" id="karyawan" style="">
+        <div class="collapse {{ $title == 'Data Karyawan' || $title == 'Detail Karyawan' || $title == 'Update Password Karyawan' || $title == 'Data Karyawan Terhapus' ? 'show' : '' }}" id="karyawan" style="">
             <ul class="nav flex-column sub-menu">
-                <li class="nav-item"> <a class="nav-link" href="{{ route('registrasi.index') }}"> Registrasi Karyawan</a></li>
                 <li class="nav-item"> <a class="nav-link" href="{{ route('karyawan.index') }}"> List Karyawan</a></li>
             </ul>
         </div>
@@ -54,6 +53,13 @@
                 <li class="nav-item"> <a class="nav-link" href="{{ route('whatsapp-api.index') }}"> Whatsapp API</a></li>
             </ul>
         </div>
+    </li>
+
+    <li class="nav-item {{ $title == 'API Key' ? 'active' : '' }}">
+        <a class="nav-link" href="{{ route('api-key.index') }}">
+            <i class="mdi mdi-lock menu-icon"></i>
+            <span class="menu-title">API Key</span>
+        </a>
     </li>
 
     <li class="nav-item {{ $title == 'Data Role' || $title == 'Detail Role' || $title == 'Edit Role' ? 'active' : '' }}">

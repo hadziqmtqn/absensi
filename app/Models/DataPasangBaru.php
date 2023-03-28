@@ -9,10 +9,25 @@ class DataPasangBaru extends Model
 {
     use HasFactory;
 
-    protected $guarded = [];
+    protected $fillable = [
+        'pasang_baru_api',
+        'kode',
+        'inet',
+        'nama_pelanggan',
+        'no_hp',
+        'alamat',
+        'acuan_lokasi',
+        'foto',
+        'status'
+    ];
 
     public function data_job()
     {
         return $this->hasOne(DataJob::class, 'kode_pasang_baru');
+    }
+
+    public function scopePasangBaruApi($query, $pasangBaruApi)
+    {
+        return $query->where('pasang_baru_api', $pasangBaruApi);
     }
 }

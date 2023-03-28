@@ -15,6 +15,7 @@ class CreateDataPasangBarusTable extends Migration
     {
         Schema::create('data_pasang_barus', function (Blueprint $table) {
             $table->id();
+            $table->string('pasang_baru_api', 100);
             $table->string('kode', 100);
             $table->string('inet');
             $table->string('nama_pelanggan');
@@ -22,7 +23,7 @@ class CreateDataPasangBarusTable extends Migration
             $table->string('alamat')->nullable();
             $table->string('acuan_lokasi')->nullable();
             $table->string('foto')->nullable();
-            $table->enum('status', ['0','1','2','3'])->nullable()->default('0'); // 0 = Waiting, 1 = In Progress, 2 = Pending, 3 = Success
+            $table->enum('status', ['0','1','2','3'])->nullable()->default('0')->comment('0 = Waiting, 1 = In Progress, 2 = Pending, 3 = Success'); // 0 = Waiting, 1 = In Progress, 2 = Pending, 3 = Success
             $table->timestamps();
         });
     }
