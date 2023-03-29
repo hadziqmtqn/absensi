@@ -57,6 +57,7 @@
             </div>
         </div>
         {{-- update status --}}
+        @if (!is_null($dataPasangBaru->data_job))    
         <div class="card mb-3">
             <div class="card-body">
                 <h4 class="card-title">Update Status Pasang Baru</h4>
@@ -73,10 +74,11 @@
                             <option value="3" {{ $dataPasangBaru->status == '3' ? 'selected' : '' }}>Success</option>
                         </select>
                     </div>
-                    <button type="{{ $dataPasangBaru->status != '3' ? 'submit' : 'button' }}" class="btn btn-primary {{ $dataPasangBaru->status == '3' ? 'disabled' : '' }}">Submit</button>
+                    <button type="{{ $dataPasangBaru->status != '3' ? 'submit' : 'button' }}" class="btn btn-primary {{ $dataPasangBaru->status == '3' ? 'disabled' : 'btn-confirm-status-pasang-baru' }}">Submit</button>
                 </form>
             </div>
         </div>
+        @endif
     </div>
     {{-- foto --}}
     <div class="col-md-6">
@@ -90,4 +92,8 @@
         </div>
     </div>
 </div>
+@endsection
+
+@section('scripts')
+    <script src="{{ asset('theme/js/alert.js') }}"></script>
 @endsection

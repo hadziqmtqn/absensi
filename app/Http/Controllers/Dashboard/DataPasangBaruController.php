@@ -344,6 +344,8 @@ class DataPasangBaruController extends Controller
         $pasangBaruNonJob = DataPasangBaru::with('data_job')
         ->whereDoesntHave('data_job')
         ->first();
+
+        $pasangBaruHariIni = $toDay == date('Y-m-d', strtotime($dataPasangBaru->created_at));
         
         $client = New Client();
         $onlineApi = OnlineApi::first();
@@ -361,7 +363,7 @@ class DataPasangBaruController extends Controller
                 'status' => $request->status
             ];
             
-            DB::transaction(function() use ($dataPasangBaru, $data, $client, $onlineApi, $teknisiNonJob, $pasangBaruNonJob){
+            DB::transaction(function() use ($dataPasangBaru, $data, $client, $onlineApi, $teknisiNonJob, $pasangBaruNonJob, $pasangBaruHariIni){
                 $dataPasangBaru->update($data);
 
                 $client->request('PUT', $onlineApi->website . '/api/data-pasang-baru/' . $dataPasangBaru->pasang_baru_api . '/update-status', [
@@ -390,7 +392,7 @@ class DataPasangBaruController extends Controller
                             
                             $client->request('POST', $onlineApi->website . '/api/data-job/' . $dataPasangBaru->data_job->user->idapi . '/' . $dataPasangBaru->pasang_baru_api);
                             break;
-                        case !$teknisiNonJob && !$pasangBaruNonJob:
+                        case !$teknisiNonJob && !$pasangBaruNonJob && $pasangBaruHariIni:
                             $createTeknisiCadangan = [
                                 'user_id' => $dataPasangBaru->data_job->user_id
                             ];
