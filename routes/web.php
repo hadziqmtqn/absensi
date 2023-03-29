@@ -71,8 +71,6 @@ Route::middleware(['auth',VerifikasiAkun::class])->group(function () {
     });
     // setting
     Route::get('setting', [SettingController::class, 'index'])->name('setting.index');
-    Route::post('setting/store', [SettingController::class, 'store'])->name('setting.store');
-    Route::put('setting/update/{id}', [SettingController::class, 'update'])->name('setting.update');
     // data karyawan
     Route::get('karyawan', [KaryawanController::class, 'index'])->name('karyawan.index');
     Route::get('getjsonkaryawan', [KaryawanController::class, 'getJsonKaryawan'])->name('getjsonkaryawan');

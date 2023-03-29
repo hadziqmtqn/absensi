@@ -6,6 +6,7 @@ use App\Http\Controllers\API\AuthController;
 use App\Http\Controllers\API\DataJobController;
 use App\Http\Controllers\API\PasangBaruController;
 use App\Http\Controllers\API\ProfileController;
+use App\Http\Controllers\API\SettingController;
 use App\Http\Controllers\API\TeknisiCadanganController;
 use App\Http\Controllers\API\UserController;
 use Illuminate\Support\Facades\Route;
@@ -55,4 +56,6 @@ Route::middleware('log.route.api')->group(function (){
         Route::post('/{idapi}/store', [TeknisiCadanganController::class, 'store'])->name('teknisi-cadangan.store');
         Route::delete('/{idapi}/delete', [TeknisiCadanganController::class, 'delete'])->name('teknisi-cadangan.delete');
     });
+    // setting
+    Route::put('setting/{id}/update', [SettingController::class, 'update'])->name('setting.update');
 });
