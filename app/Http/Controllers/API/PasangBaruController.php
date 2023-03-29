@@ -130,10 +130,6 @@ class PasangBaruController extends Controller
         $dataPasangBaru = DataPasangBaru::pasangBaruApi($pasangBaruApi)
         ->firstOrFail();
 
-        if (is_null($dataPasangBaru)) {
-            return DTO::ResponseDTO('Data Pasang Baru Gagal Terhapus', null, 'Data Not Found', null, Response::HTTP_NOT_FOUND);
-        }
-
         try {
             $dataPasangBaru->delete();
 
