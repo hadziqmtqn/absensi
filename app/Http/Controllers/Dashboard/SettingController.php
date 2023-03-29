@@ -3,10 +3,13 @@
 namespace App\Http\Controllers\Dashboard;
 
 use App\Http\Controllers\Controller;
+use App\Models\OnlineApi;
 use Illuminate\Http\Request;
 use RealRashid\SweetAlert\Facades\Alert;
 
 use App\Models\Setting;
+use GuzzleHttp\Client;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Validator;
 
@@ -29,6 +32,8 @@ class SettingController extends Controller
     public function update(Request $request, $id)
 	{
         $appName = Setting::findOrFail($id);
+        $client = New Client();
+        $onlineApi = OnlineApi::first();
 
         try {
             $validator = Validator::make($request->all(),[
@@ -49,7 +54,9 @@ class SettingController extends Controller
             if($file){
                 $nama_file = rand().'-'. $file->getClientOriginalName();
                 $file->move('assets',$nama_file);
-                $data['logo'] = 'assets/' .$nama_file;
+                $logo = 'assets/' .$nama_file;
+            }else {
+                $logo = $appName->logo;
             }
     
             $data = [
@@ -59,9 +66,16 @@ class SettingController extends Controller
                 'no_hp' => $request->no_hp,
                 'awal_absensi' => $request->awal_absensi,
                 'akhir_absensi' => $request->akhir_absensi,
+                'logo' => $logo
             ];
-            
-            $appName->update($data);
+
+            DB::transaction(function() use ($appName, $data, $client, $onlineApi){
+                $appName->update($data);
+
+                $client->request('PUT', $onlineApi->website . '/api/setting/' . $appName->id . '/update', [
+                    'json' => $data
+                ]);
+            });            
 
             Alert::success('Sukses','Pengaturan Aplikasi berhasil diupdate');
         } catch (\Throwable $th) {
