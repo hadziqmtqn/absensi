@@ -157,8 +157,8 @@ class DataJobController extends Controller
 
         try {
             $validator = Validator::make($request->all(),[
-                'user_id' => 'required',
-                'kode_pasang_baru' => 'required',
+                'user_id' => ['required'],
+                'kode_pasang_baru' => ['required'],
             ]);
 
             if ($validator->fails()) {
@@ -166,6 +166,7 @@ class DataJobController extends Controller
             }
 
             $data = [
+                'job_api' => rand(),
                 'user_id' => $request->user_id,
                 'kode_pasang_baru' => $request->kode_pasang_baru,
             ];
@@ -173,12 +174,18 @@ class DataJobController extends Controller
             DB::transaction(function () use ($request, $data, $client, $onlineApi){
                 $dataJob = DataJob::create($data);
 
-                $client->request('POST', $onlineApi->website . '/api/data-job/' . $dataJob->user->idapi . '/' . $dataJob->dataPasangBaru->pasang_baru_api);
+                $jobApi = [
+                    'job_api' => $dataJob->job_api
+                ];
+
+                $client->request('POST', $onlineApi->website . '/api/data-job/' . $dataJob->user->idapi . '/' . $dataJob->dataPasangBaru->pasang_baru_api, [
+                    'json' => $jobApi
+                ]);
                 
                 $teknisiCadangan = TeknisiCadangan::where('user_id', $dataJob->user_id)
                 ->first();
                 
-                if ($teknisiCadangan) {
+                if (!is_null($teknisiCadangan)) {
                     $teknisiCadangan->delete();
                     
                     $client->request('DELETE', $onlineApi->website . '/api/teknisi-cadangan/' . $teknisiCadangan->user->idapi . '/delete');
@@ -279,6 +286,8 @@ class DataJobController extends Controller
 
                     $client->request('POST', $onlineApi->website . '/api/teknisi-cadangan/' . $teknisiCadangan->user->idapi . '/store');
                 }
+                
+                $client->request('DELETE', $onlineApi->website . '/api/data-job/' . $dataJob->job_api . '/delete');
 
                 $dataJob->delete();
             });

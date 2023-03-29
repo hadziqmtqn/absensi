@@ -39,13 +39,17 @@
                         <div class="form-group row">
                             <label for="" class="col-sm-3 col-form-label">Awal Absensi</label>
                             <div class="col-sm-9">
-                                <input type="time" class="form-control" name="awal_absensi" value="{{ $appName->awal_absensi }}" placeholder="Awal Absensi">
+                                <div class="input-group date mytime">
+                                    <input type="text" name="awal_absensi" value="{{ $appName->awal_absensi }}" class="form-control" placeholder="Awal Absensi" id="id_end_time"/>
+                                </div>
                             </div>
                         </div>
                         <div class="form-group row">
                             <label for="" class="col-sm-3 col-form-label">Akhir Absensi</label>
                             <div class="col-sm-9">
-                                <input type="time" class="form-control" name="akhir_absensi" value="{{ $appName->akhir_absensi }}" placeholder="Akhir Absensi">
+                                <div class="input-group date mytime">
+                                    <input type="text" name="akhir_absensi" value="{{ $appName->akhir_absensi }}" class="form-control" placeholder="Akhir Absensi" id="id_end_time"/>
+                                </div>
                             </div>
                         </div>
                         <div class="form-group row">

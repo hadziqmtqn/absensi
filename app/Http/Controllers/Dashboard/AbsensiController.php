@@ -16,7 +16,6 @@ use App\Models\DataPasangBaru;
 use App\Models\Setting;
 use App\Models\Karyawan;
 use App\Models\OnlineApi;
-use App\Models\User;
 use Carbon\Carbon;
 use GuzzleHttp\Client;
 use Illuminate\Support\Facades\Log;
@@ -45,10 +44,11 @@ class AbsensiController extends Controller
         ->orderBy('name','ASC')
         ->get();
 
-        $waktuAbsensi = Setting::select('awal_absensi','akhir_absensi')->first();
+        $waktuAbsensi = $appName;
         $awalAbsensi = $waktuAbsensi->awal_absensi;
         $akhirAbsensi = $waktuAbsensi->akhir_absensi;
-        $jamSekarang = Carbon::now()->format('H:i:s');
+        $jamSekarang = Carbon::now()
+        ->format('H:i:s');
 
         return view('dashboard.absensi.index', compact('title','appName','listKaryawan','awalAbsensi','akhirAbsensi','jamSekarang'));
     }

@@ -20,8 +20,10 @@
 
 <link rel="stylesheet" href="https://cdn.datatables.net/buttons/2.2.3/css/buttons.bootstrap4.min.css">
 
+<link rel="stylesheet" href="{{ asset('bootstrap-datetimepicker/css/bootstrap-datetimepicker.min.css') }}">
+
 <style type="text/css">
-    .error{
+    .error {
         color: #FF0000;
     }
 </style>

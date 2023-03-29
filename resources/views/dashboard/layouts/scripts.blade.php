@@ -41,6 +41,9 @@
 <script src="https://cdn.datatables.net/buttons/2.2.3/js/buttons.print.min.js"></script>
 <script src="https://cdn.datatables.net/buttons/2.2.3/js/buttons.colVis.min.js"></script>
 
+<script type="text/javascript" src="http://cdnjs.cloudflare.com/ajax/libs/moment.js/2.9.0/moment-with-locales.min.js"></script>
+<script src="{{ asset('bootstrap-datetimepicker/js/bootstrap-datetimepicker.min.js') }}"></script>
+
 {{-- highchart --}}
 <script src="https://code.highcharts.com/highcharts.js"></script>
 <script src="https://code.highcharts.com/modules/series-label.js"></script>
@@ -67,10 +70,21 @@
             });
         });
         $(document).ready(function() {
-        $('#myTable').DataTable( {
-            scrollX:        true,
-            scrollCollapse: true
-        } );
-    } );
+            $('#myTable').DataTable( {
+                scrollX:        true,
+                scrollCollapse: true
+            } );
+        });
     })
+</script>
+<script>
+    $(function () {
+        $('.mytime').datetimepicker({
+            "allowInputToggle": true,
+            "showClose": true,
+            "showClear": true,
+            "showTodayButton": true,
+            "format": "HH:mm:ss",
+        });
+    });
 </script>
