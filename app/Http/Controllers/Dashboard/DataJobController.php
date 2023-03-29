@@ -98,7 +98,7 @@ class DataJobController extends Controller
                 })
 
                 ->addColumn('action', function($row){
-					return '<a href="data-job/'.$row->id.'" class="btn btn-primary" style="padding: 7px 10px">Detail</a>';
+					return '<a href="/data-pasang-baru/'.$row->dataPasangBaru->pasang_baru_api.'/detail" class="btn btn-primary" style="padding: 7px 10px">Detail</a>';
                 })
 
                 ->addColumn('status', function($row){
@@ -114,30 +114,6 @@ class DataJobController extends Controller
         }
 
         return response()->json(true);
-    }
-
-    public function detail($id)
-    {
-        $title = 'Detail Data Job';
-        $appName = Setting::first();
-        $data = DataJob::find($id);
-        $listDataJob = DataJob::orderBy('created_at','DESC')->get();
-
-        if($data->dataPasangBaru->status == 0){
-            $badge = 'badge-info';
-            $status = 'Waiting';
-        }elseif($data->dataPasangBaru->status == 1){
-            $badge = 'badge-primary';
-            $status = 'In Progress';
-        }elseif($data->dataPasangBaru->status == 2){
-            $badge = 'badge-warning';
-            $status = 'Pending';
-        }elseif($data->dataPasangBaru->status == 3){
-            $badge = 'badge-success';
-            $status = 'Success';
-        }
-
-        return view('dashboard.data_job.detail', compact('title','appName','data','listDataJob','badge','status'));
     }
 
     public function teknisiNonJob()
