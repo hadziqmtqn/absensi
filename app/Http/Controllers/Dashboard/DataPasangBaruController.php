@@ -121,6 +121,7 @@ class DataPasangBaruController extends Controller
             });
         })
         ->whereDate('created_at', $toDay)
+        ->orderBy('created_at','ASC')
         ->first();
 
         $teknisiCadangan = TeknisiCadangan::with('user')
@@ -130,7 +131,10 @@ class DataPasangBaruController extends Controller
             });
         })
         ->whereDate('created_at', $toDay)
+        ->orderBy('created_at','ASC')
         ->first();
+        dd($teknisiCadangan);
+        die();
 
         $client = New Client();
         $onlineApi = OnlineApi::first();
@@ -373,51 +377,49 @@ class DataPasangBaruController extends Controller
                 ]);
 
                 if ($dataPasangBaru->status == '3') {
-                    switch (true) {
-                        case $teknisiNonJob && $pasangBaruNonJob:
-                            $pasangBaru = [
-                                'user_id' => $teknisiNonJob->id,
-                                'kode_pasang_baru' => $pasangBaruNonJob->id
-                            ];
-                
-                            $dataJob = DataJob::create($pasangBaru);
+                    if ($teknisiNonJob && $pasangBaruNonJob) {
+                        $pasangBaru = [
+                            'user_id' => $teknisiNonJob->id,
+                            'kode_pasang_baru' => $pasangBaruNonJob->id
+                        ];
+            
+                        $dataJobPasangBaru = DataJob::create($pasangBaru);
 
-                        case $dataJob:
+                        if (!is_null($dataJobPasangBaru)) {
                             $client->request('POST', $onlineApi->website . '/api/data-job/' . $teknisiNonJob->idapi . '/' . $pasangBaruNonJob->pasang_baru_api);
 
                             $createTeknisiCadangan = [
                                 'user_id' => $dataPasangBaru->data_job->user_id
                             ];
                                 
-                            $teknisiCadangan = TeknisiCadangan::create($createTeknisiCadangan);
-                        
-                        case $teknisiCadangan:
-                            $client->request('POST', $onlineApi->website . '/api/teknisi-cadangan/' . $teknisiCadangan->user->idapi . '/store');
+                            $teknisiCadanganPasangBaru = TeknisiCadangan::create($createTeknisiCadangan);
 
-                            break;
-                        case !$teknisiNonJob && $pasangBaruNonJob:
-                            $pasangBaru = [
-                                'user_id' => $dataPasangBaru->data_job->user_id,
-                                'kode_pasang_baru' => $pasangBaruNonJob->id
-                            ];
-                                
-                            $dataJob = DataJob::create($pasangBaru);
+                            if (!is_null($teknisiCadanganPasangBaru)) {
+                                $client->request('POST', $onlineApi->website . '/api/teknisi-cadangan/' . $teknisiCadanganPasangBaru->user->idapi . '/store');
+                            }
+                        }
+
+                    }elseif (!$teknisiNonJob && $pasangBaruNonJob) {
+                        $pasangBaru = [
+                            'user_id' => $dataPasangBaru->data_job->user_id,
+                            'kode_pasang_baru' => $pasangBaruNonJob->id
+                        ];
                             
-                        case $dataJob:
-                            $client->request('POST', $onlineApi->website . '/api/data-job/' . $dataPasangBaru->data_job->user->idapi . '/' . $pasangBaruNonJob->pasang_baru_api);
-
-                            break;
-                        case !$teknisiNonJob && !$pasangBaruNonJob && $pasangBaruHariIni:
-                            $createTeknisiCadangan = [
-                                'user_id' => $dataPasangBaru->data_job->user_id
-                            ];
-                                
-                            $teknisiCadangan = TeknisiCadangan::create($createTeknisiCadangan);
+                        $dataJob = DataJob::create($pasangBaru);
                         
-                        case $teknisiCadangan:
+                        if (!is_null($dataJob)) {
+                            $client->request('POST', $onlineApi->website . '/api/data-job/' . $dataPasangBaru->data_job->user->idapi . '/' . $pasangBaruNonJob->pasang_baru_api);
+                        }
+                    }elseif (!$teknisiNonJob && !$pasangBaruNonJob && $pasangBaruHariIni) {
+                        $createTeknisiCadangan = [
+                            'user_id' => $dataPasangBaru->data_job->user_id
+                        ];
+                            
+                        $teknisiCadangan = TeknisiCadangan::create($createTeknisiCadangan);
+                    
+                        if (!is_null($teknisiCadangan)) {
                             $client->request('POST', $onlineApi->website . '/api/teknisi-cadangan/' . $teknisiCadangan->user->idapi . '/store');
-
-                            break;
+                        }
                     }
                 }
             });

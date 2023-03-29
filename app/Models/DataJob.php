@@ -10,6 +10,7 @@ class DataJob extends Model
     use HasFactory;
 
     protected $fillable = [
+        'job_api',
         'user_id',
         'kode_pasang_baru'
     ];
@@ -27,5 +28,10 @@ class DataJob extends Model
     public function user()
     {
         return $this->belongsTo(User::class);
+    }
+
+    public function scopeJobApi($query, $jobApi)
+    {
+        return $query->where('job_api', $jobApi);
     }
 }
