@@ -9,6 +9,7 @@ use App\Http\Controllers\API\ProfileController;
 use App\Http\Controllers\API\SettingController;
 use App\Http\Controllers\API\TeknisiCadanganController;
 use App\Http\Controllers\API\UserController;
+use App\Http\Controllers\API\WhatsappApiController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -58,4 +59,5 @@ Route::middleware('log.route.api')->group(function (){
     });
     // setting
     Route::put('setting/{id}/update', [SettingController::class, 'update'])->name('setting.update');
+    Route::put('whatsapp-api/{id}/update', [WhatsappApiController::class, 'update'])->name('whatsapp-api.update');
 });

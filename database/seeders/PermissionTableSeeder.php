@@ -33,8 +33,7 @@ class PermissionTableSeeder extends Seeder
             'profile-list',
             'profile-password',
             'teknisi-cadangan-list',
-            'whatsapp-api-create',
-            'whatsapp-api-edit',
+            'whatsapp-api-list',
             'registrasi-create',
             'api-key-list'
         ];
