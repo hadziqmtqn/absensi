@@ -16,6 +16,7 @@ use App\Models\DataPasangBaru;
 use App\Models\Karyawan;
 use App\Models\OnlineApi;
 use App\Models\TeknisiCadangan;
+use App\Models\User;
 use Carbon\Carbon;
 use GuzzleHttp\Client;
 use Illuminate\Support\Facades\Log;
@@ -252,14 +253,43 @@ class DataJobController extends Controller
 		return redirect()->back();
 	}
     
-    public function delete($id){
+    public function delete($id)
+    {
+        $dataJob = DataJob::findOrFail($id);
+
+        $hariIni = date('Y-m-d');
+        $user = User::withCount('dataJob')
+        ->whereHas('dataJob', function($query) use ($hariIni, $dataJob){
+            $query->where('user_id', $dataJob->user_id);
+            $query->whereDate('created_at', $hariIni);
+        })
+        ->first();
+
+        $client = New Client();
+        $onlineApi = OnlineApi::first();
+
         try {
-            DataJob::where('id',$id)->delete();
+            DB::transaction(function() use ($dataJob, $user, $client, $onlineApi){
+                if ($user->data_job_count > 1) {
+                    $createTeknisiCadangan = [
+                        'user_id' => $dataJob->user_id
+                    ];
+
+                    $teknisiCadangan = TeknisiCadangan::create($createTeknisiCadangan);
+
+                    $client->request('POST', $onlineApi->website . '/api/teknisi-cadangan/' . $teknisiCadangan->user->idapi . '/store');
+                }
+
+                $dataJob->delete();
+            });
 
             Alert::success('Sukses','Data Job berhasil dihapus');
-        } catch (\Exception $e) {
-            Alert::error('Error',$e->getMessage());
+        } catch (\Throwable $th) {
+            Log::error($th->getMessage());
+
+            Alert::error('Oops', 'Data Error');
         }
+
         return redirect()->back();
     }
 

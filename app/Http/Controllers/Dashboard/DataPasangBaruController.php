@@ -338,7 +338,9 @@ class DataPasangBaruController extends Controller
         ->whereHas('absensi', function($query) use ($toDay){
             $query->whereDate('created_at', $toDay);
         })
-        ->whereDoesntHave('dataJob')
+        ->whereDoesntHave('dataJob', function($query) use ($toDay){
+            $query->whereDate('created_at', $toDay);
+        })
         ->first();
         // jika ada pasang baru dan belum dimiliki oleh teknisi
         $pasangBaruNonJob = DataPasangBaru::with('data_job')
@@ -378,9 +380,20 @@ class DataPasangBaruController extends Controller
                                 'kode_pasang_baru' => $pasangBaruNonJob->id
                             ];
                 
-                            DataJob::create($pasangBaru);
+                            $dataJob = DataJob::create($pasangBaru);
 
+                        case $dataJob:
                             $client->request('POST', $onlineApi->website . '/api/data-job/' . $teknisiNonJob->idapi . '/' . $pasangBaruNonJob->pasang_baru_api);
+
+                            $createTeknisiCadangan = [
+                                'user_id' => $dataPasangBaru->data_job->user_id
+                            ];
+                                
+                            $teknisiCadangan = TeknisiCadangan::create($createTeknisiCadangan);
+                        
+                        case $teknisiCadangan:
+                            $client->request('POST', $onlineApi->website . '/api/teknisi-cadangan/' . $teknisiCadangan->user->idapi . '/store');
+
                             break;
                         case !$teknisiNonJob && $pasangBaruNonJob:
                             $pasangBaru = [
@@ -388,9 +401,11 @@ class DataPasangBaruController extends Controller
                                 'kode_pasang_baru' => $pasangBaruNonJob->id
                             ];
                                 
-                            DataJob::create($pasangBaru);
+                            $dataJob = DataJob::create($pasangBaru);
                             
-                            $client->request('POST', $onlineApi->website . '/api/data-job/' . $dataPasangBaru->data_job->user->idapi . '/' . $dataPasangBaru->pasang_baru_api);
+                        case $dataJob:
+                            $client->request('POST', $onlineApi->website . '/api/data-job/' . $dataPasangBaru->data_job->user->idapi . '/' . $pasangBaruNonJob->pasang_baru_api);
+
                             break;
                         case !$teknisiNonJob && !$pasangBaruNonJob && $pasangBaruHariIni:
                             $createTeknisiCadangan = [
@@ -398,8 +413,10 @@ class DataPasangBaruController extends Controller
                             ];
                                 
                             $teknisiCadangan = TeknisiCadangan::create($createTeknisiCadangan);
-                            
+                        
+                        case $teknisiCadangan:
                             $client->request('POST', $onlineApi->website . '/api/teknisi-cadangan/' . $teknisiCadangan->user->idapi . '/store');
+
                             break;
                     }
                 }
