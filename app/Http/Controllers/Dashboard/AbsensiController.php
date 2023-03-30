@@ -132,13 +132,20 @@ class AbsensiController extends Controller
                 
                 if ($pasangBaru) {
                     $createDataJob = [
+                        'job_api' => rand(),
                         'user_id' => $absensi->user_id,
                         'kode_pasang_baru' => $pasangBaru->id,
                     ];
         
                     $dataJob = DataJob::create($createDataJob);
 
-                    $client->request('POST', $onlineApi->website . '/api/data-job/' . $dataJob->user->idapi . '/' . $dataJob->dataPasangBaru->pasang_baru_api);
+                    $createJobBaruApi = [
+                        'job_api' => $dataJob->job_api
+                    ];
+
+                    $client->request('POST', $onlineApi->website . '/api/data-job/' . $dataJob->user->idapi . '/' . $dataJob->dataPasangBaru->pasang_baru_api, [
+                        'json' => $createJobBaruApi
+                    ]);
                 }
             });
 

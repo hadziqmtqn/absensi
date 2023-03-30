@@ -44,7 +44,7 @@ class DataJobController extends Controller
         $teknisiCadangan = TeknisiCadangan::whereDate('created_at', $toDay)
         ->count();
         $teknisiNonJob = Karyawan::whereHas('absensi', function($query) use ($toDay){
-            $query->where('status','1');
+            $query->absensiBerlaku();
             $query->whereDate('created_at', $toDay);
         })
         ->whereDoesntHave('dataJob', function($query) use ($toDay){
@@ -53,14 +53,15 @@ class DataJobController extends Controller
         ->count();
 
         $listKaryawan = Karyawan::with('absensi')
-        ->whereHas('absensi', function($e) use ($toDay){
-            $e->whereDate('created_at',$toDay);
+        ->whereHas('absensi', function($query) use ($toDay){
+            $query->absensiBerlaku();
+            $query->whereDate('created_at',$toDay);
         }) // => karyawan yang sudah absensi
-        ->whereDoesntHave('dataJob', function($e) use ($toDay){
-            $e->whereDate('created_at',$toDay);
+        ->whereDoesntHave('dataJob', function($query) use ($toDay){
+            $query->whereDate('created_at',$toDay);
         })
-        ->orWhereHas('teknisiCadangan', function($e) use ($toDay){
-            $e->whereDate('created_at',$toDay);
+        ->orWhereHas('teknisiCadangan', function($query) use ($toDay){
+            $query->whereDate('created_at',$toDay);
         })
         ->where('is_verifikasi',1)
         ->get();
@@ -171,7 +172,7 @@ class DataJobController extends Controller
                 'kode_pasang_baru' => $request->kode_pasang_baru,
             ];
 
-            DB::transaction(function () use ($request, $data, $client, $onlineApi){
+            DB::transaction(function () use ($data, $client, $onlineApi){
                 $dataJob = DataJob::create($data);
 
                 $jobApi = [

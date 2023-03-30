@@ -121,6 +121,7 @@ class DataPasangBaruController extends Controller
             });
         })
         ->whereDate('created_at', $toDay)
+        ->absensiBerlaku()
         ->orderBy('created_at','ASC')
         ->first();
 
@@ -196,7 +197,7 @@ class DataPasangBaruController extends Controller
                     'json' => $dataPasangBaruApi
                 ]);
                 
-                if ($absensi && !$teknisiCadangan) {
+                if ($absensi && !$teknisiCadangan || $absensi && $teknisiCadangan) {
                     $createJobBaru = [
                         'job_api' => rand(),
                         'user_id' => $absensi->user_id,
@@ -420,14 +421,21 @@ class DataPasangBaruController extends Controller
 
                     }elseif (!$teknisiNonJob && $pasangBaruNonJob) {
                         $pasangBaru = [
+                            'job_api' => rand(),
                             'user_id' => $dataPasangBaru->data_job->user_id,
                             'kode_pasang_baru' => $pasangBaruNonJob->id
                         ];
                             
                         $dataJob = DataJob::create($pasangBaru);
+
+                        $createPasangBaruNonJob = [
+                            'job_api' => $dataJob->job_api
+                        ];
                         
                         if (!is_null($dataJob)) {
-                            $client->request('POST', $onlineApi->website . '/api/data-job/' . $dataPasangBaru->data_job->user->idapi . '/' . $pasangBaruNonJob->pasang_baru_api);
+                            $client->request('POST', $onlineApi->website . '/api/data-job/' . $dataJob->user->idapi . '/' . $dataJob->dataPasangBaru->pasang_baru_api, [
+                                'json' => $createPasangBaruNonJob
+                            ]);
                         }
                     }elseif (!$teknisiNonJob && !$pasangBaruNonJob && $pasangBaruHariIni) {
                         $createTeknisiCadangan = [
