@@ -133,8 +133,6 @@ class DataPasangBaruController extends Controller
         ->whereDate('created_at', $toDay)
         ->orderBy('created_at','ASC')
         ->first();
-        dd($teknisiCadangan);
-        die();
 
         $client = New Client();
         $onlineApi = OnlineApi::first();
@@ -183,7 +181,7 @@ class DataPasangBaruController extends Controller
             
             DB::transaction(function() use ($data, $absensi, $teknisiCadangan, $client, $onlineApi){
                 $dataPasangBaru = DataPasangBaru::create($data);
-                
+
                 $dataPasangBaruApi = [
                     'pasang_baru_api' => $dataPasangBaru->pasang_baru_api,
                     'kode' => $dataPasangBaru->kode,
@@ -200,22 +198,36 @@ class DataPasangBaruController extends Controller
                 
                 if ($absensi && !$teknisiCadangan) {
                     $createJobBaru = [
+                        'job_api' => rand(),
                         'user_id' => $absensi->user_id,
                         'kode_pasang_baru' => $dataPasangBaru->id
                     ];
                     
-                    DataJob::create($createJobBaru);
+                    $jobBaru = DataJob::create($createJobBaru);
+
+                    $createJobBaruApi = [
+                        'job_api' => $jobBaru->job_api
+                    ];
                     
-                    $client->request('POST', $onlineApi->website . '/api/data-job/' . $absensi->user->idapi . '/' . $dataPasangBaru->pasang_baru_api);
+                    $client->request('POST', $onlineApi->website . '/api/data-job/' . $jobBaru->user->idapi . '/' . $jobBaru->dataPasangBaru->pasang_baru_api, [
+                        'json' => $createJobBaruApi
+                    ]);
                 }elseif (!$absensi && $teknisiCadangan) {
                     $createJobBaru = [
+                        'job_api' => rand(),
                         'user_id' => $teknisiCadangan->user_id,
                         'kode_pasang_baru' => $dataPasangBaru->id
                     ];
                     
-                    DataJob::create($createJobBaru);
+                    $jobBaruTeknisi = DataJob::create($createJobBaru);
+
+                    $createJobBaruApiTeknisi = [
+                        'job_api' => $jobBaruTeknisi->job_api
+                    ];
                     
-                    $client->request('POST', $onlineApi->website . '/api/data-job/' . $teknisiCadangan->user->idapi . '/' . $dataPasangBaru->pasang_baru_api);
+                    $client->request('POST', $onlineApi->website . '/api/data-job/' . $jobBaruTeknisi->user->idapi . '/' . $jobBaruTeknisi->dataPasangBaru->pasang_baru_api, [
+                        'json' => $createJobBaruApiTeknisi
+                    ]);
                     
                     $client->request('DELETE', $onlineApi->website . '/api/teknisi-cadangan/' . $teknisiCadangan->user->idapi . '/delete');
 
@@ -379,6 +391,7 @@ class DataPasangBaruController extends Controller
                 if ($dataPasangBaru->status == '3') {
                     if ($teknisiNonJob && $pasangBaruNonJob) {
                         $pasangBaru = [
+                            'job_api' => rand(),
                             'user_id' => $teknisiNonJob->id,
                             'kode_pasang_baru' => $pasangBaruNonJob->id
                         ];
@@ -386,7 +399,13 @@ class DataPasangBaruController extends Controller
                         $dataJobPasangBaru = DataJob::create($pasangBaru);
 
                         if (!is_null($dataJobPasangBaru)) {
-                            $client->request('POST', $onlineApi->website . '/api/data-job/' . $teknisiNonJob->idapi . '/' . $pasangBaruNonJob->pasang_baru_api);
+                            $createPasangJobBaruApi = [
+                                'job_api' => $dataJobPasangBaru->job_api
+                            ];
+
+                            $client->request('POST', $onlineApi->website . '/api/data-job/' . $dataJobPasangBaru->user->idapi . '/' . $dataJobPasangBaru->dataPasangBaru->pasang_baru_api, [
+                                'json' => $createPasangJobBaruApi
+                            ]);
 
                             $createTeknisiCadangan = [
                                 'user_id' => $dataPasangBaru->data_job->user_id
