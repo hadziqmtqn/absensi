@@ -24,6 +24,7 @@
                             <h6 class="font-weight-light">Sign in to continue.</h6>
                             <form class="pt-3" method="POST" action="{{ route('login.get-login') }}">
                                 @csrf
+                                @include('dashboard.layouts.session')
                                 <div class="form-group">
                                     <input type="email" class="form-control form-control-lg @error('email') is-invalid @enderror" id="exampleInputEmail1" name="email" placeholder="Email" value="{{ old('email') }}">
                                     @error('email')

@@ -20,7 +20,7 @@
 {{-- <script src="{{ asset('theme/template/js/jobs_ds.js') }}"></script> --}}
 <script src="{{ asset('theme/template/js/Chart.roundedBarCharts.js') }}"></script>
 <!-- End custom js for this page-->
-<script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/jquery-validate/1.19.0/jquery.validate.min.js"></script>
+<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/jquery-validate/1.19.5/jquery.validate.min.js"></script>
 <script src="{{ asset('theme/template/js/file-upload.js') }}"></script>
 <script src="{{ asset('theme/template/js/typeahead.js') }}"></script>
 <script src="{{ asset('theme/template/js/select2.js') }}"></script>
@@ -29,7 +29,7 @@
 {{-- toastr js --}}
 <script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/2.1.0/js/toastr.js"></script>
 {{-- sweetalert --}}
-<script src="//cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 <script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
 
 <script src="https://cdn.datatables.net/buttons/2.2.3/js/dataTables.buttons.min.js"></script>
