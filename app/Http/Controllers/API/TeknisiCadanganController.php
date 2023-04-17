@@ -34,16 +34,14 @@ class TeknisiCadanganController extends Controller
 
     public function delete($idapi)
     {
-        $user = User::idApi($idapi)
+        $teknisiCadangan = TeknisiCadangan::with('user')
+        ->whereHas('user', function($query) use ($idapi){
+            $query->idApi($idapi);
+        })
         ->firstOrFail();
 
-        if (is_null($user)) {
-            return DTO::ResponseDTO('Gagal Menghapus Teknisi Cadangan', null, 'Data Not Found', null, Response::HTTP_NOT_FOUND);
-        }
-
         try {
-            $teknisiCadangan = TeknisiCadangan::where('user_id', $user->id)
-            ->delete();
+            $teknisiCadangan->delete();
 
         } catch (\Throwable $th) {
             Log::error($th->getMessage());

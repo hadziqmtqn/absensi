@@ -56,6 +56,5 @@
 @endsection
 
 @section('scripts')
-@include('dashboard.setting.validation')
 <script type="text/javascript" src="{{ asset('theme/template/js/dashboard/karyawan.js') }}"></script>
 @endsection

@@ -6,8 +6,10 @@ use App\Http\Controllers\API\AuthController;
 use App\Http\Controllers\API\DataJobController;
 use App\Http\Controllers\API\PasangBaruController;
 use App\Http\Controllers\API\ProfileController;
+use App\Http\Controllers\API\SettingController;
 use App\Http\Controllers\API\TeknisiCadanganController;
 use App\Http\Controllers\API\UserController;
+use App\Http\Controllers\API\WhatsappApiController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -48,11 +50,18 @@ Route::middleware('log.route.api')->group(function (){
         Route::put('/{pasang_baru_api}/update-status', [PasangBaruController::class, 'updateStatus'])->name('data-pasang-baru.update-status');
         Route::delete('/{pasang_baru_api}/delete', [PasangBaruController::class, 'delete'])->name('data-pasang-baru.delete');
     });
-    Route::post('data-job/{idapi}/{pasang_baru_api}', [DataJobController::class, 'store'])->name('data-job.store');
-    Route::put('data-job/{idapi}/{pasang_baru_api}', [DataJobController::class, 'update'])->name('data-job.update');
+    // data job
+    Route::prefix('data-job')->group(function(){
+        Route::post('/{idapi}/{pasang_baru_api}', [DataJobController::class, 'store'])->name('data-job.store');
+        Route::put('/{idapi}/{pasang_baru_api}', [DataJobController::class, 'update'])->name('data-job.update');
+        Route::delete('/{job_api}/delete', [DataJobController::class, 'delete'])->name('data-job.delete');
+    });
     // teknisi cadangan
     Route::prefix('teknisi-cadangan')->group(function(){
         Route::post('/{idapi}/store', [TeknisiCadanganController::class, 'store'])->name('teknisi-cadangan.store');
         Route::delete('/{idapi}/delete', [TeknisiCadanganController::class, 'delete'])->name('teknisi-cadangan.delete');
     });
+    // setting
+    Route::put('setting/{id}/update', [SettingController::class, 'update'])->name('setting.update');
+    Route::put('whatsapp-api/{id}/update', [WhatsappApiController::class, 'update'])->name('whatsapp-api.update');
 });

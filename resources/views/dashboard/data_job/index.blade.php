@@ -36,11 +36,7 @@
                 <div class="card-body">
                     <div class="d-flex justify-content-between">
                         <h4 class="card-title">{{ $title }}</h4>
-                        <button type="button" class="btn btn-primary btn-sm" data-toggle="modal" data-target="#data_job">
-                            <i class="ti-plus"></i>
-                        </button>
                     </div>
-                    @include('dashboard.layouts.session')
                     <p class="card-description">
                         <a href="{{ route('teknisi-cadangan.index') }}">Teknisi Cadangan ({{ $teknisiCadangan }})</a> | <a href="{{ route('teknisi-non-job.index') }}">Teknisi Non Job ({{ $teknisiNonJob }})</a>
                     </p>

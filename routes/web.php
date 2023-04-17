@@ -61,15 +61,16 @@ Route::middleware(['auth',VerifikasiAkun::class])->group(function () {
     Route::get('role/edit/{id}', [RoleController::class, 'edit'])->name('role.edit');
     Route::put('role/edit/{id}', [RoleController::class, 'update'])->name('role.update');
     // permission
-    Route::get('permission', [PermissionController::class, 'index'])->name('permission.index');
-    Route::get('getjsonpermission', [PermissionController::class, 'getJsonPermission'])->name('getjsonpermission');
-    Route::post('permission/store', [PermissionController::class, 'store'])->name('permission.store');
-    Route::get('permission/edit/{id}', [PermissionController::class, 'edit'])->name('permission.edit');
-    Route::put('permission/edit/{id}', [PermissionController::class, 'update'])->name('permission.update');
+    Route::prefix('permission')->group(function(){
+        Route::get('/', [PermissionController::class, 'index'])->name('permission.index');
+        Route::get('/getjsonpermission', [PermissionController::class, 'getJsonPermission'])->name('permission.getjsonpermission');
+        Route::post('/store', [PermissionController::class, 'store'])->name('permission.store');
+        Route::get('/edit/{id}', [PermissionController::class, 'edit'])->name('permission.edit');
+        Route::put('/edit/{id}', [PermissionController::class, 'update'])->name('permission.update');
+        Route::delete('/{id}/delete', [PermissionController::class, 'delete'])->name('permission.delete');
+    });
     // setting
     Route::get('setting', [SettingController::class, 'index'])->name('setting.index');
-    Route::post('setting/store', [SettingController::class, 'store'])->name('setting.store');
-    Route::put('setting/update/{id}', [SettingController::class, 'update'])->name('setting.update');
     // data karyawan
     Route::get('karyawan', [KaryawanController::class, 'index'])->name('karyawan.index');
     Route::get('getjsonkaryawan', [KaryawanController::class, 'getJsonKaryawan'])->name('getjsonkaryawan');
@@ -90,7 +91,6 @@ Route::middleware(['auth',VerifikasiAkun::class])->group(function () {
     Route::get('data-job', [DataJobController::class, 'index'])->name('data-job.index');
     Route::post('data-job/store', [DataJobController::class, 'store'])->name('data-job.store');
     Route::get('getjsondatajob', [DataJobController::class, 'getJsonDataJob'])->name('getjsondatajob');
-    Route::get('data-job/{id}', [DataJobController::class, 'detail'])->name('data-job.detail');
     Route::get('data-job/edit/{id}', [DataJobController::class, 'edit'])->name('data-job.edit');
     Route::put('data-job/edit/{id}', [DataJobController::class, 'update'])->name('data-job.update');
     Route::delete('data-job/hapus/{id}', [DataJobController::class, 'delete'])->name('data-job.hapus');

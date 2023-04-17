@@ -19,9 +19,9 @@ class UserController extends Controller
         $validator = Validator::make($request->all(), [
             'name' => ['required', 'string', 'max:255'],
             'short_name' => ['required'],
-            'phone' => ['required', 'unique:users,phone'],
+            'phone' => ['required', 'unique:users,phone', 'min:10', 'max:13'],
             'company_name' => ['nullable'],
-            'email' => ['required', 'string', 'email', 'max:255', 'unique:users'],
+            'email' => ['required', 'string', 'max:255', 'unique:users,email'],
             'password' => ['required']
         ]);
 
@@ -39,7 +39,7 @@ class UserController extends Controller
                 'company_name' => $request->company_name,
                 'email' => $request->email,
                 'password' => Hash::make($request->password),
-                'is_verifikasi' => '1'
+                'is_verifikasi' => 1
             ];
 
             $user = User::create($data);
