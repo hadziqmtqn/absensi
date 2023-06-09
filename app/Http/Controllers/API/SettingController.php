@@ -14,7 +14,7 @@ class SettingController extends Controller
 {
     public function update(Request $request, $id)
     {
-        $setting = Setting::findOrFail($id);
+        $setting = Setting::find($id);
 
         $validator = Validator::make($request->all(), [
             'application_name' => ['required'],
