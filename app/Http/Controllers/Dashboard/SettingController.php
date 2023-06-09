@@ -49,7 +49,7 @@ class SettingController extends Controller
             if ($validator->fails()) {
                 return back()->withErrors($validator)->withInput();
             }
-            
+
             $file = $request->file('logo');
             if($file){
                 $nama_file = rand().'-'. $file->getClientOriginalName();
@@ -58,7 +58,7 @@ class SettingController extends Controller
             }else {
                 $logo = $appName->logo;
             }
-    
+
             $data = [
                 'application_name' => $request->application_name,
                 'description' => $request->description,
@@ -75,7 +75,7 @@ class SettingController extends Controller
                 $client->request('PUT', $onlineApi->website . '/api/setting/' . $appName->id . '/update', [
                     'json' => $data
                 ]);
-            });            
+            });
 
             Alert::success('Sukses','Pengaturan Aplikasi berhasil diupdate');
         } catch (\Throwable $th) {

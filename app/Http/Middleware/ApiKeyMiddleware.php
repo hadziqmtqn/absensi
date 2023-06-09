@@ -8,6 +8,8 @@ use Closure;
 use GuzzleHttp\Client;
 use GuzzleHttp\Exception\GuzzleException;
 use Hash;
+use Illuminate\Http\JsonResponse;
+use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Config;
 use Illuminate\Support\Facades\Log;
@@ -15,19 +17,12 @@ use Symfony\Component\HttpFoundation\Response;
 
 class ApiKeyMiddleware
 {
-    /**
-     * Handle an incoming request.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  \Closure(\Illuminate\Http\Request): (\Illuminate\Http\Response|\Illuminate\Http\RedirectResponse)  $next
-     * @return \Illuminate\Http\Response|\Illuminate\Http\RedirectResponse
-     */
     public function handle(Request $request, Closure $next)
     {
         $enkripsi = Config::get('apikey.enkripsi');
         $apiKey = Config::get('apikey.api_key');
         $apiDomain = Config::get('apikey.api_domain');
-        
+
         $client = new Client();
 
         $onlineApi = OnlineApi::first();
@@ -35,13 +30,9 @@ class ApiKeyMiddleware
         try {
             $response = $client->get($onlineApi->website . '/api/get-api-key?enkripsi=' . $enkripsi);
             $data = json_decode($response->getBody());
-            
-            // $hostHeader = $response->getHeaderLine('Host');
-            // dd($response);
-            // die();
 
             $enkripsiApiKey = Hash::check($apiKey, $data->data->api_key);
-    
+
             if ($enkripsiApiKey && $apiDomain == $data->data->domain) {
                 return $next($request);
             }else{
