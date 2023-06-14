@@ -3,11 +3,10 @@
 namespace App\Http\Controllers\Dashboard;
 
 use App\Http\Controllers\Controller;
+use Exception;
 use Illuminate\Http\Request;
 use Illuminate\Support\Carbon;
 use RealRashid\SweetAlert\Facades\Alert;
-use Yajra\Datatables\Datatables;
-
 use App\Models\User;
 use App\Models\Setting;
 use App\Models\Karyawan;
@@ -15,6 +14,7 @@ use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Validator;
+use Yajra\DataTables\Facades\DataTables;
 
 class KaryawanController extends Controller
 {
@@ -23,7 +23,7 @@ class KaryawanController extends Controller
         $this->middleware('permission:karyawan-list', ['only' => ['index','show']]);
         $this->middleware('permission:karyawan-create', ['only' => ['create','store']]);
         $this->middleware('permission:karyawan-edit', ['only' => ['edit','update']]);
-        $this->middleware('permission:karyawan-delete', ['only' => ['destroy','deletePermanen']]);
+        $this->middleware('permission:karyawan-delete', ['only' => ['destroy', 'restore','deletePermanen']]);
     }
 
     public function index()
@@ -37,13 +37,16 @@ class KaryawanController extends Controller
         return view('dashboard.karyawan.index', compact('title','appName','karyawanAll','karyawanActive','karyawanTrashed'));
     }
 
+    /**
+     * @throws Exception
+     */
     public function getJsonKaryawan(Request $request)
     {
         if ($request->ajax()) {
             $data = Karyawan::query()
                 ->where('role_id',2);
 
-            return Datatables::eloquent($data)
+            return DataTables::eloquent($data)
                 ->addIndexColumn()
                 ->filter(function ($instance) use ($request) {
 					if ($request->get('is_verifikasi') == '0' || $request->get('is_verifikasi') == '1') {
@@ -112,13 +115,16 @@ class KaryawanController extends Controller
         return view('dashboard.karyawan.trash', compact('title','appName','karyawanAll','karyawanActive','karyawanTrashed'));
     }
 
+    /**
+     * @throws Exception
+     */
     public function getJsonKaryawanTrashed(Request $request)
     {
         if ($request->ajax()) {
             $data = Karyawan::query()
                 ->where('role_id',2)->onlyTrashed();
 
-            return Datatables::eloquent($data)
+            return DataTables::eloquent($data)
                 ->addIndexColumn()
                 ->filter(function ($instance) use ($request) {
 					if ($request->get('is_verifikasi') == '0' || $request->get('is_verifikasi') == '1') {
@@ -152,7 +158,7 @@ class KaryawanController extends Controller
 
                 ->addColumn('action', function($row){
 					$btn = '<button type="button" href="'.$row->id.'/restore" class="btn btn-warning btn-restore" style="padding: 7px 10px">Restore</button>';
-                    $btn .= ' <button type="button" href="/karyawan/'.$row->id.'/delete-permanen" class="btn btn-danger btn-hapus" style="padding: 7px 10px">Delete</button>';
+                    $btn .= ' <button type="button" href="/karyawan/'.$row->id.'/delete-permanen" class="btn btn-danger btn-hapus" style="padding: 7px 10px">Delete Permenant</button>';
                     return $btn;
                 })
 
@@ -299,7 +305,7 @@ class KaryawanController extends Controller
             $this->whatsapp($user->id);
 
             Alert::success('Sukses','Status Verifikasi Karyawan Berhasil di Update');
-        } catch (\Exception $e) {
+        } catch (Exception $e) {
             Alert::error('Error',$e->getMessage());
         }
 

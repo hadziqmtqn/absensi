@@ -9,7 +9,7 @@
             <div class="card-body">
                 <h4 class="card-title">{{ $title }}</h4>
                 @include('dashboard.layouts.session')
-                <form class="forms-sample" method="POST" action="{{ route('profile.password',$profile->id) }}" enctype="multipart/form-data" id="profile">
+                <form class="forms-sample" method="POST" action="{{ route('profile.password',$profile->id) }}" enctype="multipart/form-data" id="validasi">
                     @csrf
                     {{ method_field('PUT') }}
                     <div id="profile">

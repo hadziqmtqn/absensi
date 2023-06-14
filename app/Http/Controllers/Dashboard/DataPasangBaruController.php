@@ -5,13 +5,11 @@ namespace App\Http\Controllers\Dashboard;
 use App\Http\Controllers\Controller;
 use App\Models\Absensi;
 use App\Models\DataJob;
+use Exception;
 use Illuminate\Http\Request;
 use RealRashid\SweetAlert\Facades\Alert;
-use Yajra\Datatables\Datatables;
-
 use App\Models\Setting;
 use App\Models\DataPasangBaru;
-use App\Models\OnlineApi;
 use App\Models\TeknisiCadangan;
 use App\Models\User;
 use Carbon\Carbon;
@@ -19,6 +17,7 @@ use GuzzleHttp\Client;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Validator;
+use Yajra\DataTables\Facades\DataTables;
 
 class DataPasangBaruController extends Controller
 {
@@ -38,12 +37,16 @@ class DataPasangBaruController extends Controller
         return view('dashboard.data_pasang_baru.index', compact('title','appName'));
     }
 
+    /**
+     * @throws Exception
+     */
     public function getJsonPasangBaru(Request $request)
     {
         if ($request->ajax()) {
-			$data = DataPasangBaru::orderBy('created_at','DESC');
+			$data = DataPasangBaru::query()
+                ->orderBy('created_at','DESC');
 
-            return Datatables::of($data)
+            return DataTables::eloquent($data)
                 ->addIndexColumn()
                 ->filter(function ($instance) use ($request) {
 					if ($request->get('status') == '0' || $request->get('status') == '1' || $request->get('status') == '2' || $request->get('status') == '3') {
@@ -51,7 +54,7 @@ class DataPasangBaruController extends Controller
                     }
 
                     if ($request->get('created_at') != null) {
-                        $instance->whereDate('created_at', $request->created_at);
+                        $instance->whereDate('created_at', $request->input('created_at'));
                     }
 
                     if (!empty($request->get('search'))) {
@@ -76,10 +79,10 @@ class DataPasangBaruController extends Controller
                 })
 
                 ->addColumn('action', function($row){
-					$btn = '<a href="data-pasang-baru/'.$row->pasang_baru_api.'/detail" class="btn btn-primary" style="padding: 7px 10px">Detail</a>';
-                    $btn = $btn.' <a href="data-pasang-baru/edit/'.$row->pasang_baru_api.'" class="btn btn-warning" style="padding: 7px 10px">Edit</a>';
+					$btn = '<a href="data-pasang-baru/'.$row->id.'/detail" class="btn btn-primary" style="padding: 7px 10px">Detail</a>';
+                    $btn .= ' <a href="data-pasang-baru/edit/'.$row->id.'" class="btn btn-warning" style="padding: 7px 10px">Edit</a>';
                     if (!$row->data_job) {
-                        $btn = $btn.' <button type="button" href="data-pasang-baru/hapus/'.$row->id.'" class="btn btn-danger btn-hapus" style="padding: 7px 10px">Delete</button>';
+                        $btn .= ' <button type="button" href="data-pasang-baru/hapus/'.$row->id.'" class="btn btn-danger btn-hapus" style="padding: 7px 10px">Delete</button>';
                     }
 
                     return $btn;
@@ -128,9 +131,6 @@ class DataPasangBaruController extends Controller
         ->orderBy('created_at','ASC')
         ->first();
 
-        /*$client = New Client();
-        $onlineApi = OnlineApi::first();*/
-
         Validator::extend('without_spaces', function($attr, $value){
             return preg_match('/^\S*$/u', $value);
         });
@@ -164,54 +164,28 @@ class DataPasangBaruController extends Controller
 
             $data = [
                 'pasang_baru_api' => rand(),
-                'kode' => $request->kode,
-                'inet' => $request->inet,
-                'nama_pelanggan' => $request->nama_pelanggan,
-                'no_hp' => $request->no_hp,
-                'alamat' => $request->alamat,
-                'acuan_lokasi' => $request->acuan_lokasi,
+                'kode' => $request->input('kode'),
+                'inet' => $request->input('inet'),
+                'nama_pelanggan' => $request->input('nama_pelanggan'),
+                'no_hp' => $request->input('no_hp'),
+                'alamat' => $request->input('alamat'),
+                'acuan_lokasi' => $request->input('acuan_lokasi'),
                 'foto' => $foto
             ];
 
-            DB::transaction(function() use ($data, $absensi, $teknisiCadangan, $client, $onlineApi){
+            DB::transaction(function() use ($data, $absensi, $teknisiCadangan){
                 $dataPasangBaru = DataPasangBaru::create($data);
-
-                /*$dataPasangBaruApi = [
-                    'pasang_baru_api' => $dataPasangBaru->pasang_baru_api,
-                    'kode' => $dataPasangBaru->kode,
-                    'inet' => $dataPasangBaru->inet,
-                    'nama_pelanggan' => $dataPasangBaru->nama_pelanggan,
-                    'no_hp' => $dataPasangBaru->no_hp,
-                    'alamat' => $dataPasangBaru->alamat,
-                    'acuan_lokasi' => $dataPasangBaru->acuan_lokasi,
-                ];*/
-
-                /*$client->request('POST', $onlineApi->website . '/api/data-pasang-baru', [
-                    'json' => $dataPasangBaruApi
-                ]);*/
 
                 if ($absensi && !$teknisiCadangan || $absensi && $teknisiCadangan) {
                     DataJob::create([
-                        /*'job_api' => rand(),*/
                         'user_id' => $absensi->user_id,
                         'kode_pasang_baru' => $dataPasangBaru->id
                     ]);
                 }elseif (!$absensi && $teknisiCadangan) {
                     DataJob::create([
-                        /*'job_api' => rand(),*/
                         'user_id' => $teknisiCadangan->user_id,
                         'kode_pasang_baru' => $dataPasangBaru->id
                     ]);
-/*
-                    $createJobBaruApiTeknisi = [
-                        'job_api' => $jobBaruTeknisi->job_api
-                    ];*/
-/*
-                    $client->request('POST', $onlineApi->website . '/api/data-job/' . $jobBaruTeknisi->user->idapi . '/' . $jobBaruTeknisi->dataPasangBaru->pasang_baru_api, [
-                        'json' => $createJobBaruApiTeknisi
-                    ]);
-
-                    $client->request('DELETE', $onlineApi->website . '/api/teknisi-cadangan/' . $teknisiCadangan->user->idapi . '/delete');*/
 
                     $teknisiCadangan->delete();
                 }
@@ -227,36 +201,23 @@ class DataPasangBaruController extends Controller
 		return redirect()->back();
 	}
 
-    public function detail($pasangBaruApi)
+    public function detail($id)
     {
         $title = 'Detail Pasang Baru';
         $appName = Setting::first();
-        $dataPasangBaru = DataPasangBaru::where('pasang_baru_api',$pasangBaruApi)
-        ->firstOrfail();
+        $dataPasangBaru = DataPasangBaru::findOrFail($id);
 
-        if($dataPasangBaru->status == '0'){
-            $badge = 'badge-info';
-            $status = 'Waiting';
-        }elseif($dataPasangBaru->status == '1'){
-            $badge = 'badge-primary';
-            $status = 'In Progress';
-        }elseif($dataPasangBaru->status == '2'){
-            $badge = 'badge-warning';
-            $status = 'Pending';
-        }elseif($dataPasangBaru->status == '3'){
-            $badge = 'badge-success';
-            $status = 'Success';
-        }
+        $badge = $dataPasangBaru->status == 0 ? 'badge-info' : ($dataPasangBaru->status == '1' ? 'badge-primary' : ($dataPasangBaru->status == '2' ? 'badge-warning' : ($dataPasangBaru->status == '3' ? 'badge-success' : '')));
+        $status = $dataPasangBaru->status == 0 ? 'Waiting' : ($dataPasangBaru->status == '1' ? 'In Progress' : ($dataPasangBaru->status == '2' ? 'Pending' : ($dataPasangBaru->status == '3' ? 'Success' : '')));
 
         return view('dashboard.data_pasang_baru.detail', compact('title','appName','dataPasangBaru','badge','status'));
     }
 
-    public function edit($pasangBaruApi)
+    public function edit($id)
     {
         $title = 'Edit Pasang Baru';
         $appName = Setting::first();
-        $dataPasangBaru = DataPasangBaru::where('pasang_baru_api',$pasangBaruApi)
-        ->firstOrFail();
+        $dataPasangBaru = DataPasangBaru::findOrFail($id);
 
         return view('dashboard.data_pasang_baru.edit', compact('title','appName','dataPasangBaru'));
     }
@@ -264,9 +225,6 @@ class DataPasangBaruController extends Controller
     public function update(Request $request, $id)
 	{
         $dataPasangBaru = DataPasangBaru::findOrFail($id);
-
-        /*$client = New Client();
-        $onlineApi = OnlineApi::first();*/
 
         try {
             Validator::extend('without_spaces', function($attr, $value){
@@ -299,22 +257,16 @@ class DataPasangBaruController extends Controller
             }
 
             $data = [
-                'kode' => $request->kode,
-                'inet' => $request->inet,
-                'nama_pelanggan' => $request->nama_pelanggan,
-                'no_hp' => $request->no_hp,
-                'alamat' => $request->alamat,
-                'acuan_lokasi' => $request->acuan_lokasi,
+                'kode' => $request->input('kode'),
+                'inet' => $request->input('inet'),
+                'nama_pelanggan' => $request->input('nama_pelanggan'),
+                'no_hp' => $request->input('no_hp'),
+                'alamat' => $request->input('alamat'),
+                'acuan_lokasi' => $request->input('acuan_lokasi'),
                 'foto' => $foto
             ];
 
             $dataPasangBaru->update($data);
-            /*DB::transaction(function() use ($dataPasangBaru, $data, $client, $onlineApi){
-
-                $client->request('PUT', $onlineApi->website . '/api/data-pasang-baru/' . $dataPasangBaru->pasang_baru_api . '/update', [
-                    'json' => $data
-                ]);
-            });*/
 
             Alert::success('Sukses','Data Pasang Baru berhasil diupdate');
         } catch (\Throwable $th) {
@@ -347,9 +299,6 @@ class DataPasangBaruController extends Controller
 
         $pasangBaruHariIni = $toDay == date('Y-m-d', strtotime($dataPasangBaru->created_at));
 
-        /*$client = New Client();
-        $onlineApi = OnlineApi::first();*/
-
         try {
             $validator = Validator::make($request->all(), [
                 'status' => ['required']
@@ -360,72 +309,34 @@ class DataPasangBaruController extends Controller
             }
 
             $data = [
-                'status' => $request->status
+                'status' => $request->input('status')
             ];
 
             DB::transaction(function() use ($dataPasangBaru, $data, $teknisiNonJob, $pasangBaruNonJob, $pasangBaruHariIni){
                 $dataPasangBaru->update($data);
 
-                /*$client->request('PUT', $onlineApi->website . '/api/data-pasang-baru/' . $dataPasangBaru->pasang_baru_api . '/update-status', [
-                    'json' => $data
-                ]);*/
-
                 if ($dataPasangBaru->status == '3') {
                     if ($teknisiNonJob && $pasangBaruNonJob) {
-                        $pasangBaru = [
-                            'job_api' => rand(),
+                        $dataJobPasangBaru = DataJob::create([
                             'user_id' => $teknisiNonJob->id,
                             'kode_pasang_baru' => $pasangBaruNonJob->id
-                        ];
-
-                        $dataJobPasangBaru = DataJob::create($pasangBaru);
+                        ]);
 
                         if (!is_null($dataJobPasangBaru)) {
-                            /*$createPasangJobBaruApi = [
-                                'job_api' => $dataJobPasangBaru->job_api
-                            ];
-
-                            $client->request('POST', $onlineApi->website . '/api/data-job/' . $dataJobPasangBaru->user->idapi . '/' . $dataJobPasangBaru->dataPasangBaru->pasang_baru_api, [
-                                'json' => $createPasangJobBaruApi
-                            ]);*/
-
                             TeknisiCadangan::create([
                                 'user_id' => $dataPasangBaru->data_job->user_id
                             ]);
-
-                            /*if (!is_null($teknisiCadanganPasangBaru)) {
-                                $client->request('POST', $onlineApi->website . '/api/teknisi-cadangan/' . $teknisiCadanganPasangBaru->user->idapi . '/store');
-                            }*/
                         }
 
                     }elseif (!$teknisiNonJob && $pasangBaruNonJob) {
-                        $pasangBaru = [
-                            'job_api' => rand(),
+                        DataJob::create([
                             'user_id' => $dataPasangBaru->data_job->user_id,
                             'kode_pasang_baru' => $pasangBaruNonJob->id
-                        ];
-
-                        $dataJob = DataJob::create($pasangBaru);
-
-                        $createPasangBaruNonJob = [
-                            'job_api' => $dataJob->job_api
-                        ];
-
-                        if (!is_null($dataJob)) {
-                            $client->request('POST', $onlineApi->website . '/api/data-job/' . $dataJob->user->idapi . '/' . $dataJob->dataPasangBaru->pasang_baru_api, [
-                                'json' => $createPasangBaruNonJob
-                            ]);
-                        }
+                        ]);
                     }elseif (!$teknisiNonJob && !$pasangBaruNonJob && $pasangBaruHariIni) {
-                        $createTeknisiCadangan = [
+                        TeknisiCadangan::create([
                             'user_id' => $dataPasangBaru->data_job->user_id
-                        ];
-
-                        $teknisiCadangan = TeknisiCadangan::create($createTeknisiCadangan);
-
-                        if (!is_null($teknisiCadangan)) {
-                            $client->request('POST', $onlineApi->website . '/api/teknisi-cadangan/' . $teknisiCadangan->user->idapi . '/store');
-                        }
+                        ]);
                     }
                 }
             });
@@ -444,15 +355,8 @@ class DataPasangBaruController extends Controller
     {
         $dataPasangBaru = DataPasangBaru::findOrFail($id);
 
-        $client = New Client();
-        $onlineApi = OnlineApi::first();
-
         try {
-            DB::transaction(function() use ($dataPasangBaru, $client, $onlineApi){
-                $dataPasangBaru->delete();
-
-                $client->request('DELETE', $onlineApi->website . '/api/data-pasang-baru/' . $dataPasangBaru->pasang_baru_api . '/delete');
-            });
+            $dataPasangBaru->delete();
 
             Alert::success('Sukses','Data Pasang Baru berhasil dihapus');
         } catch (\Throwable $th) {

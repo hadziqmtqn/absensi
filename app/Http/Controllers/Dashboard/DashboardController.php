@@ -68,7 +68,7 @@ class DashboardController extends Controller
 
             return view('dashboard.dashboard.index', compact('title','appName','months','pasangBaru','dataJobPending','dataJobSuccess','today','pasangBaruToday','dataJobToday','absensiToday','totalKaryawan','currentUserInfo'));
         }else{
-            $search = $request->search;
+            $search = $request->input('search');
 
             $title = 'Dashboard';
             $subTitle = 'Data Job';
@@ -83,20 +83,20 @@ class DashboardController extends Controller
 
             $cekAbsensi = Absensi::where('user_id',Auth::user()->id)->where('waktu_absen',$hariIni)->whereBetween(DB::raw('TIME(created_at)'), array($awalAbsensi, $akhirAbsensi))->count();
 
-            if($request->search){
+            if($request->input('search')){
                 $listJobs = DataJob::where('user_id',$karyawan->id)
-                ->select('data_jobs.created_at as create_job',
+                ->select(['data_jobs.created_at as create_job',
                 'data_pasang_barus.id','data_pasang_barus.kode','data_pasang_barus.nama_pelanggan','data_pasang_barus.no_hp',
-                'data_pasang_barus.alamat','data_pasang_barus.acuan_lokasi','data_pasang_barus.status','data_pasang_barus.inet','data_pasang_barus.foto')
+                'data_pasang_barus.alamat','data_pasang_barus.acuan_lokasi','data_pasang_barus.status','data_pasang_barus.inet','data_pasang_barus.foto'])
                 ->join('data_pasang_barus','data_jobs.kode_pasang_baru','=','data_pasang_barus.id')
                 ->where('data_jobs.created_at','like','%'.$search.'%')
                 ->orderBy('data_jobs.created_at','DESC')
                 ->get();
             }else{
                 $listJobs = DataJob::where('user_id',$karyawan->id)
-                ->select('data_jobs.created_at as create_job',
+                ->select(['data_jobs.created_at as create_job',
                 'data_pasang_barus.id','data_pasang_barus.kode','data_pasang_barus.nama_pelanggan','data_pasang_barus.no_hp',
-                'data_pasang_barus.alamat','data_pasang_barus.acuan_lokasi','data_pasang_barus.status','data_pasang_barus.inet','data_pasang_barus.foto')
+                'data_pasang_barus.alamat','data_pasang_barus.acuan_lokasi','data_pasang_barus.status','data_pasang_barus.inet','data_pasang_barus.foto'])
                 ->join('data_pasang_barus','data_jobs.kode_pasang_baru','=','data_pasang_barus.id')
                 ->whereDate('data_jobs.created_at',$hariIni)
                 ->where('data_jobs.created_at','like','%'.$search.'%')
@@ -110,9 +110,10 @@ class DashboardController extends Controller
 
     public function inProgress($id){
         try {
-            DataPasangBaru::where('id',$id)->update([
-                'status' => '1',
-            ]);
+            DataPasangBaru::where('id',$id)
+                ->update([
+                    'status' => '1',
+                ]);
 
             Alert::success('Sukses','Status Job In Progress');
         } catch (\Exception $e) {
@@ -124,9 +125,10 @@ class DashboardController extends Controller
 
     public function pending($id){
         try {
-            DataPasangBaru::where('id',$id)->update([
-                'status' => '2',
-            ]);
+            DataPasangBaru::where('id',$id)
+                ->update([
+                    'status' => '2',
+                ]);
 
             Alert::success('Sukses','Status Job Pending');
         } catch (\Exception $e) {

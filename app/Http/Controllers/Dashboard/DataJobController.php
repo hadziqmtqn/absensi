@@ -7,19 +7,16 @@ use App\Models\Absensi;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 use RealRashid\SweetAlert\Facades\Alert;
-use Yajra\Datatables\Datatables;
 use Illuminate\Support\Facades\DB;
-
 use App\Models\DataJob;
 use App\Models\Setting;
 use App\Models\DataPasangBaru;
 use App\Models\Karyawan;
-use App\Models\OnlineApi;
 use App\Models\TeknisiCadangan;
 use App\Models\User;
 use Carbon\Carbon;
-use GuzzleHttp\Client;
 use Illuminate\Support\Facades\Log;
+use Yajra\DataTables\Facades\DataTables;
 
 class DataJobController extends Controller
 {
@@ -72,25 +69,26 @@ class DataJobController extends Controller
     public function getJsonDataJob(Request $request)
     {
         if ($request->ajax()) {
-            $data = DataJob::with('user','dataPasangBaru')
-            ->orderBy('data_jobs.created_at','DESC');
+            $data = DataJob::query()
+                ->with('user','dataPasangBaru')
+                ->orderBy('created_at','DESC');
 
-            return Datatables::of($data)
+            return DataTables::eloquent($data)
                 ->addIndexColumn()
                 ->filter(function ($instance) use ($request) {
-					if ($request->get('status') != null) {
+					if ($request->filled('status') != null) {
                         $instance->whereHas('dataPasangBaru', function($query) use ($request){
-                            $query->where('status', $request->get('status'));
+                            $query->where('status', $request->input('status'));
                         });
                     }
 
-                    if ($request->get('created_at') != null) {
-                        $instance->whereDate('data_jobs.created_at', $request->created_at);
+                    if ($request->filled('created_at') != null) {
+                        $instance->whereDate('data_jobs.created_at', $request->input('created_at'));
                     }
 
-                    if (!empty($request->get('search'))) {
+                    if (!empty($request->filled('search'))) {
                             $instance->where(function($w) use($request){
-                            $search = $request->get('search');
+                            $search = $request->input('search');
                             $w->whereHas('dataPasangBaru', function($query) use ($search){
                                 $query->where('kode', 'LIKE', "%$search%");
                                 $query->orWhere('nama_pelanggan', 'LIKE', "%$search%");
@@ -128,7 +126,7 @@ class DataJobController extends Controller
                 })
 
                 ->addColumn('action', function($row){
-					$btn = '<a href="/data-pasang-baru/'.$row->dataPasangBaru->pasang_baru_api.'/detail" class="btn btn-primary" style="padding: 7px 10px">Detail</a>';
+					$btn = '<a href="/data-pasang-baru/'.$row->dataPasangBaru->id.'/detail" class="btn btn-primary" style="padding: 7px 10px">Detail</a>';
                     if($row->dataPasangBaru->status != 3){
                         $btn = $btn.' <a href="data-job/edit/'.$row->id.'" class="btn btn-warning" style="padding: 7px 10px">Edit</a>';
                         $btn = $btn.' <button type="button" href="data-job/hapus/'.$row->id.'" class="btn btn-danger btn-hapus" style="padding: 7px 10px">Delete</button>';
@@ -153,9 +151,6 @@ class DataJobController extends Controller
 
     public function store(Request $request)
 	{
-        /*$client = New Client();
-        $onlineApi = OnlineApi::first();*/
-
         try {
             $validator = Validator::make($request->all(),[
                 'user_id' => ['required'],
@@ -167,29 +162,18 @@ class DataJobController extends Controller
             }
 
             $data = [
-                /*'job_api' => rand(),*/
-                'user_id' => $request->user_id,
-                'kode_pasang_baru' => $request->kode_pasang_baru,
+                'user_id' => $request->input('user_id'),
+                'kode_pasang_baru' => $request->input('kode_pasang_baru'),
             ];
 
             DB::transaction(function () use ($data){
                 $dataJob = DataJob::create($data);
-
-                /*$jobApi = [
-                    'job_api' => $dataJob->job_api
-                ];
-
-                $client->request('POST', $onlineApi->website . '/api/data-job/' . $dataJob->user->idapi . '/' . $dataJob->dataPasangBaru->pasang_baru_api, [
-                    'json' => $jobApi
-                ]);*/
 
                 $teknisiCadangan = TeknisiCadangan::where('user_id', $dataJob->user_id)
                 ->first();
 
                 if (!is_null($teknisiCadangan)) {
                     $teknisiCadangan->delete();
-
-                    /*$client->request('DELETE', $onlineApi->website . '/api/teknisi-cadangan/' . $teknisiCadangan->user->idapi . '/delete');*/
                 }
             });
 
@@ -225,9 +209,6 @@ class DataJobController extends Controller
 
     public function update(Request $request, $id)
 	{
-        /*$client = New Client();
-        $onlineApi = OnlineApi::first();*/
-
         try {
             $dataJob = DataJob::findOrFail($id);
 
@@ -246,10 +227,6 @@ class DataJobController extends Controller
             ];
 
             $dataJob->update($data);
-            /*DB::transaction(function () use ($dataJob, $data) {
-
-                $client->request('PUT', $onlineApi->website . '/api/data-job/' . $dataJob->user->idapi . '/' . $dataJob->dataPasangBaru->pasang_baru_api);
-            });*/
 
             Alert::success('Sukses','Data Job Baru berhasil diupdate');
         } catch (\Throwable $th) {
@@ -273,22 +250,13 @@ class DataJobController extends Controller
         })
         ->first();
 
-        /*$client = New Client();
-        $onlineApi = OnlineApi::first();*/
-
         try {
             DB::transaction(function() use ($dataJob, $user){
                 if ($user->data_job_count > 1) {
-                    $createTeknisiCadangan = [
+                    TeknisiCadangan::create([
                         'user_id' => $dataJob->user_id
-                    ];
-
-                    TeknisiCadangan::create($createTeknisiCadangan);
-
-                    /*$client->request('POST', $onlineApi->website . '/api/teknisi-cadangan/' . $teknisiCadangan->user->idapi . '/store');*/
+                    ]);
                 }
-
-                /*$client->request('DELETE', $onlineApi->website . '/api/data-job/' . $dataJob->job_api . '/delete');*/
 
                 $dataJob->delete();
             });

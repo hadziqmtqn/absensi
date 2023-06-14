@@ -3,22 +3,20 @@
 namespace App\Http\Controllers\Dashboard;
 
 use App\Http\Controllers\Controller;
+use Exception;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 use RealRashid\SweetAlert\Facades\Alert;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
-use Yajra\Datatables\Datatables;
-
 use App\Models\Absensi;
 use App\Models\DataJob;
 use App\Models\DataPasangBaru;
 use App\Models\Setting;
 use App\Models\Karyawan;
-use App\Models\OnlineApi;
 use Carbon\Carbon;
-use GuzzleHttp\Client;
 use Illuminate\Support\Facades\Log;
+use Yajra\DataTables\Facades\DataTables;
 
 class AbsensiController extends Controller
 {
@@ -59,9 +57,6 @@ class AbsensiController extends Controller
             $dataPasangBaru = DataPasangBaru::whereDoesntHave('data_job')
             ->first();
 
-            /*$client = New Client();
-            $onlineApi = OnlineApi::first();*/
-
             $createAbsensi = [
                 'user_id' => $karyawan,
                 'waktu_absen' => date('Y-m-d'),
@@ -70,36 +65,17 @@ class AbsensiController extends Controller
             DB::transaction(function() use ($karyawan, $dataPasangBaru, $createAbsensi){
                 $absensi = Absensi::create($createAbsensi);
 
-                /*$createAbsensiApi = [
-                    'user_id' => $absensi->user_id,
-                    'waktu_absen' => $absensi->waktu_absen
-                ];*/
-
-                /*$client->request('POST', $onlineApi->website . '/api/absensi/' . $absensi->user->idapi . '/store', [
-                    'json' => $createAbsensiApi
-                ]);*/
-
                 if ($dataPasangBaru) {
-                    $createDataJob = [
+                    DataJob::create([
                         'job_api' => rand(),
                         'user_id' => $absensi->user_id,
                         'kode_pasang_baru' => $dataPasangBaru->id,
-                    ];
-
-                    DataJob::create($createDataJob);
-
-                    /*$createJobBaruApi = [
-                        'job_api' => $dataJob->job_api
-                    ];
-
-                    $client->request('POST', $onlineApi->website . '/api/data-job/' . $dataJob->user->idapi . '/' . $dataJob->dataPasangBaru->pasang_baru_api, [
-                        'json' => $createJobBaruApi
-                    ]);*/
+                    ]);
                 }
             });
 
             Alert::success('Sukses','Terima kasih, sudah mengisi absensi hari ini');
-        } catch (\Exception $e) {
+        } catch (Exception $e) {
             DB::rollback();
 
             Alert::error('Error',$e->getMessage());
@@ -113,10 +89,6 @@ class AbsensiController extends Controller
         $pasangBaru = DataPasangBaru::whereDoesntHave('data_job')
         ->first();
 
-        // client api
-        $client = New Client();
-        $onlineApi = OnlineApi::first();
-
         try {
 
             $validator = Validator::make($request->all(),[
@@ -128,37 +100,17 @@ class AbsensiController extends Controller
             }
 
             $data = [
-                'user_id' => $request->user_id,
+                'user_id' => $request->input('user_id'),
                 'waktu_absen' => date('Y-m-d'),
             ];
 
-            DB::transaction(function() use ($pasangBaru, $data, $client, $onlineApi){
+            DB::transaction(function() use ($pasangBaru, $data){
                 $absensi = Absensi::create($data);
 
-                $createAbsensiApi = [
-                    'user_id' => $absensi->user_id,
-                    'waktu_absen' => $absensi->waktu_absen
-                ];
-
-                $client->request('POST', $onlineApi->website . '/api/absensi/' . $absensi->user->idapi . '/store', [
-                    'json' => $createAbsensiApi
-                ]);
-
                 if ($pasangBaru) {
-                    $createDataJob = [
-                        'job_api' => rand(),
+                    DataJob::create([
                         'user_id' => $absensi->user_id,
                         'kode_pasang_baru' => $pasangBaru->id,
-                    ];
-
-                    $dataJob = DataJob::create($createDataJob);
-
-                    $createJobBaruApi = [
-                        'job_api' => $dataJob->job_api
-                    ];
-
-                    $client->request('POST', $onlineApi->website . '/api/data-job/' . $dataJob->user->idapi . '/' . $dataJob->dataPasangBaru->pasang_baru_api, [
-                        'json' => $createJobBaruApi
                     ]);
                 }
             });
@@ -173,18 +125,28 @@ class AbsensiController extends Controller
 		return redirect()->back();
 	}
 
+    /**
+     * @throws Exception
+     */
     public function getJsonAbsensi(Request $request)
     {
         if ($request->ajax()) {
-			$data = Absensi::select('absensis.*','users.name as namakaryawan')
-			->join('users','absensis.user_id','=','users.id')
-            ->orderBy('created_at','DESC');
+			$data = Absensi::query();
+            $data->join('users','absensis.user_id','=','users.id')
+			->select([
+                'absensis.id as id_absensi',
+                'absensis.waktu_absen',
+                'absensis.status',
+                'absensis.created_at as create_absensi',
+                'users.name as namakaryawan'
+            ])
+            ->orderBy('absensis.created_at','DESC');
 
-            return Datatables::of($data)
+            return DataTables::eloquent($data)
                 ->addIndexColumn()
                 ->filter(function ($instance) use ($request) {
                     if ($request->get('waktu_absen') != null) {
-                        $instance->where('waktu_absen', $request->waktu_absen);
+                        $instance->where('absensis.waktu_absen', $request->input('waktu_absen'));
                     }
 
                     if (!empty($request->get('search'))) {
@@ -196,21 +158,24 @@ class AbsensiController extends Controller
                 })
 
                 ->addColumn('created_at', function ($row) {
-                    return $row->created_at ? with(new Carbon($row->created_at))->isoFormat('LLLL') : '';
+                    return $row->create_absensi ? with(new Carbon($row->create_absensi))->isoFormat('LLLL') : '';
                 })
 
                 ->addColumn('status', function ($row) {
-                    if($row->status == 1){
-                        return '<span class="badge badge-success">Sudah Absensi</span>';
-                    }elseif($row->status == 2){
-                        return '<span class="badge badge-warning">Berhalangan</span>';
-                    }
+                    $badge = $row->status == 1 ? 'badge-success' : ($row->status == 2 ? 'badge-warning' : '');
+                    $status = $row->status == 1 ? 'Sudah Absensi' : ($row->status == 2 ? 'Berhalangan' : '');
+
+                    return '<span class="badge '.$badge.'">'.$status.'</span>';
                 })
 
                 ->addColumn('action', function($row){
-                    if($row->created_at->format('Y-m-d') == Carbon::now()->format('Y-m-d')){
-                        $btn = '<a href="absensi/edit/'.$row->id.'" class="btn btn-warning" style="padding: 7px 10px">Edit</a>';
-                        return $btn;
+                    $hariIni = Carbon::now()->format('Y-m-d');
+                    $tanggalAbsensi = Carbon::parse($row->waktu_absen)->format('Y-m-d');
+
+                    if ($tanggalAbsensi == $hariIni){
+                        return '<a href="absensi/edit/'.$row->id_absensi.'" class="btn btn-warning" style="padding: 7px 10px">Edit</a>';
+                    }else{
+                        return null;
                     }
                 })
 
@@ -222,12 +187,14 @@ class AbsensiController extends Controller
         return response()->json(true);
     }
 
-    public function delete($id){
+    public function delete($id)
+    {
         try {
-            Absensi::where('id',$id)->delete();
+            $absensi = Absensi::findOrFail($id);
+            $absensi->delete();
 
             Alert::success('Sukses','Data Absensi berhasil dihapus');
-        } catch (\Exception $e) {
+        } catch (Exception $e) {
             Alert::error('Error',$e->getMessage());
         }
         return redirect()->back();
@@ -237,7 +204,8 @@ class AbsensiController extends Controller
     {
         $title = 'Edit Absensi Karyawan';
         $appName = Setting::first();
-        $data = Absensi::with('user')->findOrFail($id);
+        $data = Absensi::with('user')
+            ->findOrFail($id);
         $cekJob = DataJob::where('user_id',$data->user_id)
         ->count();
 
@@ -256,10 +224,11 @@ class AbsensiController extends Controller
             }
 
             $data = [
-                'status' => $request->status
+                'status' => $request->input('status')
             ];
 
-            Absensi::where('id',$id)->update($data);
+            Absensi::where('id',$id)
+                ->update($data);
 
             Alert::success('Sukses','Data Absensi berhasil diupdate');
         } catch (\Throwable $e) {

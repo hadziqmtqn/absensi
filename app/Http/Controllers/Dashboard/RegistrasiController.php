@@ -3,10 +3,8 @@
 namespace App\Http\Controllers\Dashboard;
 
 use App\Http\Controllers\Controller;
-use App\Models\OnlineApi;
 use App\Models\Setting;
 use App\Models\User;
-use GuzzleHttp\Client;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
@@ -50,12 +48,12 @@ class RegistrasiController extends Controller
             $data = [
                 'role_id' => 2,
                 'name' => $request->input('name'),
-                'username' => Str::slug($request->name),
+                'username' => Str::slug($request->input('name')),
                 'short_name' => $request->input('short_name'),
                 'phone' => $request->input('phone'),
                 'company_name' => $request->input('company_name'),
                 'email' => $request->input('email'),
-                'password' => Hash::make($request->password),
+                'password' => Hash::make($request->input('password')),
                 'is_verifikasi' => 1
             ];
 
