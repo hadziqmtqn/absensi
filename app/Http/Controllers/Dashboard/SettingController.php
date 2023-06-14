@@ -32,8 +32,6 @@ class SettingController extends Controller
     public function update(Request $request, $id)
 	{
         $appName = Setting::findOrFail($id);
-        $client = New Client();
-        $onlineApi = OnlineApi::first();
 
         try {
             $validator = Validator::make($request->all(),[
@@ -69,13 +67,7 @@ class SettingController extends Controller
                 'logo' => $logo
             ];
 
-            DB::transaction(function() use ($appName, $data, $client, $onlineApi){
-                $appName->update($data);
-
-                $client->request('PUT', $onlineApi->website . '/api/setting/' . $appName->id . '/update', [
-                    'json' => $data
-                ]);
-            });
+            $appName->update($data);
 
             Alert::success('Sukses','Pengaturan Aplikasi berhasil diupdate');
         } catch (\Throwable $th) {

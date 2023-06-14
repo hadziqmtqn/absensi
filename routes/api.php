@@ -17,8 +17,8 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-Route::middleware('log.route.api')->group(function (){
+/*Route::middleware('log.route.api')->group(function (){
     Route::get('/cek-host', function(){
         return 'test host';
     });
-});
+});*/

@@ -15,7 +15,6 @@ class CreateDataJobsTable extends Migration
     {
         Schema::create('data_jobs', function (Blueprint $table) {
             $table->id();
-            $table->string('job_api', 100)->unique();
             $table->bigInteger('user_id')->unsigned();
             $table->bigInteger('kode_pasang_baru')->unsigned();
             $table->timestamps();

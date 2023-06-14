@@ -59,25 +59,25 @@ class AbsensiController extends Controller
             $dataPasangBaru = DataPasangBaru::whereDoesntHave('data_job')
             ->first();
 
-            $client = New Client();
-            $onlineApi = OnlineApi::first();
+            /*$client = New Client();
+            $onlineApi = OnlineApi::first();*/
 
             $createAbsensi = [
                 'user_id' => $karyawan,
                 'waktu_absen' => date('Y-m-d'),
             ];
 
-            DB::transaction(function() use ($karyawan, $dataPasangBaru, $client, $onlineApi, $createAbsensi){
+            DB::transaction(function() use ($karyawan, $dataPasangBaru, $createAbsensi){
                 $absensi = Absensi::create($createAbsensi);
 
-                $createAbsensiApi = [
+                /*$createAbsensiApi = [
                     'user_id' => $absensi->user_id,
                     'waktu_absen' => $absensi->waktu_absen
-                ];
+                ];*/
 
-                $client->request('POST', $onlineApi->website . '/api/absensi/' . $absensi->user->idapi . '/store', [
+                /*$client->request('POST', $onlineApi->website . '/api/absensi/' . $absensi->user->idapi . '/store', [
                     'json' => $createAbsensiApi
-                ]);
+                ]);*/
 
                 if ($dataPasangBaru) {
                     $createDataJob = [
@@ -85,16 +85,16 @@ class AbsensiController extends Controller
                         'user_id' => $absensi->user_id,
                         'kode_pasang_baru' => $dataPasangBaru->id,
                     ];
-        
-                    $dataJob = DataJob::create($createDataJob);
 
-                    $createJobBaruApi = [
+                    DataJob::create($createDataJob);
+
+                    /*$createJobBaruApi = [
                         'job_api' => $dataJob->job_api
                     ];
 
                     $client->request('POST', $onlineApi->website . '/api/data-job/' . $dataJob->user->idapi . '/' . $dataJob->dataPasangBaru->pasang_baru_api, [
                         'json' => $createJobBaruApi
-                    ]);
+                    ]);*/
                 }
             });
 
@@ -134,7 +134,7 @@ class AbsensiController extends Controller
 
             DB::transaction(function() use ($pasangBaru, $data, $client, $onlineApi){
                 $absensi = Absensi::create($data);
-                
+
                 $createAbsensiApi = [
                     'user_id' => $absensi->user_id,
                     'waktu_absen' => $absensi->waktu_absen
@@ -143,14 +143,14 @@ class AbsensiController extends Controller
                 $client->request('POST', $onlineApi->website . '/api/absensi/' . $absensi->user->idapi . '/store', [
                     'json' => $createAbsensiApi
                 ]);
-                
+
                 if ($pasangBaru) {
                     $createDataJob = [
                         'job_api' => rand(),
                         'user_id' => $absensi->user_id,
                         'kode_pasang_baru' => $pasangBaru->id,
                     ];
-        
+
                     $dataJob = DataJob::create($createDataJob);
 
                     $createJobBaruApi = [

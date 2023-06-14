@@ -15,7 +15,6 @@ class CreateDataPasangBarusTable extends Migration
     {
         Schema::create('data_pasang_barus', function (Blueprint $table) {
             $table->id();
-            $table->string('pasang_baru_api', 100);
             $table->string('kode', 100);
             $table->string('inet');
             $table->string('nama_pelanggan');

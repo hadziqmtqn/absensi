@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
@@ -21,7 +22,6 @@ class User extends Authenticatable
      */
     protected $fillable = [
         'name',
-        'idapi',
         'email',
         'password',
         'short_name',
@@ -52,7 +52,7 @@ class User extends Authenticatable
         'email_verified_at' => 'datetime',
     ];
 
-    public function modelHasRole()
+    public function modelHasRole(): HasOne
     {
         return $this->hasOne(ModelHasRole::class, 'model_id');
     }
@@ -62,17 +62,17 @@ class User extends Authenticatable
         return $query->where('idapi', $idApi);
     }
 
-    public function dataJob()
+    public function dataJob(): HasOne
     {
         return $this->hasOne(DataJob::class);
     }
 
-    public function absensi()
+    public function absensi(): HasOne
     {
         return $this->hasOne(Absensi::class);
     }
 
-    public function teknisiCadangan()
+    public function teknisiCadangan(): HasOne
     {
         return $this->hasOne(TeknisiCadangan::class);
     }

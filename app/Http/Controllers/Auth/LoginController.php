@@ -69,29 +69,20 @@ class LoginController extends Controller
             $karyawan = Auth::user()->modelHasRole->role_id == 2;
             $karyawanTerverifikasi = auth()->user()->is_verifikasi == 1;
 
-            if ($karyawan) {
-                if($karyawanTerverifikasi){
-                    return redirect('dashboard');
-                }else{
-                    Auth::logout();
-
-                    return redirect()->route('login.index')->with('error','Mohon Maaf, akun Anda belum diverifikasi');
-                }
-            }
-
-            $user = User::where('email', $request['email'])->firstOrFail();
-            $user->createToken('auth_token', ['*'], now()->addRealHours(8))->plainTextToken;
-            
             try {
-                $client->request('POST', $onlineApi->website . '/api/login', [
-                    'json' => $credentials
-                ]);
+                if ($karyawan) {
+                    if($karyawanTerverifikasi){
+                        return redirect('dashboard');
+                    }else{
+                        Auth::logout();
 
-                return redirect()->intended('home');
+                        return redirect()->route('login.index')->with('error','Mohon Maaf, akun Anda belum diverifikasi');
+                    }
+                }
             } catch (\Throwable $th) {
                 Auth::logout();
                 Log::error($th->getMessage());
-                
+
                 Alert::error('Oops!', 'Data Error');
 
                 return redirect()->route('login.index');;

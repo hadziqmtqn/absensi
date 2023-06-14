@@ -32,9 +32,6 @@ class RegistrasiController extends Controller
 
     public function store(Request $request)
     {
-        $client = new Client();
-        $onlineApi = OnlineApi::first();
-
         try {
             $validator = Validator::make($request->all(),[
                 'name' => ['required', 'min:5'],
@@ -53,7 +50,6 @@ class RegistrasiController extends Controller
             $data = [
                 'role_id' => 2,
                 'name' => $request->input('name'),
-                'idapi' => rand(),
                 'username' => Str::slug($request->name),
                 'short_name' => $request->input('short_name'),
                 'phone' => $request->input('phone'),
@@ -63,28 +59,9 @@ class RegistrasiController extends Controller
                 'is_verifikasi' => 1
             ];
 
-            DB::transaction(function () use ($data, $request, $onlineApi, $client){
+            DB::transaction(function () use ($data, $request){
                 $user = User::create($data);
-
                 $user->assignRole('2');
-
-                $createUserApi = [
-                    'role_id' => $user->role_id,
-                    'name' => $user->name,
-                    'idapi' => $user->idapi,
-                    'username' => $user->username,
-                    'short_name' => $user->short_name,
-                    'phone' => $user->phone,
-                    'company_name' => $user->company_name,
-                    'email' => $user->email,
-                    'password' => Hash::make($request->password),
-                    'is_verifikasi' => $user->is_verifikasi
-                ];
-
-                $client->request('POST', $onlineApi->website . '/api/user/store', [
-                    'json' => $createUserApi
-                ]);
-
                 $this->whatsapp($user->id, $request);
             });
 

@@ -11,7 +11,6 @@ use App\Http\Controllers\Dashboard\KaryawanController;
 use App\Http\Controllers\Dashboard\AbsensiController;
 use App\Http\Controllers\Dashboard\DataPasangBaruController;
 use App\Http\Controllers\Dashboard\DataJobController;
-use App\Http\Controllers\Dashboard\OnlineApiController;
 use App\Http\Controllers\Dashboard\PermissionController;
 use App\Http\Controllers\Dashboard\RoleController;
 use App\Http\Controllers\Dashboard\TeknisiCadanganController;
@@ -32,7 +31,7 @@ Route::get('/', function () {
     return redirect()->route('login.index');
 });
 
-Route::group(['middleware' => ['guest','log.route.api']], function () {
+Route::group(['middleware' => ['guest']], function () {
     Route::get('login', [LoginController::class, 'index'])->name('login.index');
     Route::post('get-login', [LoginController::class, 'login'])->name('login.get-login');
     Route::get('register', function (){
@@ -121,25 +120,17 @@ Route::middleware(['auth',VerifikasiAkun::class])->group(function () {
     Route::post('whatsapp-api/store', [WhatsappApiController::class, 'store'])->name('whatsapp-api.store');
     Route::put('whatsapp-api/update/{id}', [WhatsappApiController::class, 'update'])->name('whatsapp-api.update');
 
-    Route::middleware('api.key')->group(function(){
-        // register karyawan
-        Route::prefix('registrasi')->group(function(){
-            Route::get('/', [RegistrasiController::class, 'index'])->name('registrasi.index');
-            Route::post('/store', [RegistrasiController::class, 'store'])->name('registrasi.store');
-        });
+    Route::prefix('registrasi')->group(function(){
+        Route::get('/', [RegistrasiController::class, 'index'])->name('registrasi.index');
+        Route::post('/store', [RegistrasiController::class, 'store'])->name('registrasi.store');
     });
 
     Route::get('forbidden', function() {
         return view('dashboard.layouts.forbidden');
     })->name('forbidden');
-    
+
     Route::get('home', function() {
        return redirect('dashboard');
-    });
-
-    Route::prefix('online-api')->group(function(){
-        Route::get('/', [OnlineApiController::class, 'index'])->name('online-api.index');
-        Route::put('/{id}/update', [OnlineApiController::class, 'update'])->name('online-api.update');
     });
 });
 

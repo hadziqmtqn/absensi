@@ -6,15 +6,11 @@ use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use Illuminate\Support\Carbon;
 use RealRashid\SweetAlert\Facades\Alert;
-use Illuminate\Support\Facades\Auth;
 use Yajra\Datatables\Datatables;
 
 use App\Models\User;
 use App\Models\Setting;
 use App\Models\Karyawan;
-use App\Models\OnlineApi;
-use App\Models\Role;
-use GuzzleHttp\Client;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Log;
@@ -44,9 +40,10 @@ class KaryawanController extends Controller
     public function getJsonKaryawan(Request $request)
     {
         if ($request->ajax()) {
-            $data = Karyawan::where('role_id',2);
+            $data = Karyawan::query()
+                ->where('role_id',2);
 
-            return Datatables::of($data)
+            return Datatables::eloquent($data)
                 ->addIndexColumn()
                 ->filter(function ($instance) use ($request) {
 					if ($request->get('is_verifikasi') == '0' || $request->get('is_verifikasi') == '1') {
@@ -76,7 +73,7 @@ class KaryawanController extends Controller
 
                 ->addColumn('action', function($row){
 					$btn = '<a href="karyawan/'.$row->username.'" class="btn btn-primary" style="padding: 7px 10px">Detail</a>';
-                    $btn = $btn.' <button type="button" href="karyawan/'.$row->id.'/destroy" class="btn btn-danger btn-hapus" style="padding: 7px 10px">Delete</button>';
+                    $btn .= ' <button type="button" href="karyawan/'.$row->id.'/destroy" class="btn btn-danger btn-hapus" style="padding: 7px 10px">Delete</button>';
                     return $btn;
                 })
 
@@ -118,9 +115,10 @@ class KaryawanController extends Controller
     public function getJsonKaryawanTrashed(Request $request)
     {
         if ($request->ajax()) {
-            $data = Karyawan::where('role_id',2)->onlyTrashed();
+            $data = Karyawan::query()
+                ->where('role_id',2)->onlyTrashed();
 
-            return Datatables::of($data)
+            return Datatables::eloquent($data)
                 ->addIndexColumn()
                 ->filter(function ($instance) use ($request) {
 					if ($request->get('is_verifikasi') == '0' || $request->get('is_verifikasi') == '1') {
@@ -154,7 +152,7 @@ class KaryawanController extends Controller
 
                 ->addColumn('action', function($row){
 					$btn = '<button type="button" href="'.$row->id.'/restore" class="btn btn-warning btn-restore" style="padding: 7px 10px">Restore</button>';
-                    $btn = $btn.' <button type="button" href="/karyawan/'.$row->id.'/delete-permanen" class="btn btn-danger btn-hapus" style="padding: 7px 10px">Delete</button>';
+                    $btn .= ' <button type="button" href="/karyawan/'.$row->id.'/delete-permanen" class="btn btn-danger btn-hapus" style="padding: 7px 10px">Delete</button>';
                     return $btn;
                 })
 
@@ -196,9 +194,6 @@ class KaryawanController extends Controller
 	{
         $user = User::findOrFail($id);
 
-        $client = New Client();
-        $onlineApi = OnlineApi::first();
-
         try {
             $validator = Validator::make($request->all(),[
                 'name' => ['required'],
@@ -213,7 +208,7 @@ class KaryawanController extends Controller
             if ($validator->fails()) {
                 return back()->withErrors($validator)->withInput();
             }
-            
+
             $file = $request->file('photo');
             if($file){
                 $nama_file = rand().'-'. $file->getClientOriginalName();
@@ -234,24 +229,7 @@ class KaryawanController extends Controller
                 'photo' => $photo
             ];
 
-            DB::transaction(function () use ($user, $client, $onlineApi, $data){
-                $user->update($data);
-
-                $updateKaryawanApi = [
-                    'role_id' => $user->role_id,
-                    'name' => $user->name,
-                    'email' => $user->email,
-                    'short_name' => $user->short_name,
-                    'nik' => $user->nik,
-                    'phone' => $user->phone,
-                    'company_name' => $user->company_name,
-                ];
-
-                $client->request('PUT', $onlineApi->website . '/api/user/' . $user->idapi . '/update', [
-                    'json' => $updateKaryawanApi
-                ]);
-
-            });
+            $user->update($data);
 
             Alert::success('Sukses','Data Karyawan Berhasil Tersimpan');
         } catch (\Throwable $th) {
@@ -278,8 +256,6 @@ class KaryawanController extends Controller
     public function password(Request $request, $id)
     {
         $user = User::findOrFail($id);
-        $client = New Client();
-        $onlineApi = OnlineApi::first();
 
         try {
             $validator = Validator::make($request->all(),[
@@ -295,17 +271,7 @@ class KaryawanController extends Controller
                 'password' => Hash::make($request->password)
             ];
 
-            DB::transaction(function () use ($user, $data, $client, $onlineApi, $request) {
-                $user->update($data);
-
-                $updatePasswordApi = [
-                    'password' => $request->password,
-                ];
-
-                $client->request('PUT', $onlineApi->website . '/api/user/' . $user->idapi . '/update-password', [
-                    'json' => $updatePasswordApi
-                ]);
-            });
+            $user->update($data);
 
             Alert::success('Sukses','Password berhasil diubah');
         } catch (\Throwable $th) {
@@ -324,15 +290,13 @@ class KaryawanController extends Controller
                 $user->update([
                     'is_verifikasi' => 0,
                 ]);
-
-                $this->whatsapp($user->id);
             }else{
                 $user->update([
                     'is_verifikasi' => 1
                 ]);
-
-                $this->whatsapp($user->id);
             }
+
+            $this->whatsapp($user->id);
 
             Alert::success('Sukses','Status Verifikasi Karyawan Berhasil di Update');
         } catch (\Exception $e) {
@@ -389,17 +353,10 @@ class KaryawanController extends Controller
 
     public function destroy($id)
     {
-        $client = new Client();
-        $onlineApi = OnlineApi::first();
-
         $user = Karyawan::findOrFail($id);
 
         try {
-            DB::transaction(function() use ($client, $onlineApi, $user){
-                $user->delete();
-
-                $client->request('DELETE', $onlineApi->website . '/api/user/' . $user->idapi . '/delete');
-            });
+            $user->delete();
 
             Alert::success('Sukses','Data Karyawan berhasil dihapus');
         } catch (\Throwable $th) {
@@ -412,47 +369,35 @@ class KaryawanController extends Controller
 
     public function deletePermanen($id)
     {
-        $client = new Client();
-        $onlineApi = OnlineApi::first();
-
         $user = Karyawan::onlyTrashed()
             ->findOrFail($id);
 
         try {
-            DB::transaction(function() use ($client, $onlineApi, $user){
-                $user->forceDelete();
-                
-                $client->request('DELETE', $onlineApi->website . '/api/user/' . $user->idapi . '/delete-permanen');
-                
-                Alert::success('Sukses','Data Karyawan berhasil dihapus permanen');
-            });
-        } catch (\Exception $e) {
-            Alert::error('Error',$e->getMessage());
+            $user->forceDelete();
+
+            Alert::success('Sukses','Data Karyawan berhasil dihapus permanen');
+        } catch (\Throwable $th) {
+            Log::error($th->getMessage());
+
+            Alert::error('Error', 'Data Error');
         }
+
         return redirect()->back();
     }
 
     public function restore($id)
     {
-        $client = new Client();
-        $onlineApi = OnlineApi::first();
-
-        $user = Karyawan::withTrashed()->findOrFail($id);
+        $user = Karyawan::onlyTrashed()
+            ->findOrFail($id);
 
         try {
-            DB::transaction(function() use ($client, $onlineApi, $user){
-                if($user->trashed()){
-                    $user->restore();
-    
-                    $client->request('POST', $onlineApi->website . '/api/user/' . $user->idapi . '/restore');
-    
-                    Alert::success('Sukses','Data Karyawan berhasil di restore');
-                } else {
-                    Alert::error('Opps','Data Karyawan tidak terhapus');
-                }
-            });
-        } catch (\Exception $e) {
-            Alert::error('Error',$e->getMessage());
+            $user->restore();
+
+            Alert::success('Sukses','Data Karyawan berhasil di restore');
+        } catch (\Throwable $th) {
+            Log::error($th->getMessage());
+
+            Alert::error('Error', 'Data Error');
         }
 
         return redirect()->back();

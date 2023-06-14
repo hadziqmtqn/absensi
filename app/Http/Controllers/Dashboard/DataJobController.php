@@ -106,7 +106,7 @@ class DataJobController extends Controller
                 ->addColumn('kode', function($row){
                     return $row->dataPasangBaru->kode;
                 })
-                
+
                 ->addColumn('user', function($row){
                     return $row->user->name;
                 })
@@ -114,11 +114,11 @@ class DataJobController extends Controller
                 ->addColumn('nama_pelanggan', function($row){
                     return $row->dataPasangBaru->nama_pelanggan;
                 })
-                
+
                 ->addColumn('no_hp', function($row){
                     return !$row->dataPasangBaru ? null : $row->dataPasangBaru->no_hp;
                 })
-                
+
                 ->addColumn('alamat', function($row){
                     return !$row->dataPasangBaru ? null : $row->dataPasangBaru->alamat;
                 })
@@ -153,8 +153,8 @@ class DataJobController extends Controller
 
     public function store(Request $request)
 	{
-        $client = New Client();
-        $onlineApi = OnlineApi::first();
+        /*$client = New Client();
+        $onlineApi = OnlineApi::first();*/
 
         try {
             $validator = Validator::make($request->all(),[
@@ -167,29 +167,29 @@ class DataJobController extends Controller
             }
 
             $data = [
-                'job_api' => rand(),
+                /*'job_api' => rand(),*/
                 'user_id' => $request->user_id,
                 'kode_pasang_baru' => $request->kode_pasang_baru,
             ];
 
-            DB::transaction(function () use ($data, $client, $onlineApi){
+            DB::transaction(function () use ($data){
                 $dataJob = DataJob::create($data);
 
-                $jobApi = [
+                /*$jobApi = [
                     'job_api' => $dataJob->job_api
                 ];
 
                 $client->request('POST', $onlineApi->website . '/api/data-job/' . $dataJob->user->idapi . '/' . $dataJob->dataPasangBaru->pasang_baru_api, [
                     'json' => $jobApi
-                ]);
-                
+                ]);*/
+
                 $teknisiCadangan = TeknisiCadangan::where('user_id', $dataJob->user_id)
                 ->first();
-                
+
                 if (!is_null($teknisiCadangan)) {
                     $teknisiCadangan->delete();
-                    
-                    $client->request('DELETE', $onlineApi->website . '/api/teknisi-cadangan/' . $teknisiCadangan->user->idapi . '/delete');
+
+                    /*$client->request('DELETE', $onlineApi->website . '/api/teknisi-cadangan/' . $teknisiCadangan->user->idapi . '/delete');*/
                 }
             });
 
@@ -207,7 +207,7 @@ class DataJobController extends Controller
     {
         $title = 'Edit Data Job';
         $appName = Setting::first();
-        
+
         $dataJob = DataJob::findOrFail($id);
 
         $hariIni = Carbon::now()->format('Y-m-d');
@@ -219,14 +219,14 @@ class DataJobController extends Controller
             $query->orWhereHas('teknisiCadangan');
         })
         ->get();
-        
+
         return view('dashboard.data_job.edit', compact('title','appName','dataJob','listAbsensi'));
     }
 
     public function update(Request $request, $id)
 	{
-        $client = New Client();
-        $onlineApi = OnlineApi::first();
+        /*$client = New Client();
+        $onlineApi = OnlineApi::first();*/
 
         try {
             $dataJob = DataJob::findOrFail($id);
@@ -245,11 +245,11 @@ class DataJobController extends Controller
                 'kode_pasang_baru' => $request->kode_pasang_baru,
             ];
 
-            DB::transaction(function () use ($dataJob, $data, $client, $onlineApi) {
-                $dataJob->update($data);
+            $dataJob->update($data);
+            /*DB::transaction(function () use ($dataJob, $data) {
 
                 $client->request('PUT', $onlineApi->website . '/api/data-job/' . $dataJob->user->idapi . '/' . $dataJob->dataPasangBaru->pasang_baru_api);
-            });
+            });*/
 
             Alert::success('Sukses','Data Job Baru berhasil diupdate');
         } catch (\Throwable $th) {
@@ -260,7 +260,7 @@ class DataJobController extends Controller
 
 		return redirect()->back();
 	}
-    
+
     public function delete($id)
     {
         $dataJob = DataJob::findOrFail($id);
@@ -273,22 +273,22 @@ class DataJobController extends Controller
         })
         ->first();
 
-        $client = New Client();
-        $onlineApi = OnlineApi::first();
+        /*$client = New Client();
+        $onlineApi = OnlineApi::first();*/
 
         try {
-            DB::transaction(function() use ($dataJob, $user, $client, $onlineApi){
+            DB::transaction(function() use ($dataJob, $user){
                 if ($user->data_job_count > 1) {
                     $createTeknisiCadangan = [
                         'user_id' => $dataJob->user_id
                     ];
 
-                    $teknisiCadangan = TeknisiCadangan::create($createTeknisiCadangan);
+                    TeknisiCadangan::create($createTeknisiCadangan);
 
-                    $client->request('POST', $onlineApi->website . '/api/teknisi-cadangan/' . $teknisiCadangan->user->idapi . '/store');
+                    /*$client->request('POST', $onlineApi->website . '/api/teknisi-cadangan/' . $teknisiCadangan->user->idapi . '/store');*/
                 }
-                
-                $client->request('DELETE', $onlineApi->website . '/api/data-job/' . $dataJob->job_api . '/delete');
+
+                /*$client->request('DELETE', $onlineApi->website . '/api/data-job/' . $dataJob->job_api . '/delete');*/
 
                 $dataJob->delete();
             });

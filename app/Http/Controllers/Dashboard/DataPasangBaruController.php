@@ -29,7 +29,7 @@ class DataPasangBaruController extends Controller
         $this->middleware('permission:data-pasang-baru-edit', ['only' => ['edit','update']]);
         $this->middleware('permission:data-pasang-baru-delete', ['only' => ['destroy']]);
     }
-    
+
     public function index()
     {
         $title = 'Data Pasang Baru';
@@ -42,7 +42,7 @@ class DataPasangBaruController extends Controller
     {
         if ($request->ajax()) {
 			$data = DataPasangBaru::orderBy('created_at','DESC');
-            
+
             return Datatables::of($data)
                 ->addIndexColumn()
                 ->filter(function ($instance) use ($request) {
@@ -86,21 +86,14 @@ class DataPasangBaruController extends Controller
                 })
 
                 ->addColumn('status', function($row){
-                    if($row->status == 0){
-                        return '<span class="badge badge-info">Waiting</span>';
-                    }elseif($row->status == 1){
-                        return '<span class="badge badge-primary">In Progress</span>';
-                    }elseif($row->status == 2){
-                        return '<span class="badge badge-warning">Pending</span>';
-                    }elseif($row->status == 3){
-                        return '<span class="badge badge-success">Success</span>';
-                    }
+                    $badge = $row->status == 0 ? 'badge-info' : ($row->status == '1' ? 'badge-primary' : ($row->status == '2' ? 'badge-warning' : ($row->status == '3' ? 'badge-success' : '')));
+                    $status = $row->status == 0 ? 'Waiting' : ($row->status == '1' ? 'In Progress' : ($row->status == '2' ? 'Pending' : ($row->status == '3' ? 'Success' : '')));
+
+                    return '<span class="badge '.$badge.'">'.$status.'</span>';
                 })
 
                 ->addColumn('foto', function($row){
-                    if(!empty($row->foto)){
-                        return '<img src="'.asset($row->foto).'" style="width: 30px; border-radius: 50%;" alt="image">';
-                    }
+                    return is_null($row->foto) ? null : '<img src="'.asset($row->foto).'" style="width: 30px; border-radius: 50%;" alt="image">';
                 })
 
                 ->rawColumns(['action','status','foto'])
@@ -135,13 +128,13 @@ class DataPasangBaruController extends Controller
         ->orderBy('created_at','ASC')
         ->first();
 
-        $client = New Client();
-        $onlineApi = OnlineApi::first();
+        /*$client = New Client();
+        $onlineApi = OnlineApi::first();*/
 
         Validator::extend('without_spaces', function($attr, $value){
             return preg_match('/^\S*$/u', $value);
         });
-        
+
         try {
             $validator = Validator::make($request->all(),[
                 'kode' => ['required','unique:data_pasang_barus', 'without_spaces'],
@@ -159,7 +152,7 @@ class DataPasangBaruController extends Controller
             if ($validator->fails()) {
                 return back()->withErrors($validator)->withInput();
             }
-    
+
             $file = $request->file('foto');
             if($file){
                 $nama_file = rand().'-'. $file->getClientOriginalName();
@@ -179,11 +172,11 @@ class DataPasangBaruController extends Controller
                 'acuan_lokasi' => $request->acuan_lokasi,
                 'foto' => $foto
             ];
-            
+
             DB::transaction(function() use ($data, $absensi, $teknisiCadangan, $client, $onlineApi){
                 $dataPasangBaru = DataPasangBaru::create($data);
 
-                $dataPasangBaruApi = [
+                /*$dataPasangBaruApi = [
                     'pasang_baru_api' => $dataPasangBaru->pasang_baru_api,
                     'kode' => $dataPasangBaru->kode,
                     'inet' => $dataPasangBaru->inet,
@@ -191,51 +184,39 @@ class DataPasangBaruController extends Controller
                     'no_hp' => $dataPasangBaru->no_hp,
                     'alamat' => $dataPasangBaru->alamat,
                     'acuan_lokasi' => $dataPasangBaru->acuan_lokasi,
-                ];
+                ];*/
 
-                $client->request('POST', $onlineApi->website . '/api/data-pasang-baru', [
+                /*$client->request('POST', $onlineApi->website . '/api/data-pasang-baru', [
                     'json' => $dataPasangBaruApi
-                ]);
-                
+                ]);*/
+
                 if ($absensi && !$teknisiCadangan || $absensi && $teknisiCadangan) {
-                    $createJobBaru = [
-                        'job_api' => rand(),
+                    DataJob::create([
+                        /*'job_api' => rand(),*/
                         'user_id' => $absensi->user_id,
                         'kode_pasang_baru' => $dataPasangBaru->id
-                    ];
-                    
-                    $jobBaru = DataJob::create($createJobBaru);
-
-                    $createJobBaruApi = [
-                        'job_api' => $jobBaru->job_api
-                    ];
-                    
-                    $client->request('POST', $onlineApi->website . '/api/data-job/' . $jobBaru->user->idapi . '/' . $jobBaru->dataPasangBaru->pasang_baru_api, [
-                        'json' => $createJobBaruApi
                     ]);
                 }elseif (!$absensi && $teknisiCadangan) {
-                    $createJobBaru = [
-                        'job_api' => rand(),
+                    DataJob::create([
+                        /*'job_api' => rand(),*/
                         'user_id' => $teknisiCadangan->user_id,
                         'kode_pasang_baru' => $dataPasangBaru->id
-                    ];
-                    
-                    $jobBaruTeknisi = DataJob::create($createJobBaru);
-
+                    ]);
+/*
                     $createJobBaruApiTeknisi = [
                         'job_api' => $jobBaruTeknisi->job_api
-                    ];
-                    
+                    ];*/
+/*
                     $client->request('POST', $onlineApi->website . '/api/data-job/' . $jobBaruTeknisi->user->idapi . '/' . $jobBaruTeknisi->dataPasangBaru->pasang_baru_api, [
                         'json' => $createJobBaruApiTeknisi
                     ]);
-                    
-                    $client->request('DELETE', $onlineApi->website . '/api/teknisi-cadangan/' . $teknisiCadangan->user->idapi . '/delete');
+
+                    $client->request('DELETE', $onlineApi->website . '/api/teknisi-cadangan/' . $teknisiCadangan->user->idapi . '/delete');*/
 
                     $teknisiCadangan->delete();
                 }
             });
-            
+
             Alert::success('Sukses','Data Pasang Baru berhasil disimpan');
         } catch (\Throwable $th) {
             Log::error($th->getMessage());
@@ -283,15 +264,15 @@ class DataPasangBaruController extends Controller
     public function update(Request $request, $id)
 	{
         $dataPasangBaru = DataPasangBaru::findOrFail($id);
-        
-        $client = New Client();
-        $onlineApi = OnlineApi::first();
+
+        /*$client = New Client();
+        $onlineApi = OnlineApi::first();*/
 
         try {
             Validator::extend('without_spaces', function($attr, $value){
                 return preg_match('/^\S*$/u', $value);
             });
-    
+
             $validator = Validator::make($request->all(), [
                 'kode' => ['required','unique:data_pasang_barus,kode,' . $id . 'id', 'without_spaces'],
                 'inet' => ['required','unique:data_pasang_barus,inet,' . $id . 'id'],
@@ -303,11 +284,11 @@ class DataPasangBaruController extends Controller
             [
                 'kode.without_spaces' => 'Kode Harus Tanpa Spasi.'
             ]);
-    
+
             if ($validator->fails()) {
                 return back()->withErrors($validator)->withInput();
             }
-            
+
             $file = $request->file('foto');
             if($file){
                 $nama_file = rand().'-'. $file->getClientOriginalName();
@@ -326,15 +307,15 @@ class DataPasangBaruController extends Controller
                 'acuan_lokasi' => $request->acuan_lokasi,
                 'foto' => $foto
             ];
-            
-            DB::transaction(function() use ($dataPasangBaru, $data, $client, $onlineApi){
-                $dataPasangBaru->update($data);
-                
+
+            $dataPasangBaru->update($data);
+            /*DB::transaction(function() use ($dataPasangBaru, $data, $client, $onlineApi){
+
                 $client->request('PUT', $onlineApi->website . '/api/data-pasang-baru/' . $dataPasangBaru->pasang_baru_api . '/update', [
                     'json' => $data
                 ]);
-            });
-            
+            });*/
+
             Alert::success('Sukses','Data Pasang Baru berhasil diupdate');
         } catch (\Throwable $th) {
             Log::error($th->getMessage());
@@ -344,7 +325,7 @@ class DataPasangBaruController extends Controller
 
         return redirect()->back();
 	}
-    
+
     public function updateStatus(Request $request, $id)
 	{
         $dataPasangBaru = DataPasangBaru::findOrFail($id);
@@ -365,29 +346,29 @@ class DataPasangBaruController extends Controller
         ->first();
 
         $pasangBaruHariIni = $toDay == date('Y-m-d', strtotime($dataPasangBaru->created_at));
-        
-        $client = New Client();
-        $onlineApi = OnlineApi::first();
+
+        /*$client = New Client();
+        $onlineApi = OnlineApi::first();*/
 
         try {
             $validator = Validator::make($request->all(), [
                 'status' => ['required']
             ]);
-    
+
             if ($validator->fails()) {
                 return back()->withErrors($validator)->withInput();
             }
-            
+
             $data = [
                 'status' => $request->status
             ];
-            
-            DB::transaction(function() use ($dataPasangBaru, $data, $client, $onlineApi, $teknisiNonJob, $pasangBaruNonJob, $pasangBaruHariIni){
+
+            DB::transaction(function() use ($dataPasangBaru, $data, $teknisiNonJob, $pasangBaruNonJob, $pasangBaruHariIni){
                 $dataPasangBaru->update($data);
 
-                $client->request('PUT', $onlineApi->website . '/api/data-pasang-baru/' . $dataPasangBaru->pasang_baru_api . '/update-status', [
+                /*$client->request('PUT', $onlineApi->website . '/api/data-pasang-baru/' . $dataPasangBaru->pasang_baru_api . '/update-status', [
                     'json' => $data
-                ]);
+                ]);*/
 
                 if ($dataPasangBaru->status == '3') {
                     if ($teknisiNonJob && $pasangBaruNonJob) {
@@ -396,27 +377,25 @@ class DataPasangBaruController extends Controller
                             'user_id' => $teknisiNonJob->id,
                             'kode_pasang_baru' => $pasangBaruNonJob->id
                         ];
-            
+
                         $dataJobPasangBaru = DataJob::create($pasangBaru);
 
                         if (!is_null($dataJobPasangBaru)) {
-                            $createPasangJobBaruApi = [
+                            /*$createPasangJobBaruApi = [
                                 'job_api' => $dataJobPasangBaru->job_api
                             ];
 
                             $client->request('POST', $onlineApi->website . '/api/data-job/' . $dataJobPasangBaru->user->idapi . '/' . $dataJobPasangBaru->dataPasangBaru->pasang_baru_api, [
                                 'json' => $createPasangJobBaruApi
+                            ]);*/
+
+                            TeknisiCadangan::create([
+                                'user_id' => $dataPasangBaru->data_job->user_id
                             ]);
 
-                            $createTeknisiCadangan = [
-                                'user_id' => $dataPasangBaru->data_job->user_id
-                            ];
-                                
-                            $teknisiCadanganPasangBaru = TeknisiCadangan::create($createTeknisiCadangan);
-
-                            if (!is_null($teknisiCadanganPasangBaru)) {
+                            /*if (!is_null($teknisiCadanganPasangBaru)) {
                                 $client->request('POST', $onlineApi->website . '/api/teknisi-cadangan/' . $teknisiCadanganPasangBaru->user->idapi . '/store');
-                            }
+                            }*/
                         }
 
                     }elseif (!$teknisiNonJob && $pasangBaruNonJob) {
@@ -425,13 +404,13 @@ class DataPasangBaruController extends Controller
                             'user_id' => $dataPasangBaru->data_job->user_id,
                             'kode_pasang_baru' => $pasangBaruNonJob->id
                         ];
-                            
+
                         $dataJob = DataJob::create($pasangBaru);
 
                         $createPasangBaruNonJob = [
                             'job_api' => $dataJob->job_api
                         ];
-                        
+
                         if (!is_null($dataJob)) {
                             $client->request('POST', $onlineApi->website . '/api/data-job/' . $dataJob->user->idapi . '/' . $dataJob->dataPasangBaru->pasang_baru_api, [
                                 'json' => $createPasangBaruNonJob
@@ -441,16 +420,16 @@ class DataPasangBaruController extends Controller
                         $createTeknisiCadangan = [
                             'user_id' => $dataPasangBaru->data_job->user_id
                         ];
-                            
+
                         $teknisiCadangan = TeknisiCadangan::create($createTeknisiCadangan);
-                    
+
                         if (!is_null($teknisiCadangan)) {
                             $client->request('POST', $onlineApi->website . '/api/teknisi-cadangan/' . $teknisiCadangan->user->idapi . '/store');
                         }
                     }
                 }
             });
-            
+
             Alert::success('Sukses','Data Pasang Baru berhasil diupdate');
         } catch (\Throwable $th) {
             Log::error($th->getMessage());

@@ -4,13 +4,13 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\HasOne;
 
 class DataPasangBaru extends Model
 {
     use HasFactory;
 
     protected $fillable = [
-        'pasang_baru_api',
         'kode',
         'inet',
         'nama_pelanggan',
@@ -21,7 +21,7 @@ class DataPasangBaru extends Model
         'status'
     ];
 
-    public function data_job()
+    public function data_job(): HasOne
     {
         return $this->hasOne(DataJob::class, 'kode_pasang_baru');
     }

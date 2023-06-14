@@ -37,9 +37,6 @@ class ProfileController extends Controller
 
     public function update(Request $request, $id)
 	{
-        $client = New Client();
-        $onlineApi = OnlineApi::first();
-
         $user = User::findOrFail($id);
 
         try {
@@ -52,8 +49,7 @@ class ProfileController extends Controller
             if ($validator->fails()) {
                 return back()->withErrors($validator)->withInput();
             }
-    
-            
+
             $file = $request->file('photo');
             if($file){
                 $nama_file = rand().'-'. $file->getClientOriginalName();
@@ -70,19 +66,7 @@ class ProfileController extends Controller
                 'photo' => $photo
             ];
 
-            DB::transaction(function() use ($user, $data, $client, $onlineApi){
-                $user->update($data);
- 
-                $updateProfileApi = [
-                    'role_id' => $user->role_id,
-                    'name' => $user->name,
-                    'email' => $user->email,
-                ];
-
-                $client->request('PUT', $onlineApi->website . '/api/profile/' . $user->idapi . '/update', [
-                    'json' => $updateProfileApi
-                ]);
-            });
+            $user->update($data);
 
             Alert::success('Sukses','Profile berhasil diupdate');
         } catch (\Throwable $th) {
@@ -107,7 +91,6 @@ class ProfileController extends Controller
 
     public function password(Request $request,$id)
     {
-
         try {
             $password = $request->password;
             $confirm_password = $request->confirm_password;
@@ -116,8 +99,9 @@ class ProfileController extends Controller
                 Alert::error('Error','Password harus sama');
             }else{
                 User::where('id',$id)->update([
-                    'password'=>bcrypt($password)
+                    'password' => bcrypt($password)
                 ]);
+
                 Alert::success('Sukses','Password berhasil diupdate');
             }
         } catch (\Exception $e) {

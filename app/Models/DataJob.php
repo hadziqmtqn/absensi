@@ -4,28 +4,27 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 class DataJob extends Model
 {
-    use HasFactory;
-
     protected $fillable = [
         'job_api',
         'user_id',
         'kode_pasang_baru'
     ];
 
-    public function dataPasangBaru()
+    public function dataPasangBaru(): BelongsTo
     {
         return $this->belongsTo(DataPasangBaru::class, 'kode_pasang_baru');
     }
 
-    public function karyawan()
+    public function karyawan(): BelongsTo
     {
         return $this->belongsTo(Karyawan::class, 'user_id');
     }
 
-    public function user()
+    public function user(): BelongsTo
     {
         return $this->belongsTo(User::class);
     }
