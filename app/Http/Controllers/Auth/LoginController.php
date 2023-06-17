@@ -3,11 +3,8 @@
 namespace App\Http\Controllers\Auth;
 
 use App\Http\Controllers\Controller;
-use App\Models\OnlineApi;
 use App\Models\Setting;
-use App\Models\User;
 use App\Providers\RouteServiceProvider;
-use GuzzleHttp\Client;
 use Illuminate\Foundation\Auth\AuthenticatesUsers;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -34,7 +31,7 @@ class LoginController extends Controller
      *
      * @var string
      */
-    protected $redirectTo = RouteServiceProvider::HOME;
+    protected string $redirectTo = RouteServiceProvider::HOME;
 
     /**
      * Create a new controller instance.
@@ -55,9 +52,6 @@ class LoginController extends Controller
 
     public function login(Request $request)
     {
-        $client = New Client();
-        $onlineApi = OnlineApi::first();
-
         $this->validate($request, [
             'email' => 'required|string',
             'password' => 'required|string',
@@ -85,7 +79,7 @@ class LoginController extends Controller
 
                 Alert::error('Oops!', 'Data Error');
 
-                return redirect()->route('login.index');;
+                return redirect()->route('login.index');
             }
 
         }

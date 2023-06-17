@@ -18,7 +18,7 @@
                                     <div class="input-group">
                                         <input type="date" name="search" class="form-control form-control-sm" value="{{ ($search) }}">
                                         <div class="input-group-append">
-                                            <button type="submit" class="btn btn-sm btn-primary" type="button">Search</button>
+                                            <button type="submit" class="btn btn-sm btn-primary">Search</button>
                                         </div>
                                     </div>
                                 </div>
@@ -184,6 +184,7 @@
                                 </div>
                                 {{-- akhir modal detail--}}
                                 {{-- modal status --}}
+                                @if($job->status != 3)
                                 <div class="modal fade" id="modal-status-{{ $job->id }}" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
                                     <div class="modal-dialog" role="document">
                                         <div class="modal-content">
@@ -203,6 +204,7 @@
                                         </div>
                                     </div>
                                 </div>
+                                @endif
                                 {{-- akhir modal status --}}
                             @endforeach
                         </tbody>

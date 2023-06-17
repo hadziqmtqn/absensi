@@ -67,7 +67,6 @@ class AbsensiController extends Controller
 
                 if ($dataPasangBaru) {
                     DataJob::create([
-                        'job_api' => rand(),
                         'user_id' => $absensi->user_id,
                         'kode_pasang_baru' => $dataPasangBaru->id,
                     ]);

@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Dashboard;
 
 use App\Http\Controllers\Controller;
 use App\Models\Absensi;
+use Exception;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 use RealRashid\SweetAlert\Facades\Alert;
@@ -279,6 +280,9 @@ class DataJobController extends Controller
         return view('dashboard.data_job.teknisi-non-job', compact('title','appName'));
     }
 
+    /**
+     * @throws Exception
+     */
     public function getJsonTeknisiNonJob(Request $request)
     {
         if ($request->ajax()) {
@@ -292,7 +296,7 @@ class DataJobController extends Controller
                 $e->whereDate('created_at', Carbon::now());
             });
 
-            return Datatables::of($data)
+            return DataTables::eloquent($data)
                 ->addIndexColumn()
                 ->filter(function ($instance) use ($request) {
                     if (!empty($request->get('search'))) {
